@@ -20,12 +20,12 @@
 <body>
   <div class="sb-app gk-app">
     <aside class="gk-sidebar" aria-label="Menu utama">
-      <a href="beranda.html" class="gk-sidebar-brand">
+      <a href="index.html" class="gk-sidebar-brand">
         <img src="../img/ui/icons/menu.svg" alt="Go Kantin">
         <span>Go Kantin</span>
       </a>
       <ul class="gk-sidebar-nav">
-        <li><a href="beranda.html"><i class="fas fa-home"></i><span>Beranda</span></a></li>
+        <li><a href="index.html"><i class="fas fa-home"></i><span>Beranda</span></a></li>
         <li><a href="menu.html"><i class="fas fa-utensils"></i><span>Menu Kantin</span></a></li>
         <li><a href="cart.html" class="gk-active"><i class="fas fa-shopping-bag"></i><span>Keranjang</span><span class="gk-nav-badge">3</span></a></li>
         <li><a href="#"><i class="fas fa-user"></i><span>Profil</span></a></li>
@@ -69,12 +69,91 @@
           <div class="container">
             <div class="row">
               <div class="col-12 col-lg-8">
-                <form class="sb-checkout-form">
+                <form class="sb-checkout-form" id="gk-checkout-form">
+                  <div class="gk-queue-tip" id="gk-queue-tip" hidden data-queue-threshold="30" data-current-queue="35">
+                    <div class="gk-queue-tip-icon"><i class="fas fa-exclamation-circle"></i></div>
+                    <div class="gk-queue-tip-body">
+                      <strong>Antrian kantin lagi rame nih</strong>
+                      <p>Sekarang ada <span data-gk-queue-count>35</span> orang di antrian (slot <span data-gk-queue-slot>12.00–12.30</span>). Mau jadwalkan aja?</p>
+                    </div>
+                    <button type="button" class="gk-btn-primary gk-btn-inline" id="gk-queue-tip-cta">Jadwalkan</button>
+                  </div>
+
+                  <div class="sb-mb-30">
+                    <h3 class="sb-mb-30">Waktu pengambilan</h3>
+                    <div class="gk-order-timing">
+                      <label class="gk-timing-card">
+                        <input type="radio" name="order_timing" value="now" checked>
+                        <span class="gk-timing-card-inner">
+                          <i class="fas fa-bolt"></i>
+                          <span class="gk-timing-title">Buat pesanan untuk sekarang</span>
+                          <span class="gk-timing-desc">Ambil di slot antrian saat ini</span>
+                        </span>
+                      </label>
+                      <label class="gk-timing-card">
+                        <input type="radio" name="order_timing" value="schedule" id="gk-timing-schedule">
+                        <span class="gk-timing-card-inner">
+                          <i class="far fa-calendar-alt"></i>
+                          <span class="gk-timing-title">Jadwalkan pesanan</span>
+                          <span class="gk-timing-desc">Pilih jam pengambilan biar lebih tenang</span>
+                        </span>
+                      </label>
+                    </div>
+
+                    <div class="gk-schedule-panel" id="gk-schedule-panel" hidden>
+                      <p class="gk-schedule-hint">Pilih slot pengambilan (30 menit). Status mengikuti antrian di beranda.</p>
+                      <div class="gk-slot-grid" role="radiogroup" aria-label="Slot pengambilan">
+                        <label class="gk-slot">
+                          <input type="radio" name="pickup_slot" value="11.00-11.30" data-queue="8">
+                          <span class="gk-slot-inner">
+                            <span class="gk-slot-time">11.00–11.30</span>
+                            <span class="gk-slot-meta"><span class="gk-slot-count">8</span> antrian · Sepi</span>
+                          </span>
+                        </label>
+                        <label class="gk-slot">
+                          <input type="radio" name="pickup_slot" value="11.30-12.00" data-queue="18">
+                          <span class="gk-slot-inner">
+                            <span class="gk-slot-time">11.30–12.00</span>
+                            <span class="gk-slot-meta"><span class="gk-slot-count">18</span> antrian · Lancar</span>
+                          </span>
+                        </label>
+                        <label class="gk-slot gk-slot-busy">
+                          <input type="radio" name="pickup_slot" value="12.00-12.30" data-queue="35" data-current="true">
+                          <span class="gk-slot-inner">
+                            <span class="gk-slot-time">12.00–12.30</span>
+                            <span class="gk-slot-meta"><span class="gk-slot-count">35</span> antrian · Ramai</span>
+                          </span>
+                        </label>
+                        <label class="gk-slot">
+                          <input type="radio" name="pickup_slot" value="12.30-13.00" data-queue="22">
+                          <span class="gk-slot-inner">
+                            <span class="gk-slot-time">12.30–13.00</span>
+                            <span class="gk-slot-meta"><span class="gk-slot-count">22</span> antrian · Lancar</span>
+                          </span>
+                        </label>
+                        <label class="gk-slot">
+                          <input type="radio" name="pickup_slot" value="13.00-13.30" data-queue="12">
+                          <span class="gk-slot-inner">
+                            <span class="gk-slot-time">13.00–13.30</span>
+                            <span class="gk-slot-meta"><span class="gk-slot-count">12</span> antrian · Sepi</span>
+                          </span>
+                        </label>
+                        <label class="gk-slot">
+                          <input type="radio" name="pickup_slot" value="13.30-14.00" data-queue="6">
+                          <span class="gk-slot-inner">
+                            <span class="gk-slot-time">13.30–14.00</span>
+                            <span class="gk-slot-meta"><span class="gk-slot-count">6</span> antrian · Sepi</span>
+                          </span>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+
                   <div class="sb-mb-30">
                     <h3>Informasi tambahan</h3>
                   </div>
                   <div class="sb-group-input">
-                    <textarea name="name" required></textarea>
+                    <textarea name="note"></textarea>
                     <span class="sb-bar"></span>
                     <label>Catatan pesanan</label>
                   </div>
@@ -97,7 +176,7 @@
                     <span class="sb-icon">
                       <img src="../img/ui/icons/arrow.svg" alt="icon">
                     </span>
-                    <span>Buat pesanan</span>
+                    <span id="gk-submit-label">Buat pesanan sekarang</span>
                   </button>
                 </form>
               </div>

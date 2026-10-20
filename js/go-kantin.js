@@ -89,6 +89,44 @@
     });
   }
 
+  function initCheckoutTiming() {
+    var $tip = $('#gk-queue-tip');
+    var $panel = $('#gk-schedule-panel');
+    var $submitLabel = $('#gk-submit-label');
+    if (!$('[name="order_timing"]').length) return;
+
+    var threshold = parseInt($tip.attr('data-queue-threshold'), 10) || 30;
+    var currentQueue = parseInt($tip.attr('data-current-queue'), 10) || 0;
+    var isBusy = currentQueue > threshold;
+
+    $tip.prop('hidden', !isBusy);
+
+    function syncTimingUI() {
+      var mode = $('[name="order_timing"]:checked').val();
+      var scheduled = mode === 'schedule';
+      $panel.prop('hidden', !scheduled);
+      if (scheduled) {
+        $submitLabel.text('Jadwalkan pesanan');
+        if (!$('[name="pickup_slot"]:checked').length) {
+          $('[name="pickup_slot"]').not('[data-current]').first().prop('checked', true);
+        }
+      } else {
+        $submitLabel.text('Buat pesanan sekarang');
+      }
+    }
+
+    $(document).off('change.gkTiming', '[name="order_timing"]').on('change.gkTiming', '[name="order_timing"]', syncTimingUI);
+    $(document).off('click.gkTip', '#gk-queue-tip-cta').on('click.gkTip', '#gk-queue-tip-cta', function () {
+      $('#gk-timing-schedule').prop('checked', true).trigger('change');
+      var $el = $panel.get(0);
+      if ($el && $el.scrollIntoView) {
+        $el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    });
+
+    syncTimingUI();
+  }
+
   $(function () {
     var saved = false;
     try {
@@ -100,10 +138,12 @@
     syncActiveNav();
     syncNavTitles();
     updateToggleIcon();
+    initCheckoutTiming();
   });
 
   document.addEventListener('swup:contentReplaced', function () {
     syncActiveNav();
     updateToggleIcon();
+    initCheckoutTiming();
   });
 })(jQuery);

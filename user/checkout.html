@@ -1,27 +1,23 @@
 <!DOCTYPE html>
 <html lang="id">
 
-
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <!-- color of address bar in mobile browser -->
   <meta name="theme-color" content="#F5C332">
   <link rel="shortcut icon" href="../img/ui/logo.ico" type="image/x-icon">
   <link rel="stylesheet" href="../css/plugins/font-awesome.min.css">
   <link rel="stylesheet" href="../css/plugins/bootstrap.min.css">
   <link rel="stylesheet" href="../css/plugins/swiper.min.css">
   <link rel="stylesheet" href="../css/plugins/datepicker.css">
-  <link href="../css/plugins/mapbox-style.css" rel='stylesheet'>
+  <link href="../css/plugins/mapbox-style.css" rel="stylesheet">
   <link rel="stylesheet" href="../css/plugins/fancybox.min.css">
   <link rel="stylesheet" href="../css/style.css">
   <title>Checkout - Go Kantin</title>
 </head>
 
 <body>
-  <!-- app wrapper -->
   <div class="sb-app gk-app">
     <aside class="gk-sidebar" aria-label="Menu utama">
       <a href="beranda.html" class="gk-sidebar-brand">
@@ -47,6 +43,7 @@
       </div>
     </aside>
     <div class="gk-sidebar-backdrop" aria-hidden="true"></div>
+
     <div class="gk-main">
       <header class="gk-topbar">
         <div class="gk-topbar-left">
@@ -70,209 +67,213 @@
           </a>
         </div>
       </header>
-    <div id="sb-dynamic-content" class="sb-transition-fade gk-content">
 
-      <!-- checkout -->
-      <section class="sb-p-90-90">
-        <div class="container" data-sticky-container>
-          <div class="row">
-            <div class="col-lg-8">
-              <form class="sb-checkout-form">
-                <div class="sb-mb-30">
-                  <h3>Detail penagihan</h3>
-                </div>
-                <div class="row">
-                  <div class="col-lg-6">
-                    <div class="sb-group-input">
-                      <input type="text" required>
-                      <span class="sb-bar"></span>
-                      <label>Nama depan</label>
-                    </div>
+      <div id="sb-dynamic-content" class="sb-transition-fade gk-content">
+        <section class="sb-p-90-90">
+          <div class="container">
+            <h2 class="gk-section-title">Checkout</h2>
+            <div class="row">
+              <div class="col-12 col-lg-8">
+                <form class="sb-checkout-form">
+                  <div class="sb-mb-30">
+                    <h3>Detail penagihan</h3>
                   </div>
-                  <div class="col-lg-6">
-                    <div class="sb-group-input">
-                      <input type="text" required>
-                      <span class="sb-bar"></span>
-                      <label>Nama belakang</label>
-                    </div>
-                  </div>
-                  <div class="col-lg-6">
-                    <div class="sb-group-input">
-                      <input type="text" required>
-                      <span class="sb-bar"></span>
-                      <label>Nama perusahaan</label>
-                    </div>
-                  </div>
-                  <div class="col-lg-6">
-                    <div class="sb-group-input">
-                      <input type="text" required>
-                      <span class="sb-bar"></span>
-                      <label>Negara</label>
-                    </div>
-                  </div>
-                  <div class="col-lg-6">
-                    <div class="sb-group-input">
-                      <input type="text" required>
-                      <span class="sb-bar"></span>
-                      <label>Kota</label>
-                    </div>
-                  </div>
-                  <div class="col-lg-6">
-                    <div class="sb-group-input">
-                      <input type="text" required>
-                      <span class="sb-bar"></span>
-                      <label>Provinsi</label>
-                    </div>
-                  </div>
-                  <div class="col-lg-6">
-                    <div class="sb-group-input">
-                      <input type="text" required>
-                      <span class="sb-bar"></span>
-                      <label>Jalan</label>
-                    </div>
-                  </div>
-                  <div class="col-lg-6">
-                    <div class="sb-group-input">
-                      <input type="text" required>
-                      <span class="sb-bar"></span>
-                      <label>Kode pos</label>
-                    </div>
-                  </div>
-                  <div class="col-lg-6">
-                    <div class="sb-group-input">
-                      <input type="tel" required>
-                      <span class="sb-bar"></span>
-                      <label>Telepon</label>
-                    </div>
-                  </div>
-                  <div class="col-lg-6">
-                    <div class="sb-group-input">
-                      <input type="email" required>
-                      <span class="sb-bar"></span>
-                      <label>Email</label>
-                    </div>
-                  </div>
-                </div>
-                <div class="sb-mb-30">
-                  <h3>Informasi tambahan</h3>
-                </div>
-                <div class="sb-group-input">
-                  <textarea name="name" required></textarea>
-                  <span class="sb-bar"></span>
-                  <label>Catatan pesanan</label>
-                </div>
-                <div class="sb-mb-30">
-                  <h3 class="sb-mb-30">Metode pembayaran</h3>
-                  <ul>
-                    <li class="sb-radio">
-                      <input type="radio" id="option-1" name="selector" checked>
-                      <label for="option-1">Transfer bank</label>
-                      <div class="sb-check"></div>
-                    </li>
-                    <li class="sb-radio">
-                      <input type="radio" id="option-2" name="selector">
-                      <label for="option-2">Pembayaran cek</label>
-                      <div class="sb-check"></div>
-                    </li>
-                    <li class="sb-radio">
-                      <input type="radio" id="option-3" name="selector">
-                      <label for="option-3">Bayar di tempat</label>
-                      <div class="sb-check"></div>
-                    </li>
-                  </ul>
-                </div>
-                <!-- button -->
-                <button type="submit" class="sb-btn sb-m-0">
-                  <span class="sb-icon">
-                    <img src="../img/ui/icons/arrow.svg" alt="icon">
-                  </span>
-                  <span>Buat pesanan</span>
-                </button>
-                <!-- button end -->
-              </form>
-            </div>
-            <div class="col-lg-4">
-              <div class="sb-pad-type-2 sb-sticky" data-margin-top="120">
-                <div class="sb-co-cart-frame">
-                  <div class="sb-cart-table">
-                    <div class="sb-cart-table-header">
-                      <div class="row">
-                        <div class="col-8 col-lg-9">Produk</div>
-                        <div class="col-4 col-lg-3 text-right">Total</div>
+                  <div class="row">
+                    <div class="col-12 col-md-6">
+                      <div class="sb-group-input">
+                        <input type="text" required>
+                        <span class="sb-bar"></span>
+                        <label>Nama depan</label>
                       </div>
                     </div>
-                    <div class="sb-cart-item">
-                      <div class="row align-items-center">
-                        <div class="col-8 col-lg-9">
-                          <a class="sb-product" href="product.html">
-                            <div class="sb-cover-frame">
-                              <img src="../img/menu/1.jpg" alt="product">
-                            </div>
-                            <div class="sb-prod-description">
-                              <h4 class="sb-mb-10">Keju Goreng Madu</h4>
-                              <p class="sb-text sb-text-sm">x2</p>
-                            </div>
-                          </a>
-                        </div>
-                        <div class="col-4 col-lg-3 text-right">
-                          <div class="sb-price-2"><span>Total: </span>Rp 14.000</div>
-                        </div>
+                    <div class="col-12 col-md-6">
+                      <div class="sb-group-input">
+                        <input type="text" required>
+                        <span class="sb-bar"></span>
+                        <label>Nama belakang</label>
                       </div>
                     </div>
-                    <div class="sb-cart-item">
-                      <div class="row align-items-center">
-                        <div class="col-8 col-lg-9">
-                          <a class="sb-product" href="product.html">
-                            <div class="sb-cover-frame">
-                              <img src="../img/menu/2.jpg" alt="product">
-                            </div>
-                            <div class="sb-prod-description">
-                              <h4 class="sb-mb-10">Carpaccio Ikan</h4>
-                              <p class="sb-text sb-text-sm">x1</p>
-                            </div>
-                          </a>
-                        </div>
-                        <div class="col-4 col-lg-3 text-right">
-                          <div class="sb-price-2"><span>Total: </span>Rp 7.990</div>
-                        </div>
+                    <div class="col-12 col-md-6">
+                      <div class="sb-group-input">
+                        <input type="text" required>
+                        <span class="sb-bar"></span>
+                        <label>Nama perusahaan</label>
                       </div>
                     </div>
-                    <div class="sb-cart-item">
-                      <div class="row align-items-center">
-                        <div class="col-8 col-lg-9">
-                          <a class="sb-product" href="product.html">
-                            <div class="sb-cover-frame">
-                              <img src="../img/menu/3.jpg" alt="product">
-                            </div>
-                            <div class="sb-prod-description">
-                              <h4 class="sb-mb-10">Sup Telur</h4>
-                              <p class="sb-text sb-text-sm">x1</p>
-                            </div>
-                          </a>
-                        </div>
-                        <div class="col-4 col-lg-3 text-right">
-                          <div class="sb-price-2"><span>Total: </span>Rp 11.000</div>
-                        </div>
+                    <div class="col-12 col-md-6">
+                      <div class="sb-group-input">
+                        <input type="text" required>
+                        <span class="sb-bar"></span>
+                        <label>Negara</label>
                       </div>
                     </div>
-                    <div class="sb-cart-total sb-cart-total-2">
-                      <div class="sb-sum">
+                    <div class="col-12 col-md-6">
+                      <div class="sb-group-input">
+                        <input type="text" required>
+                        <span class="sb-bar"></span>
+                        <label>Kota</label>
+                      </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                      <div class="sb-group-input">
+                        <input type="text" required>
+                        <span class="sb-bar"></span>
+                        <label>Provinsi</label>
+                      </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                      <div class="sb-group-input">
+                        <input type="text" required>
+                        <span class="sb-bar"></span>
+                        <label>Jalan</label>
+                      </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                      <div class="sb-group-input">
+                        <input type="text" required>
+                        <span class="sb-bar"></span>
+                        <label>Kode pos</label>
+                      </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                      <div class="sb-group-input">
+                        <input type="tel" required>
+                        <span class="sb-bar"></span>
+                        <label>Telepon</label>
+                      </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                      <div class="sb-group-input">
+                        <input type="email" required>
+                        <span class="sb-bar"></span>
+                        <label>Email</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="sb-mb-30">
+                    <h3>Informasi tambahan</h3>
+                  </div>
+                  <div class="sb-group-input">
+                    <textarea name="name" required></textarea>
+                    <span class="sb-bar"></span>
+                    <label>Catatan pesanan</label>
+                  </div>
+                  <div class="sb-mb-30">
+                    <h3 class="sb-mb-30">Metode pembayaran</h3>
+                    <ul>
+                      <li class="sb-radio">
+                        <input type="radio" id="option-1" name="selector" checked>
+                        <label for="option-1">Transfer bank</label>
+                        <div class="sb-check"></div>
+                      </li>
+                      <li class="sb-radio">
+                        <input type="radio" id="option-2" name="selector">
+                        <label for="option-2">Pembayaran cek</label>
+                        <div class="sb-check"></div>
+                      </li>
+                      <li class="sb-radio">
+                        <input type="radio" id="option-3" name="selector">
+                        <label for="option-3">Bayar di tempat</label>
+                        <div class="sb-check"></div>
+                      </li>
+                    </ul>
+                  </div>
+                  <button type="submit" class="sb-btn sb-m-0">
+                    <span class="sb-icon">
+                      <img src="../img/ui/icons/arrow.svg" alt="icon">
+                    </span>
+                    <span>Buat pesanan</span>
+                  </button>
+                </form>
+              </div>
+
+              <div class="col-12 col-lg-4">
+                <div class="sb-pad-type-2">
+                  <div class="sb-co-cart-frame">
+                    <div class="sb-cart-table">
+                      <div class="sb-cart-table-header d-none d-lg-block">
                         <div class="row">
-                          <div class="col-6">
-                            <div class="sb-total-title">Subtotal:</div>
+                          <div class="col-8">Produk</div>
+                          <div class="col-4 text-right">Total</div>
+                        </div>
+                      </div>
+
+                      <div class="sb-cart-item">
+                        <div class="row align-items-center">
+                          <div class="col gk-co-product">
+                            <a class="sb-product" href="detail-product.html">
+                              <div class="sb-cover-frame">
+                                <img src="../img/menu/1.jpg" alt="Keju Goreng Madu">
+                              </div>
+                              <div class="sb-prod-description">
+                                <h4 class="sb-mb-10">Keju Goreng Madu</h4>
+                                <p class="sb-text sb-text-sm">x2</p>
+                              </div>
+                            </a>
                           </div>
-                          <div class="col-6">
-                            <div class="sb-price-1 text-right">Rp 32.990</div>
+                          <div class="col-auto gk-co-price">
+                            <div class="sb-price-2">Rp 14.000</div>
                           </div>
                         </div>
                       </div>
-                      <div class="sb-realy-sum">
-                        <div class="row">
-                          <div class="col-6">
-                            <div class="sb-total-title">Total:</div>
+
+                      <div class="sb-cart-item">
+                        <div class="row align-items-center">
+                          <div class="col gk-co-product">
+                            <a class="sb-product" href="detail-product.html">
+                              <div class="sb-cover-frame">
+                                <img src="../img/menu/2.jpg" alt="Carpaccio Ikan">
+                              </div>
+                              <div class="sb-prod-description">
+                                <h4 class="sb-mb-10">Carpaccio Ikan</h4>
+                                <p class="sb-text sb-text-sm">x1</p>
+                              </div>
+                            </a>
                           </div>
-                          <div class="col-6">
-                            <div class="sb-price-2 text-right">Rp 37.990</div>
+                          <div class="col-auto gk-co-price">
+                            <div class="sb-price-2">Rp 7.990</div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="sb-cart-item">
+                        <div class="row align-items-center">
+                          <div class="col gk-co-product">
+                            <a class="sb-product" href="detail-product.html">
+                              <div class="sb-cover-frame">
+                                <img src="../img/menu/3.jpg" alt="Sup Telur">
+                              </div>
+                              <div class="sb-prod-description">
+                                <h4 class="sb-mb-10">Sup Telur</h4>
+                                <p class="sb-text sb-text-sm">x1</p>
+                              </div>
+                            </a>
+                          </div>
+                          <div class="col-auto gk-co-price">
+                            <div class="sb-price-2">Rp 11.000</div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="sb-cart-total sb-cart-total-2">
+                        <div class="sb-sum">
+                          <div class="row">
+                            <div class="col-6">
+                              <div class="sb-total-title">Subtotal:</div>
+                            </div>
+                            <div class="col-6">
+                              <div class="sb-price-1 text-right">Rp 32.990</div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="sb-realy-sum">
+                          <div class="row">
+                            <div class="col-6">
+                              <div class="sb-total-title">Total:</div>
+                            </div>
+                            <div class="col-6">
+                              <div class="sb-price-2 text-right">Rp 37.990</div>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -282,65 +283,29 @@
               </div>
             </div>
           </div>
-        </div>
-      </section>
-      <!-- checkout end -->
+        </section>
+      </div>
+      <!-- dynamic content end -->
 
-</div>
-    <!-- dynamic content end -->
-
-      <!-- footer -->
       <footer class="gk-footer">
-        <div class="container">
-          <div class="sb-footer-frame">
-            <a href="beranda.html" class="sb-logo-frame">
-              <!-- logo img -->
-              <!-- <img src="../img/ui/logo.svg" alt="Starbelly"> -->
-            </a>
-            <ul class="sb-social">
-              <li><a href="#."><i class="fab fa-twitter"></i></a></li>
-              <li><a href="#."><i class="fab fa-instagram"></i></a></li>
-              <li><a href="#."><i class="fab fa-facebook-f"></i></a></li>
-              <li><a href="#."><i class="fab fa-youtube"></i></a></li>
-            </ul>
-            <div class="sb-copy">&copy; 2021 Go Kantin. Semua hak dilindungi.</div>
-          </div>
+        <div class="sb-footer-frame justify-content-center">
+          <div class="sb-copy">&copy; 2026 Go Kantin. Semua hak dilindungi.</div>
         </div>
       </footer>
-      <!-- footer end -->
-
-
     </div>
-    <!-- gk-main end -->
-
   </div>
-  <!-- app wrapper end -->
 
-  <!-- jquery js -->
-  <script data-cfasync="false" src="../cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="../js/plugins/jquery.min.js"></script>
-  <!-- smooth scroll js -->
+  <script src="../js/plugins/jquery.min.js"></script>
   <script src="../js/plugins/smooth-scroll.js"></script>
-  <!-- swup js -->
   <script src="../js/plugins/swup.min.js"></script>
-  <!-- swiper js -->
   <script src="../js/plugins/swiper.min.js"></script>
-  <!-- datepicker js -->
   <script src="../js/plugins/datepicker.js"></script>
-  <!-- isotope js -->
   <script src="../js/plugins/isotope.js"></script>
-  <!-- sticky -->
   <script src="../js/plugins/sticky.js"></script>
-  <!-- mapbox js -->
   <script src="../js/plugins/mapbox.min.js"></script>
-  <!-- fancybox js -->
   <script src="../js/plugins/fancybox.min.js"></script>
-  <!-- starbelly js -->
   <script src="../js/main.js"></script>
   <script src="../js/go-kantin.js"></script>
-
-<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"87b5aa28c49747bfbe230f832768f875","r":1,"spa":2}' crossorigin="anonymous"></script>
 </body>
-
-
 
 </html>

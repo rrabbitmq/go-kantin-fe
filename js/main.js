@@ -274,7 +274,7 @@ $(function() {
   });
   var swiper = new Swiper('.sb-short-menu-slider-4i', {
     slidesPerView: 4,
-    spaceBetween: 30,
+    spaceBetween: 18,
     parallax: true,
     speed: 1000,
     navigation: {
@@ -282,17 +282,23 @@ $(function() {
       nextEl: '.sb-short-menu-next',
     },
     breakpoints: {
+      1200: {
+        slidesPerView: 3,
+        spaceBetween: 16,
+      },
       992: {
         slidesPerView: 2,
+        spaceBetween: 14,
       },
       768: {
-        slidesPerView: 1,
+        slidesPerView: 1.15,
+        spaceBetween: 12,
       },
     },
   });
   var swiper = new Swiper('.sb-short-menu-slider-2-4i', {
     slidesPerView: 4,
-    spaceBetween: 30,
+    spaceBetween: 18,
     parallax: true,
     speed: 1000,
     navigation: {
@@ -300,11 +306,17 @@ $(function() {
       nextEl: '.sb-short-menu-next-2',
     },
     breakpoints: {
+      1200: {
+        slidesPerView: 3,
+        spaceBetween: 16,
+      },
       992: {
         slidesPerView: 2,
+        spaceBetween: 14,
       },
       768: {
-        slidesPerView: 1,
+        slidesPerView: 1.15,
+        spaceBetween: 12,
       },
     },
   });
@@ -592,7 +604,7 @@ $(function() {
     });
     var swiper = new Swiper('.sb-short-menu-slider-4i', {
       slidesPerView: 4,
-      spaceBetween: 30,
+      spaceBetween: 18,
       parallax: true,
       speed: 1000,
       navigation: {
@@ -600,17 +612,23 @@ $(function() {
         nextEl: '.sb-short-menu-next',
       },
       breakpoints: {
+        1200: {
+          slidesPerView: 3,
+          spaceBetween: 16,
+        },
         992: {
           slidesPerView: 2,
+          spaceBetween: 14,
         },
         768: {
-          slidesPerView: 1,
+          slidesPerView: 1.15,
+          spaceBetween: 12,
         },
       },
     });
     var swiper = new Swiper('.sb-short-menu-slider-2-4i', {
       slidesPerView: 4,
-      spaceBetween: 30,
+      spaceBetween: 18,
       parallax: true,
       speed: 1000,
       navigation: {
@@ -618,11 +636,17 @@ $(function() {
         nextEl: '.sb-short-menu-next-2',
       },
       breakpoints: {
+        1200: {
+          slidesPerView: 3,
+          spaceBetween: 16,
+        },
         992: {
           slidesPerView: 2,
+          spaceBetween: 14,
         },
         768: {
-          slidesPerView: 1,
+          slidesPerView: 1.15,
+          spaceBetween: 12,
         },
       },
     });

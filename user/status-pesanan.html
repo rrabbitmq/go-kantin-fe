@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="theme-color" content="#F5C332">
+  <link rel="shortcut icon" href="../img/ui/logo.ico" type="image/x-icon">
+  <link rel="stylesheet" href="../css/plugins/font-awesome.min.css">
+  <link rel="stylesheet" href="../css/plugins/bootstrap.min.css">
+  <link rel="stylesheet" href="../css/plugins/swiper.min.css">
+  <link rel="stylesheet" href="../css/plugins/datepicker.css">
+  <link href="../css/plugins/mapbox-style.css" rel="stylesheet">
+  <link rel="stylesheet" href="../css/plugins/fancybox.min.css">
+  <link rel="stylesheet" href="../css/style.css">
+  <title>Status Pesanan — Go Kantin</title>
+</head>
+
+<body>
+  <div class="sb-app gk-app">
+    <div class="sb-click-effect"></div>
+    <div class="sb-load"></div>
+
+    <aside class="gk-sidebar" aria-label="Menu utama">
+      <a href="beranda.html" class="gk-sidebar-brand">
+        <img src="../img/ui/logo.svg" alt="Go Kantin">
+        <span>Go Kantin</span>
+      </a>
+      <ul class="gk-sidebar-nav">
+        <li><a href="beranda.html"><i class="fas fa-home"></i><span>Beranda</span></a></li>
+        <li><a href="menu.html"><i class="fas fa-utensils"></i><span>Menu Kantin</span></a></li>
+        <li><a href="cart.html"><i class="fas fa-shopping-bag"></i><span>Keranjang</span><span class="gk-nav-badge">3</span></a></li>
+        <li><a href="#"><i class="fas fa-user"></i><span>Profil</span></a></li>
+        <li><a href="riwayat-pesanan.html" class="gk-active"><i class="fas fa-clock"></i><span>Riwayat Pesanan</span></a></li>
+      </ul>
+      <div class="gk-sidebar-footer">
+        <a href="#" class="gk-user-chip">
+          <div class="gk-user-avatar">F</div>
+          <div class="gk-user-meta">
+            <strong>Farhan</strong>
+            <span>ID 20241001</span>
+          </div>
+          <i class="fas fa-chevron-right" style="color:#6F6F87;font-size:12px;"></i>
+        </a>
+      </div>
+    </aside>
+    <div class="gk-sidebar-backdrop" aria-hidden="true"></div>
+
+    <div class="gk-main">
+      <header class="gk-topbar">
+        <div class="gk-topbar-left">
+          <button type="button" class="gk-menu-toggle" aria-label="Buka menu">
+            <i class="fas fa-bars"></i>
+          </button>
+        </div>
+        <div class="gk-topbar-right">
+          <a href="riwayat-pesanan.html" class="gk-topbar-link">Riwayat Pesanan</a>
+          <a href="#" class="gk-topbar-icon" aria-label="Notifikasi">
+            <i class="far fa-bell"></i>
+            <span class="gk-dot"></span>
+          </a>
+          <a href="#" class="gk-topbar-user">
+            <div class="gk-user-avatar">F</div>
+            <span>Farhan</span>
+          </a>
+        </div>
+      </header>
+
+      <div id="sb-dynamic-content" class="sb-transition-fade gk-content">
+        <section class="gk-page-head">
+          <h1>Status Pesanan</h1>
+          <p>Pantau proses pesanan dan informasi pengambilan kamu.</p>
+        </section>
+
+        <div class="gk-panel gk-order-hero">
+          <div class="gk-order-hero-left">
+            <span class="gk-label">Nomor Pesanan</span>
+            <strong class="gk-order-id">#ABC-123-XYZ</strong>
+            <span class="gk-badge gk-badge-warn">Sedang Diproses</span>
+          </div>
+          <div class="gk-order-eta-box">
+            <div class="gk-order-eta-icon"><i class="far fa-clock"></i></div>
+            <div>
+              <span class="gk-label">Estimasi Siap Ambil</span>
+              <strong>15 Menit lagi</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="gk-panel gk-stepper-card">
+          <h2>Proses Pembuatan</h2>
+          <ol class="gk-stepper">
+            <li class="gk-step gk-done">
+              <span class="gk-step-dot"><i class="fas fa-check"></i></span>
+              <span class="gk-step-title">Diterima</span>
+              <span class="gk-step-desc">Pesanan diterima</span>
+            </li>
+            <li class="gk-step gk-current">
+              <span class="gk-step-dot"><i class="fas fa-utensils"></i></span>
+              <span class="gk-step-title">Dibuat</span>
+              <span class="gk-step-desc">Sedang diproses</span>
+            </li>
+            <li class="gk-step">
+              <span class="gk-step-dot"><i class="fas fa-shopping-bag"></i></span>
+              <span class="gk-step-title">Siap Ambil</span>
+              <span class="gk-step-desc">Menunggu</span>
+            </li>
+            <li class="gk-step">
+              <span class="gk-step-dot"><i class="fas fa-check"></i></span>
+              <span class="gk-step-title">Selesai</span>
+              <span class="gk-step-desc">Menunggu</span>
+            </li>
+          </ol>
+        </div>
+
+        <div class="gk-status-grid">
+          <div class="gk-status-main">
+            <div class="gk-panel">
+              <div class="gk-panel-head">
+                <h2>Detail Item</h2>
+              </div>
+              <div class="gk-order-items">
+                <div class="gk-order-item">
+                  <div class="gk-order-item-thumb">
+                    <img src="../img/menu/1.jpg" alt="Oreo Soft Cake">
+                  </div>
+                  <div class="gk-order-item-body">
+                    <strong>Oreo Soft Cake</strong>
+                    <span>1 item</span>
+                  </div>
+                  <div class="gk-order-item-price">Rp3.000</div>
+                </div>
+                <div class="gk-order-item">
+                  <div class="gk-order-item-thumb">
+                    <img src="../img/menu/4.jpg" alt="Air Mineral">
+                  </div>
+                  <div class="gk-order-item-body">
+                    <strong>Air Mineral</strong>
+                    <span>2 item • satu dingin, satu biasa</span>
+                  </div>
+                  <div class="gk-order-item-price">Rp8.000</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="gk-panel">
+              <div class="gk-panel-head">
+                <h2>Metode Pengambilan</h2>
+              </div>
+              <div class="gk-pickup-row">
+                <div class="gk-pickup-icon"><i class="fas fa-store"></i></div>
+                <div class="gk-pickup-meta">
+                  <strong>Ambil di Kantin</strong>
+                  <span>Kantin JTI • Lantai 8</span>
+                </div>
+                <span class="gk-badge gk-badge-accent">Pengambilan</span>
+              </div>
+            </div>
+          </div>
+
+          <aside class="gk-panel gk-status-summary">
+            <div class="gk-panel-head">
+              <h2>Ringkasan Pesanan</h2>
+            </div>
+            <div class="gk-summary-line">
+              <span>2 menu • 3 item</span>
+              <span></span>
+            </div>
+            <div class="gk-summary-line">
+              <span>Subtotal</span>
+              <span>Rp11.000</span>
+            </div>
+            <div class="gk-summary-total gk-summary-total-accent">
+              <span>Total Pembayaran</span>
+              <span>Rp11.000</span>
+            </div>
+            <a href="riwayat-pesanan.html" class="gk-btn-primary">Lihat Riwayat Pesanan</a>
+            <div class="gk-summary-foot">
+              <i class="fas fa-map-marker-alt"></i>
+              <span>Ambil di Kantin JTI • Lantai 8</span>
+            </div>
+          </aside>
+        </div>
+      </div>
+
+      <footer class="gk-footer">
+        <div class="sb-footer-frame justify-content-center">
+          <div class="sb-copy">&copy; 2026 Go Kantin. Semua hak dilindungi.</div>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <script src="../js/plugins/jquery.min.js"></script>
+  <script src="../js/plugins/smooth-scroll.js"></script>
+  <script src="../js/plugins/swup.min.js"></script>
+  <script src="../js/plugins/swiper.min.js"></script>
+  <script src="../js/plugins/datepicker.js"></script>
+  <script src="../js/plugins/isotope.js"></script>
+  <script src="../js/plugins/sticky.js"></script>
+  <script src="../js/plugins/mapbox.min.js"></script>
+  <script src="../js/plugins/fancybox.min.js"></script>
+  <script src="../js/main.js"></script>
+  <script src="../js/go-kantin.js"></script>
+</body>
+
+</html>

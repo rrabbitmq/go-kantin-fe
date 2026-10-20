@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="theme-color" content="#F5C332">
+  <link rel="shortcut icon" href="../img/ui/logo.ico" type="image/x-icon">
+  <link rel="stylesheet" href="../css/plugins/font-awesome.min.css">
+  <link rel="stylesheet" href="../css/plugins/bootstrap.min.css">
+  <link rel="stylesheet" href="../css/plugins/swiper.min.css">
+  <link rel="stylesheet" href="../css/plugins/datepicker.css">
+  <link href="../css/plugins/mapbox-style.css" rel="stylesheet">
+  <link rel="stylesheet" href="../css/plugins/fancybox.min.css">
+  <link rel="stylesheet" href="../css/style.css">
+  <title>Riwayat Pesanan — Go Kantin</title>
+</head>
+
+<body>
+  <div class="sb-app gk-app">
+    <div class="sb-click-effect"></div>
+    <div class="sb-load"></div>
+
+    <aside class="gk-sidebar" aria-label="Menu utama">
+      <a href="beranda.html" class="gk-sidebar-brand">
+        <img src="../img/ui/logo.svg" alt="Go Kantin">
+        <span>Go Kantin</span>
+      </a>
+      <ul class="gk-sidebar-nav">
+        <li><a href="beranda.html"><i class="fas fa-home"></i><span>Beranda</span></a></li>
+        <li><a href="menu.html"><i class="fas fa-utensils"></i><span>Menu Kantin</span></a></li>
+        <li><a href="cart.html"><i class="fas fa-shopping-bag"></i><span>Keranjang</span><span class="gk-nav-badge">3</span></a></li>
+        <li><a href="#"><i class="fas fa-user"></i><span>Profil</span></a></li>
+        <li><a href="riwayat-pesanan.html" class="gk-active"><i class="fas fa-clock"></i><span>Riwayat Pesanan</span></a></li>
+      </ul>
+      <div class="gk-sidebar-footer">
+        <a href="#" class="gk-user-chip">
+          <div class="gk-user-avatar">F</div>
+          <div class="gk-user-meta">
+            <strong>Farhan</strong>
+            <span>ID 20241001</span>
+          </div>
+          <i class="fas fa-chevron-right" style="color:#6F6F87;font-size:12px;"></i>
+        </a>
+      </div>
+    </aside>
+    <div class="gk-sidebar-backdrop" aria-hidden="true"></div>
+
+    <div class="gk-main">
+      <header class="gk-topbar">
+        <div class="gk-topbar-left">
+          <button type="button" class="gk-menu-toggle" aria-label="Buka menu">
+            <i class="fas fa-bars"></i>
+          </button>
+        </div>
+        <div class="gk-topbar-right">
+          <a href="riwayat-pesanan.html" class="gk-topbar-link">Riwayat Pesanan</a>
+          <a href="#" class="gk-topbar-icon" aria-label="Notifikasi">
+            <i class="far fa-bell"></i>
+            <span class="gk-dot"></span>
+          </a>
+          <a href="#" class="gk-topbar-user">
+            <div class="gk-user-avatar">F</div>
+            <span>Farhan</span>
+          </a>
+        </div>
+      </header>
+
+      <div id="sb-dynamic-content" class="sb-transition-fade gk-content">
+        <section class="gk-page-head">
+          <h1>Riwayat Pesanan</h1>
+          <p>Lihat pesanan aktif dan riwayat pengambilan kamu di kantin.</p>
+        </section>
+
+        <div class="gk-history-filters">
+          <button type="button" class="gk-chip gk-active">Semua</button>
+          <button type="button" class="gk-chip">Diproses</button>
+          <button type="button" class="gk-chip">Siap Ambil</button>
+          <button type="button" class="gk-chip">Selesai</button>
+        </div>
+
+        <div class="gk-history-list">
+          <article class="gk-panel gk-history-card">
+            <div class="gk-history-card-top">
+              <div>
+                <span class="gk-label">Nomor Pesanan</span>
+                <strong class="gk-order-id gk-order-id-sm">#ABC-123-XYZ</strong>
+              </div>
+              <span class="gk-badge gk-badge-warn">Sedang Diproses</span>
+            </div>
+            <div class="gk-history-card-meta">
+              <span><i class="far fa-calendar"></i> 20 Okt 2026 • 11:42</span>
+              <span><i class="fas fa-utensils"></i> 2 menu • 3 item</span>
+            </div>
+            <div class="gk-history-thumbs">
+              <img src="../img/menu/1.jpg" alt="">
+              <img src="../img/menu/4.jpg" alt="">
+            </div>
+            <div class="gk-history-card-foot">
+              <div>
+                <span class="gk-label">Total Pembayaran</span>
+                <strong class="gk-history-total">Rp11.000</strong>
+              </div>
+              <a href="status-pesanan.html" class="gk-btn-primary gk-btn-inline">Lihat Status</a>
+            </div>
+          </article>
+
+          <article class="gk-panel gk-history-card">
+            <div class="gk-history-card-top">
+              <div>
+                <span class="gk-label">Nomor Pesanan</span>
+                <strong class="gk-order-id gk-order-id-sm">#GK-884-21A</strong>
+              </div>
+              <span class="gk-badge gk-badge-ready">Siap Ambil</span>
+            </div>
+            <div class="gk-history-card-meta">
+              <span><i class="far fa-calendar"></i> 20 Okt 2026 • 10:15</span>
+              <span><i class="fas fa-utensils"></i> 1 menu • 1 item</span>
+            </div>
+            <div class="gk-history-thumbs">
+              <img src="../img/menu/2.jpg" alt="">
+            </div>
+            <div class="gk-history-card-foot">
+              <div>
+                <span class="gk-label">Total Pembayaran</span>
+                <strong class="gk-history-total">Rp9.000</strong>
+              </div>
+              <a href="status-pesanan.html" class="gk-btn-primary gk-btn-inline">Lihat Status</a>
+            </div>
+          </article>
+
+          <article class="gk-panel gk-history-card">
+            <div class="gk-history-card-top">
+              <div>
+                <span class="gk-label">Nomor Pesanan</span>
+                <strong class="gk-order-id gk-order-id-sm">#GK-771-09C</strong>
+              </div>
+              <span class="gk-badge gk-badge-done">Selesai</span>
+            </div>
+            <div class="gk-history-card-meta">
+              <span><i class="far fa-calendar"></i> 19 Okt 2026 • 12:08</span>
+              <span><i class="fas fa-utensils"></i> 3 menu • 4 item</span>
+            </div>
+            <div class="gk-history-thumbs">
+              <img src="../img/menu/3.jpg" alt="">
+              <img src="../img/menu/5.jpg" alt="">
+              <img src="../img/menu/6.jpg" alt="">
+            </div>
+            <div class="gk-history-card-foot">
+              <div>
+                <span class="gk-label">Total Pembayaran</span>
+                <strong class="gk-history-total">Rp29.000</strong>
+              </div>
+              <a href="status-pesanan.html" class="gk-btn-ghost gk-btn-inline">Lihat Detail</a>
+            </div>
+          </article>
+
+          <article class="gk-panel gk-history-card">
+            <div class="gk-history-card-top">
+              <div>
+                <span class="gk-label">Nomor Pesanan</span>
+                <strong class="gk-order-id gk-order-id-sm">#GK-650-44B</strong>
+              </div>
+              <span class="gk-badge gk-badge-done">Selesai</span>
+            </div>
+            <div class="gk-history-card-meta">
+              <span><i class="far fa-calendar"></i> 18 Okt 2026 • 13:30</span>
+              <span><i class="fas fa-utensils"></i> 1 menu • 2 item</span>
+            </div>
+            <div class="gk-history-thumbs">
+              <img src="../img/menu/4.jpg" alt="">
+            </div>
+            <div class="gk-history-card-foot">
+              <div>
+                <span class="gk-label">Total Pembayaran</span>
+                <strong class="gk-history-total">Rp8.000</strong>
+              </div>
+              <a href="status-pesanan.html" class="gk-btn-ghost gk-btn-inline">Lihat Detail</a>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <footer class="gk-footer">
+        <div class="sb-footer-frame justify-content-center">
+          <div class="sb-copy">&copy; 2026 Go Kantin. Semua hak dilindungi.</div>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <script src="../js/plugins/jquery.min.js"></script>
+  <script src="../js/plugins/smooth-scroll.js"></script>
+  <script src="../js/plugins/swup.min.js"></script>
+  <script src="../js/plugins/swiper.min.js"></script>
+  <script src="../js/plugins/datepicker.js"></script>
+  <script src="../js/plugins/isotope.js"></script>
+  <script src="../js/plugins/sticky.js"></script>
+  <script src="../js/plugins/mapbox.min.js"></script>
+  <script src="../js/plugins/fancybox.min.js"></script>
+  <script src="../js/main.js"></script>
+  <script src="../js/go-kantin.js"></script>
+</body>
+
+</html>

@@ -478,6 +478,21 @@
   text-decoration: none;
   color: var(--gk-text);
   transition: box-shadow 0.2s ease, transform 0.2s ease;
+  height: 100%;
+  width: 100%;
+}
+
+/* Masonry / swiper: use same card as beranda */
+.sb-masonry-grid .gk-product-card {
+  margin-bottom: 0;
+}
+
+.sb-masonry-grid .sb-grid-item {
+  margin-bottom: 18px;
+}
+
+.swiper-slide .gk-product-card {
+  height: auto;
 }
 
 .gk-product-card:hover {

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zxx">
+<html lang="id">
 
 
 
@@ -17,12 +17,13 @@
   <link href="../css/plugins/mapbox-style.css" rel='stylesheet'>
   <link rel="stylesheet" href="../css/plugins/fancybox.min.css">
   <link rel="stylesheet" href="../css/style.css">
-  <title>Starbelly</title>
+  <link rel="stylesheet" href="../css/go-kantin.css">
+  <title>Detail Produk - Go Kantin</title>
 </head>
 
 <body>
   <!-- app wrapper -->
-  <div class="sb-app">
+  <div class="sb-app gk-app">
     <!-- preloader -->
     <!-- <div class="sb-preloader">
       <div class="sb-preloader-bg"></div>
@@ -36,225 +37,60 @@
     <!-- loader -->
     <div class="sb-load"></div>
     <!-- top bar -->
-    <div class="sb-top-bar-frame">
-      <div class="sb-top-bar-bg"></div>
-      <div class="container">
-        <div class="sb-top-bar">
-          <a href="home-1.html" class="sb-logo-frame">
-            <!-- logo img -->
-            <!-- <img src="../img/ui/logo.svg" alt="Starbelly"> -->
-          </a>
-          <!-- menu -->
-          <div class="sb-right-side">
-            <nav id="sb-dynamic-menu" class="sb-menu-transition">
-              <ul class="sb-navigation">
-                <li class="sb-has-children">
-                  <a href="home-1.html">Home</a>
-                  <ul>
-                    <li><a href="home-1.html">Type 1</a></li>
-                    <li><a href="home-2.html">Type 2</a></li>
-                  </ul>
-                </li>
-                <li class="sb-has-children">
-                  <a href="about-1.html">Pages</a>
-                  <ul>
-                    <li><a href="about-1.html">About 1</a></li>
-                    <li><a href="about-2.html">About 2</a></li>
-                    <li><a href="blog-1.html">Blog style 1</a></li>
-                    <li><a href="blog-2.html">Blog style 2</a></li>
-                    <li><a href="blog-3.html">Blog style 3</a></li>
-                    <li><a href="publication-1.html">Publication 1</a></li>
-                    <li><a href="publication-2.html">Publication 2</a></li>
-                    <li><a href="publication-3.html">Publication 3</a></li>
-                    <li><a href="gallery.html">Gallery</a></li>
-                    <li><a href="gallery-2.html">Gallery 2</a></li>
-                    <li><a href="reviews.html">Reviews</a></li>
-                    <li><a href="reservation.html">Reservation</a></li>
-                    <li><a href="faq.html">FAQ</a></li>
-                    <li><a href="404.html">404</a></li>
-                  </ul>
-                </li>
-                <li class="sb-has-children">
-                  <a href="menu-1.html">Menu</a>
-                  <ul>
-                    <li><a href="menu-1.html">Menu style 1</a></li>
-                    <li><a href="menu-2.html">Menu style 2</a></li>
-                    <li><a href="menu-3.html">Menu style 3</a></li>
-                    <li><a href="menu-4.html">Menu style 4</a></li>
-                    <li><a href="menu-5.html">Menu style 5</a></li>
-                    <li><a href="menu-6.html">Menu style 6</a></li>
-                  </ul>
-                </li>
-                <li class="sb-active sb-has-children">
-                  <a href="shop-1.html">Shop</a>
-                  <ul>
-                    <li><a href="shop-1.html">Shop style 1</a></li>
-                    <li><a href="shop-2.html">Shop style 2</a></li>
-                    <li><a href="shop-list-1.html">Shop list 1</a></li>
-                    <li><a href="shop-list-2.html">Shop list 2</a></li>
-                    <li><a href="shop-list-1.html">Product page</a></li>
-                    <li><a href="cart.html">Cart</a></li>
-                    <li><a href="checkout.html">Checkout</a></li>
-                  </ul>
-                </li>
-                <li>
-                  <a href="contact.html">Contact</a>
-                </li>
-              </ul>
-            </nav>
-            <div class="sb-buttons-frame">
-              <!-- button -->
-              <div class="sb-btn sb-btn-2 sb-btn-gray sb-btn-icon sb-m-0 sb-btn-cart">
-                <span class="sb-icon">
-                  <img src="../img/ui/icons/cart.svg" alt="icon">
-                </span>
-                <i class="sb-cart-number">5</i>
-              </div>
-              <!-- button end -->
-              <!-- menu btn -->
-              <div class="sb-menu-btn"><span></span></div>
-              <!-- info btn -->
-              <div class="sb-info-btn"><span></span></div>
-            </div>
-          </div>
+    <!-- Go Kantin shell -->
+    <aside class="gk-sidebar" aria-label="Menu utama">
+      <a href="beranda.html" class="gk-sidebar-brand">
+        <img src="../img/ui/logo.svg" alt="Go Kantin">
+        <span>Go Kantin</span>
+      </a>
+      <ul class="gk-sidebar-nav">
+        <li><a href="beranda.html"><i class="fas fa-home"></i><span>Beranda</span></a></li>
+        <li><a href="menu.html" class="gk-active"><i class="fas fa-utensils"></i><span>Menu Kantin</span></a></li>
+        <li><a href="cart.html"><i class="fas fa-shopping-bag"></i><span>Keranjang</span><span class="gk-nav-badge">3</span></a></li>
+        <li><a href="#"><i class="fas fa-user"></i><span>Profil</span></a></li>
+        <li><a href="#"><i class="fas fa-clock"></i><span>Riwayat Pesanan</span></a></li>
+      </ul>
+      <div class="gk-sidebar-footer">
+        <div class="gk-loc-card">
+          <i class="fas fa-map-marker-alt"></i>
+          <span>Kantin JTI, Lantai 8</span>
         </div>
+        <a href="#" class="gk-user-chip">
+          <div class="gk-user-avatar">F</div>
+          <div class="gk-user-meta">
+            <strong>Farhan</strong>
+            <span>ID 20241001</span>
+          </div>
+          <i class="fas fa-chevron-right" style="color:#6F6F87;font-size:12px;"></i>
+        </a>
       </div>
-      <!-- info bar -->
-      <div class="sb-info-bar">
-        <div class="sb-infobar-content">
-          <div class="sb-ib-title-frame sb-mb-30">
-            <h4>Contact</h4><i class="fas fa-arrow-down"></i>
+    </aside>
+    <div class="gk-sidebar-backdrop" aria-hidden="true"></div>
+    <div class="gk-main">
+      <header class="gk-topbar">
+        <div class="gk-topbar-left">
+          <button type="button" class="gk-menu-toggle" aria-label="Buka menu">
+            <i class="fas fa-bars"></i>
+          </button>
+          <div class="gk-topbar-loc">
+            <i class="fas fa-map-marker-alt"></i>
+            <span>Kantin JTI • Lantai 8</span>
           </div>
-          <ul class="sb-list sb-mb-30">
-            <li><b>Address:</b><span>Montréal, 1510 Rue Sauvé</span></li>
-            <li><b>Working hours:</b><span>09:00 - 23:00</span></li>
-            <li><b>Phone:</b><span>+02 (044) 756-X6-52</span></li>
-            <li><b>Email:</b><span><a href="https://miller.bslthemes.com/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="e29196839080878e8e9ba28f838b8ecc818d8f">[email&#160;protected]</a></span></li>
-          </ul>
-          <div class="sb-ib-title-frame sb-mb-30">
-            <h4>Instagram</h4><i class="fas fa-arrow-down"></i>
-          </div>
-          <ul class="sb-instagram sb-mb-30">
-            <li><a href="#."><img src="../img/instagram/1.jpg" alt="instagram"></a></li>
-            <li><a href="#."><img src="../img/instagram/2.jpg" alt="instagram"></a></li>
-            <li><a href="#."><img src="../img/instagram/3.jpg" alt="instagram"></a></li>
-            <li><a href="#."><img src="../img/instagram/4.jpg" alt="instagram"></a></li>
-            <li><a href="#."><img src="../img/instagram/5.jpg" alt="instagram"></a></li>
-            <li><a href="#."><img src="../img/instagram/6.jpg" alt="instagram"></a></li>
-          </ul>
-          <hr>
-          <div class="sb-ib-title-frame sb-mb-30">
-            <h4>Latest publications</h4><i class="fas fa-arrow-down"></i>
-          </div>
-          <a href="publication-1.html" class="sb-blog-card sb-blog-card-sm sb-mb-30">
-            <div class="sb-cover-frame">
-              <img src="../img/blog/1.jpg" alt="cover">
-            </div>
-            <div class="sb-blog-card-descr">
-              <h5 class="sb-mb-5">Simple Homemade Tomato Soup</h5>
-              <p class="sb-text sb-text-sm">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Libero optio, sed expedita.</p>
-            </div>
+        </div>
+        <div class="gk-topbar-right">
+          <a href="#" class="gk-topbar-link">Riwayat Pesanan</a>
+          <a href="#" class="gk-topbar-icon" aria-label="Notifikasi">
+            <i class="far fa-bell"></i>
+            <span class="gk-dot"></span>
           </a>
-          <a href="publication-1.html" class="sb-blog-card sb-blog-card-sm sb-mb-30">
-            <div class="sb-cover-frame">
-              <img src="../img/blog/2.jpg" alt="cover">
-            </div>
-            <div class="sb-blog-card-descr">
-              <h5 class="sb-mb-5">Thai Coconut Soup with Tofu and Rice</h5>
-              <p class="sb-text sb-text-sm">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Libero optio, sed expedita.</p>
-            </div>
-          </a>
-          <a href="publication-1.html" class="sb-blog-card sb-blog-card-sm sb-mb-30">
-            <div class="sb-cover-frame">
-              <img src="../img/blog/3.jpg" alt="cover">
-            </div>
-            <div class="sb-blog-card-descr">
-              <h5 class="sb-mb-5">21 Things You Should Absolutely Be Buying at ALDI</h5>
-              <p class="sb-text sb-text-sm">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Libero optio, sed expedita.</p>
-            </div>
+          <a href="#" class="gk-topbar-user">
+            <div class="gk-user-avatar">F</div>
+            <span>Farhan</span>
           </a>
         </div>
-        <div class="sb-info-bar-footer">
-          <ul class="sb-social">
-            <li><a href="#."><i class="fab fa-twitter"></i></a></li>
-            <li><a href="#."><i class="fab fa-instagram"></i></a></li>
-            <li><a href="#."><i class="fab fa-facebook-f"></i></a></li>
-            <li><a href="#."><i class="fab fa-youtube"></i></a></li>
-          </ul>
-        </div>
-      </div>
-      <!-- info bar end -->
-      <!-- minicart -->
-      <div class="sb-minicart">
-        <div class="sb-minicart-content">
-          <div class="sb-ib-title-frame sb-mb-30">
-            <h4>Your order.</h4><i class="fas fa-arrow-down"></i>
-          </div>
-          <a href="shop-list-1.html" class="sb-menu-item sb-menu-item-sm sb-mb-15">
-            <div class="sb-cover-frame">
-              <img src="../img/menu/4.jpg" alt="product">
-            </div>
-            <div class="sb-card-tp">
-              <h4 class="sb-card-title">Saumon Gravlax</h4>
-              <div class="sb-price"><sub>$</sub> 9</div>
-            </div>
-          </a>
-          <a href="shop-list-1.html" class="sb-menu-item sb-menu-item-sm sb-mb-15">
-            <div class="sb-cover-frame">
-              <img src="../img/menu/1.jpg" alt="product">
-            </div>
-            <div class="sb-card-tp">
-              <h4 class="sb-card-title">Chevrefrit au miel</h4>
-              <div class="sb-price"><sub>$</sub> 14</div>
-            </div>
-          </a>
-          <a href="shop-list-1.html" class="sb-menu-item sb-menu-item-sm sb-mb-15">
-            <div class="sb-cover-frame">
-              <img src="../img/menu/2.jpg" alt="product">
-            </div>
-            <div class="sb-card-tp">
-              <h4 class="sb-card-title">Croustillant de poisson</h4>
-              <div class="sb-price"><sub>$</sub> 4</div>
-            </div>
-          </a>
-          <a href="shop-list-1.html" class="sb-menu-item sb-menu-item-sm sb-mb-15">
-            <div class="sb-cover-frame">
-              <img src="../img/menu/3.jpg" alt="product">
-            </div>
-            <div class="sb-card-tp">
-              <h4 class="sb-card-title">Stracciatella</h4>
-              <div class="sb-price"><sub>$</sub> 11</div>
-            </div>
-          </a>
-          <a href="shop-list-1.html" class="sb-menu-item sb-menu-item-sm sb-mb-15">
-            <div class="sb-cover-frame">
-              <img src="../img/menu/5.jpg" alt="product">
-            </div>
-            <div class="sb-card-tp">
-              <h4 class="sb-card-title">Carpaccio de daurade</h4>
-              <div class="sb-price"><sub>$</sub> 19</div>
-            </div>
-          </a>
-        </div>
-        <div class="sb-minicart-footer">
-          <!-- button -->
-          <a href="cart.html" class="sb-btn sb-btn-gray sb-btn-text">
-            <span>View order</span>
-          </a>
-          <!-- button end -->
-          <!-- button -->
-          <a href="checkout.html" class="sb-btn sb-btn-text">
-            <span>Checkout</span>
-          </a>
-          <!-- button end -->
-        </div>
-      </div>
-      <!-- minicart end -->
-    </div>
-    <!-- top bar end -->
-
-    <!-- dynamic content -->
-    <div id="sb-dynamic-content" class="sb-transition-fade">
+      </header>
+<!-- dynamic content -->
+    <div id="sb-dynamic-content" class="sb-transition-fade gk-content">
 
       <!-- banner -->
       <section class="sb-banner sb-banner-xs sb-banner-color">
@@ -264,11 +100,11 @@
               <!-- main title -->
               <div class="sb-main-title-frame">
                 <div class="sb-main-title">
-                  <h1 class="sb-h2">Online shop</h1>
+                  <h1 class="sb-h2">Detail produk</h1>
                   <ul class="sb-breadcrumbs">
-                    <li><a href="home-1.html">Home</a></li>
-                    <li><a href="shop-1.html">Shop</a></li>
-                    <li><a href="#.">Product</a></li>
+                    <li><a href="beranda.html">Beranda</a></li>
+                    <li><a href="shop-1.html">Katalog</a></li>
+                    <li><a href="#.">Produk</a></li>
                   </ul>
                 </div>
               </div>
@@ -286,7 +122,7 @@
             <div class="col-lg-6">
               <div class="sb-gallery-item sb-gallery-square sb-mb-90">
                 <img src="../img/menu/4.jpg" alt="photo">
-                <div class="sb-badge sb-vegan"><i class="fas fa-leaf"></i> Vegan</div>
+                <div class="sb-badge sb-vegan"><i class="fas fa-leaf"></i> Nabati</div>
                 <!-- button -->
                 <a data-fancybox="menu" data-no-swup href="../img/menu/4.jpg" class="sb-btn sb-btn-2 sb-btn-icon sb-btn-gray sb-zoom">
                   <span class="sb-icon">
@@ -299,8 +135,8 @@
             <div class="col-lg-6">
               <div class="sb-product-description sb-mb-90">
                 <div class="sb-price-frame sb-mb-30">
-                  <h3>Saumon Gravlax</h3>
-                  <div class="sb-price"><sub>$</sub> 19</div>
+                  <h3>Salmon Asap</h3>
+                  <div class="sb-price"><sub>Rp</sub> 19.000</div>
                 </div>
                 <ul class="sb-stars sb-mb-25">
                   <li><i class="fas fa-star"></i></li>
@@ -308,16 +144,16 @@
                   <li><i class="fas fa-star"></i></li>
                   <li><i class="fas fa-star"></i></li>
                   <li><i class="fas fa-star"></i></li>
-                  <li><span>(4 ratings)</span></li>
+                  <li><span>(4 penilaian)</span></li>
                 </ul>
-                <p class="sb-text sb-mb-30"><span>tomatoes</span>, <span>nori</span>, <span>feta cheese</span>, <span>mushrooms</span>, <span>rice noodles</span>, <span>corn</span>, <span>shrimp</span>.</p>
+                <p class="sb-text sb-mb-30"><span>tomat</span>, <span>nori</span>, <span>keju feta</span>, <span>jamur</span>, <span>bihun</span>, <span>jagung</span>, <span>udang</span>.</p>
                 <div class="row">
                   <div class="col-lg-4">
                     <div class="sb-features-item sb-features-item-sm sb-mb-30">
                       <div class="sb-number">01</div>
                       <div class="sb-feature-text">
-                        <h4 class="sb-mb-15">Add to the cart and place an order</h4>
-                        <p class="sb-text sb-text-sm">Porro comirton pera nemo veniam</p>
+                        <h4 class="sb-mb-15">Tambahkan ke keranjang dan buat pesanan</h4>
+                        <p class="sb-text sb-text-sm">Pilih menu favorit Anda dengan mudah</p>
                       </div>
                     </div>
                   </div>
@@ -325,8 +161,8 @@
                     <div class="sb-features-item sb-features-item-sm sb-mb-30">
                       <div class="sb-number">02</div>
                       <div class="sb-feature-text">
-                        <h4 class="sb-mb-15">Enter your phone number and address</h4>
-                        <p class="sb-text sb-text-sm">Eligendi adipisci numquam.</p>
+                        <h4 class="sb-mb-15">Masukkan nomor telepon dan alamat</h4>
+                        <p class="sb-text sb-text-sm">Lengkapi data agar pesanan terkirim</p>
                       </div>
                     </div>
                   </div>
@@ -334,8 +170,8 @@
                     <div class="sb-features-item sb-features-item-sm sb-mb-30">
                       <div class="sb-number">03</div>
                       <div class="sb-feature-text">
-                        <h4 class="sb-mb-15">Enjoy your favorite food at home!</h4>
-                        <p class="sb-text sb-text-sm">Nnecessitatibus praesentium</p>
+                        <h4 class="sb-mb-15">Nikmati makanan favorit Anda!</h4>
+                        <p class="sb-text sb-text-sm">Pesanan siap dinikmati dengan lezat</p>
                       </div>
                     </div>
                   </div>
@@ -351,8 +187,8 @@
                     <span class="sb-icon">
                       <img src="../img/ui/icons/cart.svg" alt="icon">
                     </span>
-                    <span class="sb-add-to-cart-text">Add to cart</span>
-                    <span class="sb-added-text">Added</span>
+                    <span class="sb-add-to-cart-text">Tambahkan</span>
+                    <span class="sb-added-text">Ditambahkan</span>
                   </a>
                   <!-- button end -->
                 </div>
@@ -361,9 +197,9 @@
           </div>
           <!-- filter -->
           <div class="sb-filter">
-            <a href="#." data-filter=".sb-ingredients-tab" class="sb-filter-link sb-active">Ingredients</a>
-            <a href="#." data-filter=".sb-details-tab" class="sb-filter-link">Product details</a>
-            <a href="#." data-filter=".sb-reviews-tab" class="sb-filter-link">Reviews</a>
+            <a href="#." data-filter=".sb-ingredients-tab" class="sb-filter-link sb-active">Bahan</a>
+            <a href="#." data-filter=".sb-details-tab" class="sb-filter-link">Detail produk</a>
+            <a href="#." data-filter=".sb-reviews-tab" class="sb-filter-link">Ulasan</a>
           </div>
           <!-- filter end -->
           <div class="sb-masonry-grid sb-tabs">
@@ -371,25 +207,21 @@
             <div class="sb-grid-item sb-ingredients-tab">
               <div class="sb-tab">
                 <ul class="sb-list">
-                  <li><b>Numquam</b><span>1 pack</span></li>
-                  <li><b>Cupiditate</b><span>150g</span></li>
-                  <li><b>Adipisicing</b><span>500g</span></li>
-                  <li><b>Dolorem obcaecati</b><span>3 Teaspoon</span></li>
-                  <li><b>Porro</b><span>2 pack</span></li>
-                  <li><b>Facilis</b><span>1kg</span></li>
-                  <li><b>Goluptatem</b><span>1 Teaspoon</span></li>
-                  <li><b>Vel fuga</b><span>300g</span></li>
+                  <li><b>Salmon</b><span>1 potong</span></li>
+                  <li><b>Tomat</b><span>150g</span></li>
+                  <li><b>Nori</b><span>500g</span></li>
+                  <li><b>Keju feta</b><span>3 sdt</span></li>
+                  <li><b>Jamur</b><span>2 bungkus</span></li>
+                  <li><b>Bihun</b><span>1kg</span></li>
+                  <li><b>Jagung</b><span>1 sdt</span></li>
+                  <li><b>Udang</b><span>300g</span></li>
                 </ul>
               </div>
             </div>
             <div class="sb-grid-item sb-details-tab" style="position: absolute">
               <div class="sb-tab">
-                <p class="sb-text sb-mb-15">Facilis ratione veritatis asperiores doloremque molestiae delectus iure officia earum dolores sit fugiat, repellendus, neque laboriosam optio culpa quibusdam, magnam totam quos. Mollitia dolorem, culpa,
-                  dignissimos
-                  quas et voluptates architecto in sit totam, quae animi ratione adipisci nulla ab quasi perferendis quo pariatur dolor magnam inventore. Sequi nisi ex excepturi non harum, asperiores laboriosam ipsum voluptate doloribus incidunt nam
-                  eveniet similique unde esse voluptatem minus necessitatibus eaque temporibus quaerat accusantium amet deserunt. Iste, facilis? Illo tenetur, libero, non dicta asperiores quisquam voluptas natus aperiam, at perspiciatis repellat
-                  voluptate. Autem non reprehenderit, perferendis.</p>
-                <div class="sb-text">Consectetur adipisicing elit. Delectus quibusdam repellendus nesciunt cumque fugit numquam adipisci voluptatum quam, sapiente doloribus ut eaque natus laudantium alias illum quos maiores, quia perferendis.</div>
+                <p class="sb-text sb-mb-15">Salmon asap segar dengan perpaduan tomat, nori, keju feta, jamur, bihun, jagung, dan udang. Disajikan dengan porsi pas untuk makan siang atau camilan di kantin. Bahan dipilih berkualitas agar rasa tetap nikmat setiap hari.</p>
+                <div class="sb-text">Cocok dipesan bersama minuman atau snack favorit Anda. Simpan di tempat sejuk jika tidak langsung dikonsumsi.</div>
               </div>
             </div>
             <div class="sb-grid-item sb-reviews-tab" style="position: absolute">
@@ -398,7 +230,7 @@
                   <div class="col-lg-6">
                     <div class="sb-review-card sb-mb-60">
                       <div class="sb-review-header sb-mb-15">
-                        <h4 class="sb-mb-10">Very tasty</h4>
+                        <h4 class="sb-mb-10">Sangat enak</h4>
                         <ul class="sb-stars">
                           <li><i class="fas fa-star"></i></li>
                           <li><i class="fas fa-star"></i></li>
@@ -407,8 +239,7 @@
                           <li><i class="fas fa-star"></i></li>
                         </ul>
                       </div>
-                      <p class="sb-text sb-mb-15">Inventore possimus laudantium provident, rem eligendi velit. Aut molestias, ipsa itaque laborum, natus
-                        tempora, ut soluta animi ducimus dignissimos deserunt doloribus in reprehenderit rem accusamus! Quibusdam labore, aliquam dolor harum!</p>
+                      <p class="sb-text sb-mb-15">Rasanya pas, porsinya cukup, dan pengemasannya rapi. Cocok buat makan siang di kampus. Pasti pesan lagi!</p>
                       <div class="sb-author-frame">
                         <div class="sb-avatar-frame">
                           <img src="../img/faces/1.jpg" alt="Guest">
@@ -420,7 +251,7 @@
                   <div class="col-lg-6">
                     <div class="sb-review-card sb-mb-60">
                       <div class="sb-review-header sb-mb-15">
-                        <h4 class="sb-mb-10">I have lunch here every day</h4>
+                        <h4 class="sb-mb-10">Saya makan siang di sini setiap hari</h4>
                         <ul class="sb-stars">
                           <li><i class="fas fa-star"></i></li>
                           <li><i class="fas fa-star"></i></li>
@@ -429,7 +260,7 @@
                           <li><i class="fas fa-star"></i></li>
                         </ul>
                       </div>
-                      <p class="sb-text sb-mb-15">Tempora ut soluta animi ducimus dignissimos deserunt doloribus in reprehenderit Reprehenderit rem accusamus! Quibusdam labore, aliquam dolor harum!</p>
+                      <p class="sb-text sb-mb-15">Menu andalan saya. Selalu fresh dan harganya terjangkau. Rekomendasi banget!</p>
                       <div class="sb-author-frame">
                         <div class="sb-avatar-frame">
                           <img src="../img/faces/2.jpg" alt="Guest">
@@ -454,8 +285,8 @@
         <div class="container">
           <div class="sb-group-title sb-mb-30">
             <div class="sb-left sb-mb-30">
-              <h2 class="sb-cate-title sb-mb-30">It is usually bought together with this product</h2>
-              <p class="sb-text">Consectetur numquam poro nemo veniam<br>eligendi rem adipisci quo modi.</p>
+              <h2 class="sb-cate-title sb-mb-30">Biasanya dibeli bersama produk ini</h2>
+              <p class="sb-text">Rekomendasi menu yang sering dipesan<br>bersama produk ini.</p>
             </div>
             <div class="sb-right sb-mb-30">
               <!-- slider navigation -->
@@ -474,11 +305,11 @@
                     <img src="../img/menu/1.jpg" alt="product">
                   </a>
                   <div class="sb-card-tp">
-                    <h4 class="sb-card-title"><a href="shop-list-1.html">Chevrefrit au miel</a></h4>
-                    <div class="sb-price"><sub>$</sub> 14</div>
+                    <h4 class="sb-card-title"><a href="shop-list-1.html">Keju Goreng Madu</a></h4>
+                    <div class="sb-price"><sub>Rp</sub> 14.000</div>
                   </div>
                   <div class="sb-description">
-                    <p class="sb-text sb-mb-15"><span>tomatoes</span>, <span>nori</span>, <span>feta cheese</span>, <span>mushrooms</span>, <span>rice noodles</span>, <span>corn</span>, <span>shrimp</span>.</p>
+                    <p class="sb-text sb-mb-15"><span>tomat</span>, <span>nori</span>, <span>keju feta</span>, <span>jamur</span>, <span>bihun</span>, <span>jagung</span>, <span>udang</span>.</p>
                   </div>
                   <div class="sb-card-buttons-frame">
                     <!-- button -->
@@ -493,8 +324,8 @@
                       <span class="sb-icon">
                         <img src="../img/ui/icons/cart.svg" alt="icon">
                       </span>
-                      <span class="sb-add-to-cart-text">Add to cart</span>
-                      <span class="sb-added-text">Added</span>
+                      <span class="sb-add-to-cart-text">Tambahkan</span>
+                      <span class="sb-added-text">Ditambahkan</span>
                     </a>
                     <!-- button end -->
                   </div>
@@ -504,14 +335,14 @@
                 <div class="sb-menu-item">
                   <a href="shop-list-1.html" class="sb-cover-frame">
                     <img src="../img/menu/2.jpg" alt="product">
-                    <div class="sb-badge sb-vegan"><i class="fas fa-leaf"></i> Vegan</div>
+                    <div class="sb-badge sb-vegan"><i class="fas fa-leaf"></i> Nabati</div>
                   </a>
                   <div class="sb-card-tp">
-                    <h4 class="sb-card-title"><a href="shop-list-1.html">Saumon Gravlax</a></h4>
-                    <div class="sb-price"><sub>$</sub> 9</div>
+                    <h4 class="sb-card-title"><a href="shop-list-1.html">Salmon Asap</a></h4>
+                    <div class="sb-price"><sub>Rp</sub> 9.000</div>
                   </div>
                   <div class="sb-description">
-                    <p class="sb-text sb-mb-15"><span>tomatoes</span>, <span>nori</span>, <span>feta cheese</span>, <span>mushrooms</span>, <span>rice noodles</span>, <span>corn</span>, <span>shrimp</span>.</p>
+                    <p class="sb-text sb-mb-15"><span>tomat</span>, <span>nori</span>, <span>keju feta</span>, <span>jamur</span>, <span>bihun</span>, <span>jagung</span>, <span>udang</span>.</p>
                   </div>
                   <div class="sb-card-buttons-frame">
                     <!-- button -->
@@ -526,8 +357,8 @@
                       <span class="sb-icon">
                         <img src="../img/ui/icons/cart.svg" alt="icon">
                       </span>
-                      <span class="sb-add-to-cart-text">Add to cart</span>
-                      <span class="sb-added-text">Added</span>
+                      <span class="sb-add-to-cart-text">Tambahkan</span>
+                      <span class="sb-added-text">Ditambahkan</span>
                     </a>
                     <!-- button end -->
                   </div>
@@ -539,11 +370,11 @@
                     <img src="../img/menu/3.jpg" alt="product">
                   </a>
                   <div class="sb-card-tp">
-                    <h4 class="sb-card-title"><a href="shop-list-1.html">Stracciatella</a></h4>
-                    <div class="sb-price"><sub>$</sub> 9</div>
+                    <h4 class="sb-card-title"><a href="shop-list-1.html">Sup Telur</a></h4>
+                    <div class="sb-price"><sub>Rp</sub> 9.000</div>
                   </div>
                   <div class="sb-description">
-                    <p class="sb-text sb-mb-15"><span>tomatoes</span>, <span>nori</span>, <span>feta cheese</span>, <span>mushrooms</span>, <span>rice noodles</span>, <span>corn</span>, <span>shrimp</span>.</p>
+                    <p class="sb-text sb-mb-15"><span>tomat</span>, <span>nori</span>, <span>keju feta</span>, <span>jamur</span>, <span>bihun</span>, <span>jagung</span>, <span>udang</span>.</p>
                   </div>
                   <div class="sb-card-buttons-frame">
                     <!-- button -->
@@ -558,8 +389,8 @@
                       <span class="sb-icon">
                         <img src="../img/ui/icons/cart.svg" alt="icon">
                       </span>
-                      <span class="sb-add-to-cart-text">Add to cart</span>
-                      <span class="sb-added-text">Added</span>
+                      <span class="sb-add-to-cart-text">Tambahkan</span>
+                      <span class="sb-added-text">Ditambahkan</span>
                     </a>
                     <!-- button end -->
                   </div>
@@ -571,11 +402,11 @@
                     <img src="../img/menu/4.jpg" alt="product">
                   </a>
                   <div class="sb-card-tp">
-                    <h4 class="sb-card-title"><a href="shop-list-1.html">Croustillant de poisson</a></h4>
-                    <div class="sb-price"><sub>$</sub> 4</div>
+                    <h4 class="sb-card-title"><a href="shop-list-1.html">Ikan Krispi</a></h4>
+                    <div class="sb-price"><sub>Rp</sub> 4.000</div>
                   </div>
                   <div class="sb-description">
-                    <p class="sb-text sb-mb-15"><span>tomatoes</span>, <span>nori</span>, <span>feta cheese</span>, <span>mushrooms</span>, <span>rice noodles</span>, <span>corn</span>, <span>shrimp</span>.</p>
+                    <p class="sb-text sb-mb-15"><span>tomat</span>, <span>nori</span>, <span>keju feta</span>, <span>jamur</span>, <span>bihun</span>, <span>jagung</span>, <span>udang</span>.</p>
                   </div>
                   <div class="sb-card-buttons-frame">
                     <!-- button -->
@@ -590,8 +421,8 @@
                       <span class="sb-icon">
                         <img src="../img/ui/icons/cart.svg" alt="icon">
                       </span>
-                      <span class="sb-add-to-cart-text">Add to cart</span>
-                      <span class="sb-added-text">Added</span>
+                      <span class="sb-add-to-cart-text">Tambahkan</span>
+                      <span class="sb-added-text">Ditambahkan</span>
                     </a>
                     <!-- button end -->
                   </div>
@@ -603,11 +434,11 @@
                     <img src="../img/menu/5.jpg" alt="product">
                   </a>
                   <div class="sb-card-tp">
-                    <h4 class="sb-card-title"><a href="shop-list-1.html">Carpaccio de daurade</a></h4>
-                    <div class="sb-price"><sub>$</sub> 6</div>
+                    <h4 class="sb-card-title"><a href="shop-list-1.html">Carpaccio Ikan</a></h4>
+                    <div class="sb-price"><sub>Rp</sub> 6.000</div>
                   </div>
                   <div class="sb-description">
-                    <p class="sb-text sb-mb-15"><span>tomatoes</span>, <span>nori</span>, <span>feta cheese</span>, <span>mushrooms</span>, <span>rice noodles</span>, <span>corn</span>, <span>shrimp</span>.</p>
+                    <p class="sb-text sb-mb-15"><span>tomat</span>, <span>nori</span>, <span>keju feta</span>, <span>jamur</span>, <span>bihun</span>, <span>jagung</span>, <span>udang</span>.</p>
                   </div>
                   <div class="sb-card-buttons-frame">
                     <!-- button -->
@@ -622,8 +453,8 @@
                       <span class="sb-icon">
                         <img src="../img/ui/icons/cart.svg" alt="icon">
                       </span>
-                      <span class="sb-add-to-cart-text">Add to cart</span>
-                      <span class="sb-added-text">Added</span>
+                      <span class="sb-add-to-cart-text">Tambahkan</span>
+                      <span class="sb-added-text">Ditambahkan</span>
                     </a>
                     <!-- button end -->
                   </div>
@@ -635,11 +466,11 @@
                     <img src="../img/menu/6.jpg" alt="product">
                   </a>
                   <div class="sb-card-tp">
-                    <h4 class="sb-card-title"><a href="shop-list-1.html">Chevrefrit au miel</a></h4>
-                    <div class="sb-price"><sub>$</sub> 14</div>
+                    <h4 class="sb-card-title"><a href="shop-list-1.html">Keju Goreng Madu</a></h4>
+                    <div class="sb-price"><sub>Rp</sub> 14.000</div>
                   </div>
                   <div class="sb-description">
-                    <p class="sb-text sb-mb-15"><span>tomatoes</span>, <span>nori</span>, <span>feta cheese</span>, <span>mushrooms</span>, <span>rice noodles</span>, <span>corn</span>, <span>shrimp</span>.</p>
+                    <p class="sb-text sb-mb-15"><span>tomat</span>, <span>nori</span>, <span>keju feta</span>, <span>jamur</span>, <span>bihun</span>, <span>jagung</span>, <span>udang</span>.</p>
                   </div>
                   <div class="sb-card-buttons-frame">
                     <!-- button -->
@@ -654,8 +485,8 @@
                       <span class="sb-icon">
                         <img src="../img/ui/icons/cart.svg" alt="icon">
                       </span>
-                      <span class="sb-add-to-cart-text">Add to cart</span>
-                      <span class="sb-added-text">Added</span>
+                      <span class="sb-add-to-cart-text">Tambahkan</span>
+                      <span class="sb-added-text">Ditambahkan</span>
                     </a>
                     <!-- button end -->
                   </div>
@@ -674,14 +505,14 @@
           <div class="row">
             <div class="col-lg-6 align-self-center">
               <div class="sb-cta-text">
-                <h2 class="sb-h1 sb-mb-15">Free delivery service.</h2>
-                <p class="sb-text sb-mb-30">*Consectetur numquam poro nemo veniam<br>eligendi rem adipisci quo modi.</p>
+                <h2 class="sb-h1 sb-mb-15">Layanan antar gratis.</h2>
+                <p class="sb-text sb-mb-30">*Pesan sekarang dan nikmati pengantaran<br>gratis ke lokasi Anda.</p>
                 <!-- button -->
                 <a href="shop-1.html" class="sb-btn">
                   <span class="sb-icon">
                     <img src="../img/ui/icons/cart.svg" alt="icon">
                   </span>
-                  <span>Order delivery</span>
+                  <span>Pesan antar</span>
                 </a>
                 <!-- button end -->
                 <!-- button -->
@@ -715,7 +546,7 @@
       <footer>
         <div class="container">
           <div class="sb-footer-frame">
-            <a href="home-1.html" class="sb-logo-frame">
+            <a href="beranda.html" class="sb-logo-frame">
               <!-- logo img -->
               <!-- <img src="../img/ui/logo.svg" alt="Starbelly"> -->
             </a>
@@ -725,7 +556,7 @@
               <li><a href="#."><i class="fab fa-facebook-f"></i></a></li>
               <li><a href="#."><i class="fab fa-youtube"></i></a></li>
             </ul>
-            <div class="sb-copy">&copy; late 2021 Starbelly. All Rights Reserved.</div>
+            <div class="sb-copy">&copy; 2021 Go Kantin. Semua hak dilindungi.</div>
           </div>
         </div>
       </footer>
@@ -733,6 +564,9 @@
 
     </div>
     <!-- dynamic content end -->
+
+    </div>
+    <!-- gk-main end -->
 
   </div>
   <!-- app wrapper end -->
@@ -757,6 +591,7 @@
   <script src="../js/plugins/fancybox.min.js"></script>
   <!-- starbelly js -->
   <script src="../js/main.js"></script>
+  <script src="../js/go-kantin.js"></script>
 
 <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"87b5aa28c49747bfbe230f832768f875","r":1,"spa":2}' crossorigin="anonymous"></script>
 </body>

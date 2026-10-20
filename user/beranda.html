@@ -24,7 +24,7 @@
 
     <aside class="gk-sidebar" aria-label="Menu utama">
       <a href="beranda.html" class="gk-sidebar-brand">
-        <img src="../img/ui/logo.svg" alt="Go Kantin">
+        <img src="../img/ui/icons/menu.svg" alt="Go Kantin">
         <span>Go Kantin</span>
       </a>
       <ul class="gk-sidebar-nav">
@@ -32,7 +32,7 @@
         <li><a href="menu.html"><i class="fas fa-utensils"></i><span>Menu Kantin</span></a></li>
         <li><a href="cart.html"><i class="fas fa-shopping-bag"></i><span>Keranjang</span><span class="gk-nav-badge">3</span></a></li>
         <li><a href="#"><i class="fas fa-user"></i><span>Profil</span></a></li>
-        <li><a href="riwayat-pesanan.html"><i class="fas fa-clock"></i><span>Riwayat Pesanan</span></a></li>
+        <li><a href="riwayat-pesanan.html"><i class="fas fa-history"></i><span>Riwayat Pesanan</span></a></li>
       </ul>
       <div class="gk-sidebar-footer">
         <a href="#" class="gk-user-chip">
@@ -55,7 +55,7 @@
           </button>
         </div>
         <div class="gk-topbar-right">
-          <a href="riwayat-pesanan.html" class="gk-topbar-link">Riwayat Pesanan</a>
+          <a href="status-pesanan.html" class="gk-topbar-link">Pantau Pesananmu</a>
           <a href="#" class="gk-topbar-icon" aria-label="Notifikasi">
             <i class="far fa-bell"></i>
             <span class="gk-dot"></span>
@@ -101,6 +101,7 @@
             </div>
           </a>
           <a href="queue.html" class="gk-stat-card">
+            <span class="gk-stat-badge">12.00–12.30</span>
             <div class="gk-stat-icon"><i class="fas fa-users"></i></div>
             <div class="gk-stat-body">
               <strong>7</strong>
@@ -109,6 +110,68 @@
           </a>
         </div>
 
+        <div class="gk-history-bar justify-content-end">
+          <a href="riwayat-pesanan.html">Selengkapnya</a>
+        </div>
+        <div class="gk-home-bottom">
+          <div class="gk-panel">
+            <div class="gk-panel-head">
+              <h2>Pesanan Kamu</h2>
+              <span class="gk-status">Sedang Diproses</span>
+            </div>
+            <div class="gk-order-meta">Order <strong style="color:#231E41">#ABC-123-XYZ</strong></div>
+            <div class="gk-eta">
+              <div>
+                <strong>15 Menit lagi</strong>
+                <span>Estimasi siap diambil</span>
+              </div>
+              <a href="status-pesanan.html" class="gk-btn-ghost">Lihat Status Pesanan</a>
+            </div>
+          </div>
+          
+          <div class="gk-panel">
+            <div class="gk-panel-head">
+              <h2>Riwayat Pesanan Kamu</h2>
+            </div>
+            <div class="gk-summary-line">
+              <span>Nomor Pesanan :</span>
+              <span>#ABC-123-XYZ</span>
+            </div>
+            <div class="gk-summary-line">
+              <span>Tanggal Pesanan :</span>
+              <span>2026-01-01</span>
+            </div>
+            <div class="gk-summary-line">
+              <span>Status Pesanan :</span>
+              <span>Sedang Diproses</span>
+            </div>
+            <div class="gk-summary-line">
+              <span>Total Bayar :</span>
+              <span>Rp32.990</span>
+            </div>
+            <a href="riwayat-pesanan.html" class="gk-btn-primary">Lihat Riwayat Pesanan</a>
+          </div>
+
+          <!-- <div class="gk-panel">
+            <div class="gk-panel-head">
+              <h2>Riwayat Pesanan Kamu</h2>
+            </div>
+            <div class="gk-summary-line">
+              <span>2 menu • 3 item</span>
+              <span></span>
+            </div>
+            <div class="gk-summary-line">
+              <span>Subtotal</span>
+              <span>Rp32.990</span>
+            </div>
+            <div class="gk-summary-total">
+              <span>Total bayar</span>
+              <span>Rp32.990</span>
+            </div>
+            <a href="checkout.html" class="gk-btn-primary">Lanjut ke Checkout</a>
+          </div> -->
+        </div>
+        
         <section class="sb-short-menu sb-p-0-90">
           <div class="container">
             <div class="sb-group-title sb-mb-30">
@@ -214,46 +277,7 @@
           </div>
         </section>
 
-        <div class="gk-home-bottom">
-          <div class="gk-panel">
-            <div class="gk-panel-head">
-              <h2>Pesanan Kamu</h2>
-              <span class="gk-status">Sedang Diproses</span>
-            </div>
-            <div class="gk-order-meta">Order <strong style="color:#231E41">#ABC-123-XYZ</strong></div>
-            <div class="gk-eta">
-              <div>
-                <strong>15 Menit lagi</strong>
-                <span>Estimasi siap diambil</span>
-              </div>
-              <a href="status-pesanan.html" class="gk-btn-ghost">Lihat Status Pesanan</a>
-            </div>
-          </div>
-
-          <div class="gk-panel">
-            <div class="gk-panel-head">
-              <h2>Ringkasan Pesanan</h2>
-            </div>
-            <div class="gk-summary-line">
-              <span>2 menu • 3 item</span>
-              <span></span>
-            </div>
-            <div class="gk-summary-line">
-              <span>Subtotal</span>
-              <span>Rp32.990</span>
-            </div>
-            <div class="gk-summary-total">
-              <span>Total bayar</span>
-              <span>Rp32.990</span>
-            </div>
-            <a href="checkout.html" class="gk-btn-primary">Lanjut ke Checkout</a>
-          </div>
-        </div>
-
-        <div class="gk-history-bar">
-          <span>Cari pesanan sebelumnya?</span>
-          <a href="riwayat-pesanan.html">Buka Riwayat Pesanan →</a>
-        </div>
+        
       </div>
       <!-- dynamic content end -->
 

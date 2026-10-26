@@ -36,19 +36,26 @@
   }
 
   function syncActiveNav() {
-    var path = (window.location.pathname.split('/').pop() || 'beranda.html').toLowerCase();
+    var path = (window.location.pathname.split('/').pop() || 'index.html').toLowerCase();
+    if (!path || path === '/') {
+      path = 'index.html';
+    }
     var map = {
-      'beranda.html': 'beranda.html',
+      'index.html': 'index.html',
+      'beranda.html': 'index.html',
       'menu.html': 'menu.html',
       'detail-product.html': 'menu.html',
+      'katalog.html': 'menu.html',
       'cart.html': 'cart.html',
       'checkout.html': 'cart.html',
-      'katalog.html': 'menu.html'
+      'status-pesanan.html': 'status-pesanan.html',
+      'riwayat-pesanan.html': 'riwayat-pesanan.html'
     };
     var target = map[path] || path;
     $('.gk-sidebar-nav a').removeClass('gk-active').each(function () {
-      var href = ($(this).attr('href') || '').toLowerCase();
-      if (href === target) {
+      var href = ($(this).attr('href') || '').toLowerCase().split('?')[0].split('#')[0];
+      var hrefFile = href.split('/').pop();
+      if (hrefFile === target || href.endsWith('/' + target) || href === target) {
         $(this).addClass('gk-active');
       }
     });

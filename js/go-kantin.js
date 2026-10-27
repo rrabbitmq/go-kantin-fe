@@ -43,13 +43,22 @@
     var map = {
       'index.html': 'index.html',
       'beranda.html': 'index.html',
-      'menu.html': 'menu.html',
-      'detail-product.html': 'menu.html',
-      'katalog.html': 'menu.html',
-      'cart.html': 'cart.html',
-      'checkout.html': 'cart.html',
-      'status-pesanan.html': 'status-pesanan.html',
-      'riwayat-pesanan.html': 'riwayat-pesanan.html'
+      'menu.html': 'menu.php',
+      'menu.php': 'menu.php',
+      'detail-product.html': 'menu.php',
+      'detail-product.php': 'menu.php',
+      'katalog.html': 'menu.php',
+      'katalog.php': 'menu.php',
+      'cart.html': 'cart.php',
+      'cart.php': 'cart.php',
+      'checkout.html': 'cart.php',
+      'checkout.php': 'cart.php',
+      'status-pesanan.html': 'status-pesanan.php',
+      'status-pesanan.php': 'status-pesanan.php',
+      'riwayat-pesanan.html': 'status-pesanan.php',
+      'riwayat-pesanan.php': 'status-pesanan.php',
+      'queue.html': 'index.html',
+      'queue.php': 'index.html'
     };
     var target = map[path] || path;
     $('.gk-sidebar-nav a').removeClass('gk-active').each(function () {

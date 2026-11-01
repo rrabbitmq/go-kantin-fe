@@ -73,7 +73,8 @@ final class Auth
         $primary = Rbac::primaryRole($roles);
 
         return match ($primary) {
-            'super_admin', 'penjual' => '/auth/pending-area.php',
+            'penjual' => '/admin/dashboard.php',
+            'super_admin' => '/auth/pending-area.php',
             default => '/user/katalog.php',
         };
     }

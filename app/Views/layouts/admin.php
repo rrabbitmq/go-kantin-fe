@@ -1,5 +1,5 @@
 <?php
-
+/** @var string $contentView */
 use App\Core\View;
 
 $currentUser = $currentUser ?? ['name' => 'Tamu', 'avatar_letter' => 'T'];

@@ -12,7 +12,7 @@
 -- go_kantin, kemudian jalankan seluruh file migration ini.
 
 -- Contoh:
--- psql -U postgres -d go_kantin -f database/migrations/001_create_sistem_kantin.sql
+-- psql -U postgres -d go_kantin -f database/001_ddl_script.sql
 
 -- LANGKAH 2:
 -- RESET STRUKTUR DATABASE 

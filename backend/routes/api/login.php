@@ -69,3 +69,4 @@ try {
     error_log($e->getMessage());
     jsonResponse(500, ['message' => 'Terjadi kesalahan pada server']);
 }
+?>

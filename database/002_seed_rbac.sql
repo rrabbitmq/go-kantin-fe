@@ -110,4 +110,10 @@ WHERE u.username = 'pembeli'
       SELECT 1 FROM keranjang k WHERE k.id_user = u.id_user
   );
 
+INSERT INTO kategori_penjual (nama_kategori, deskripsi) VALUES
+  ('Makanan', 'Nasi, mie, dan sejenisnya'),
+  ('Minuman', 'Aneka minuman'),
+  ('Snack', 'Makanan ringan')
+ON CONFLICT (nama_kategori) DO NOTHING;
+
 COMMIT;

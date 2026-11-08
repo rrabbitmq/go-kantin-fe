@@ -611,6 +611,9 @@ CREATE TABLE stok_log (
 CREATE INDEX idx_stok_log_varian_tanggal
     ON stok_log(id_varian_produk, created_at DESC);
 
+-- tabel tambahan untuk no hp, bagi pembeli --
+ALTER TABLE users ADD COLUMN IF NOT EXISTS no_hp VARCHAR(20);
+
 -- =========================================================
 -- TRIGGER UPDATED_AT
 -- =========================================================

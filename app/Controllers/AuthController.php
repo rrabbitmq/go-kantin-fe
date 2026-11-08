@@ -2,11 +2,10 @@
 
 namespace App\Controllers;
 
+use App\Core\ApiClient;
 use App\Core\Auth;
 use App\Core\Controller;
-use App\Core\Database;
 use App\Core\Rbac;
-use App\Models\User;
 
 final class AuthController extends Controller
 {
@@ -26,12 +25,8 @@ final class AuthController extends Controller
     public function login(string $intent = 'pembeli'): void
     {
         $this->requireGuest();
-
-        if (!Database::available()) {
-            $this->flash('error', 'Database tidak tersedia. Pastikan PostgreSQL dan seed RBAC sudah dijalankan.');
-            $this->redirect($intent === 'penjual' ? '/auth/penjual/login.php' : '/auth/login.php');
-        }
-
+        
+        $loginUrl = $intent === 'penjual' ? '/auth/penjual/login.php' : '/auth/login.php';
         $login = trim((string) ($_POST['login'] ?? ''));
         $password = (string) ($_POST['password'] ?? '');
 
@@ -39,35 +34,24 @@ final class AuthController extends Controller
 
         if ($login === '' || $password === '') {
             $this->flash('error', 'Username/email dan password wajib diisi.');
-            $this->redirect($intent === 'penjual' ? '/auth/penjual/login.php' : '/auth/login.php');
+            $this->redirect($loginUrl);
         }
 
-        $user = User::findByLogin($login);
-        if (!$user || !password_verify($password, $user['password_hash'])) {
-            $this->flash('error', 'Username/email atau password salah.');
-            $this->redirect($intent === 'penjual' ? '/auth/penjual/login.php' : '/auth/login.php');
+        $res = ApiClient::post('/login', ['login' => $login, 'password' => $password]);
+        if (!$res['ok']) {
+            $this->flash('error', $res['message'] ?? 'Login gagal.');
+            $this->redirect($loginUrl);
         }
 
-        if (($user['status_akun'] ?? '') !== 'aktif') {
-            $message = match ($user['status_akun']) {
-                'pending' => 'Akun masih menunggu konfirmasi.',
-                'ditolak' => 'Akun ditolak. Hubungi admin.',
-                'nonaktif' => 'Akun nonaktif.',
-                default => 'Status akun tidak valid untuk login.',
-            };
-            $this->flash('error', $message);
-            $this->redirect($intent === 'penjual' ? '/auth/penjual/login.php' : '/auth/login.php');
-        }
+        $roles = $res['data']['user']['roles'] ?? [];
 
-        $roles = User::rolesForUser((int) $user['id_user']);
-        $permissions = User::permissionsForUser((int) $user['id_user']);
 
         if ($intent === 'penjual' && !Rbac::hasAnyRole($roles, ['penjual', 'super_admin'])) {
             $this->flash('error', 'Akun ini tidak memiliki akses penjual/admin.');
             $this->redirect('/auth/penjual/login.php');
         }
 
-        Auth::login($user, $roles, $permissions);
+        $this->startSession($res['data']);
         $this->redirect(Auth::redirectPathForRoles($roles));
     }
 
@@ -86,19 +70,16 @@ final class AuthController extends Controller
     {
         $this->requireGuest();
 
-        if (!Database::available()) {
-            $this->flash('error', 'Database tidak tersedia. Pastikan PostgreSQL dan seed RBAC sudah dijalankan.');
-            $this->redirect('/auth/register.php');
-        }
-
         $username = trim((string) ($_POST['username'] ?? ''));
         $email = trim((string) ($_POST['email'] ?? ''));
+        $noHp = trim((string) ($_POST['no_hp'] ?? ''));
         $password = (string) ($_POST['password'] ?? '');
         $passwordConfirm = (string) ($_POST['password_confirm'] ?? '');
 
         $this->flash('old', [
             'username' => $username,
             'email' => $email,
+            'no_hp' => $noHp,
         ]);
 
         if ($username === '' || $password === '') {
@@ -113,6 +94,11 @@ final class AuthController extends Controller
 
         if ($email !== '' && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $this->flash('error', 'Format email tidak valid.');
+            $this->redirect('/auth/register.php');
+        }
+
+        if (!preg_match('/^(\+62|62|0)8[0-9]{8,12}$/', $noHp)) {
+            $this->flash('error', 'Nomor HP tidak valid.');
             $this->redirect('/auth/register.php');
         }
 
@@ -135,44 +121,70 @@ final class AuthController extends Controller
             $this->flash('error', 'Email sudah digunakan.');
             $this->redirect('/auth/register.php');
         }
+        
+        $res = ApiClient::post('/register', [
+            'role' => 'pembeli',
+            'username' => $username,
+            'email' => $email,
+            'no_hp' => $noHp,
+            'password' => $password,
+        ]);
 
-        try {
-            $idUser = User::createPembeli($username, $email, $password);
-            $user = User::findById($idUser);
-            $roles = User::rolesForUser($idUser);
-            $permissions = User::permissionsForUser($idUser);
-            Auth::login([
-                'id_user' => $idUser,
-                'username' => $user['username'],
-                'email' => $user['email'] ?? null,
-                'status_akun' => $user['status_akun'],
-            ], $roles, $permissions);
-            $this->flash('success', 'Registrasi berhasil. Selamat datang!');
-            $this->redirect('/user/katalog.php');
-        } catch (\Throwable $e) {
-            $this->flash('error', 'Gagal mendaftar. Pastikan role pembeli sudah di-seed.');
+        if (!$res['ok']) {
+            $messages = array_map('strval', array_values($res['errors']));
+            $this->flash('error', $messages ? implode(' ', $messages) : ($res['message'] ?? 'Gagal mendaftar.'));
             $this->redirect('/auth/register.php');
         }
-    }
 
+        // Daftar berhasil -> langsung login supaya pengguna tidak perlu mengetik ulang
+        $loginRes = ApiClient::post('/login', ['login' => $username, 'password' => $password]);
+        if ($loginRes['ok']) {
+            $this->startSession($loginRes['data']);
+            $this->flash('success', 'Registrasi berhasil. Selamat datang!');
+            $this->redirect('/user/katalog.php');
+        }
+ 
+        $this->flash('success', 'Registrasi berhasil. Silakan login.');
+        $this->redirect('/auth/login.php');
+    }
+ 
     public function logout(): void
     {
+        $token = Auth::token();
+        if ($token) {
+            ApiClient::post('/logout', [], $token); // cabut token di backend
+        }
+ 
         Auth::logout();
         $this->flash('success', 'Anda sudah logout.');
         $this->redirect('/auth/login.php');
     }
-
+ 
     public function pendingArea(): void
     {
         $this->requireRole('penjual', 'super_admin');
-
+ 
         $roles = Auth::roles();
         $primary = Rbac::primaryRole($roles);
-
+ 
         $this->render('auth/pending-area', [
             'pageTitle' => 'Area Belum Tersedia - Go Kantin',
             'primaryRole' => $primary,
             'username' => Auth::user()['username'] ?? '',
         ], 'layouts/auth');
+    }
+ 
+    /** Simpan hasil login API (token + data user) ke session. */
+    private function startSession(array $data): void
+    {
+        $user = $data['user'] ?? [];
+ 
+        Auth::login(
+            $user,
+            $user['roles'] ?? [],
+            $user['permissions'] ?? [],
+            $data['token'] ?? null,
+            (int) ($data['expires_in'] ?? 7200)
+        );
     }
 }

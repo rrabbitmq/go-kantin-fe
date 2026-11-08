@@ -8,7 +8,17 @@ final class Auth
 
     public static function check(): bool
     {
-        return isset($_SESSION[self::SESSION_KEY]['id_user']);
+        $auth = $_SESSION[self::SESSION_KEY] ?? null;
+        if (!isset($auth['id_user'])) {
+            return false;
+        }
+
+        if (isset($auth['token_exp']) && (int) $auth['token_exp'] <= time()) {
+            unset($_SESSION[self::SESSION_KEY]);
+            return false;
+        }
+ 
+        return true;
     }
 
     public static function guest(): bool
@@ -25,6 +35,11 @@ final class Auth
     {
         $user = self::user();
         return $user ? (int) $user['id_user'] : null;
+    }
+
+    public static function token(): ?string
+    {
+        return self::user()['token'] ?? null;
     }
 
     public static function roles(): array
@@ -47,8 +62,13 @@ final class Auth
         return Rbac::can(self::permissions(), $permission);
     }
 
-    public static function login(array $user, array $roles, array $permissions): void
-    {
+    public static function login(
+        array $user,
+        array $roles,
+        array $permissions,
+        ?string $token = null,
+        int $expiresIn = 7200
+    ): void {
         session_regenerate_id(true);
 
         $_SESSION[self::SESSION_KEY] = [
@@ -58,6 +78,8 @@ final class Auth
             'status_akun' => $user['status_akun'] ?? 'aktif',
             'roles' => array_values($roles),
             'permissions' => array_values($permissions),
+            'token' => $token,
+            'token_exp' => $token ? time() + $expiresIn : null,
         ];
     }
 

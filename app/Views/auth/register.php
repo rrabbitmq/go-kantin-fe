@@ -18,6 +18,10 @@
       <input type="text" id="username" name="username" value="<?= gk_h($old['username'] ?? '') ?>" required autofocus>
     </div>
     <div class="gk-auth-field">
+      <label for="no_hp">Nomor Hp</label>
+      <input type="tel" id="no_hp" name="no_hp" placeholder="08xxxxxxxxxx" value="<?= gk_h($old['no_hp'] ?? '') ?>" required>
+    </div>
+    <div class="gk-auth-field">
       <label for="email">Email (opsional)</label>
       <input type="email" id="email" name="email" value="<?= gk_h($old['email'] ?? '') ?>">
     </div>

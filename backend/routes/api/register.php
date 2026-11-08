@@ -37,16 +37,20 @@ if ($role === 'super_admin') {
 $username = $str('username');
 $email = strtolower ($str('email'));
 $password = is_string ($input['password'] ?? null) ? $input['password'] : '';
+$noHp     = $str('no_hp');
 
 $errors = [];
-if (strlen($username) < 3 || strlen($username) > 50 || !preg_match('/^[A-Za-z0-9_.]+$/', $username)) {
-    $errors['username'] = 'Username 3-50 karakter (huruf, angka, titik, underscore)';
+if (!preg_match('/^[A-Za-z0-9._-]{3,50}$/', $username)) {
+    $errors['username'] = 'Username 3-50 karakter (huruf, angka, titik, underscore, strip).';
 }
-if (!filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($email) > 100) {
-    $errors['email'] = 'Format email tidak valid';
+if ($email !== '' && (!filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($email) > 100)) {
+    $errors['email'] = 'Format email tidak valid.';
 }
 if(strlen($password) < 8 || strlen($password) > 72) {
     $errors['password'] = 'Password 8-72 karakter';
+}
+if (in_array($role, ['pembeli', 'penjual'], true) && !preg_match('/^(\+62|62|0)8[0-9]{8,12}$/', $noHp)) {
+    $errors['no_hp'] = 'Nomor HP tidak valid.';
 }
 
 $namaUsaha = $noHp = $alamat = '';
@@ -56,13 +60,9 @@ if ($role === 'penjual') {
     if ($namaUsaha === '' || strlen($namaUsaha) > 100) {
         $errors['nama_usaha'] = 'Nama usaha wajib diisi (maks 100 karakter)';
     }
-    $noHp = $str('no_hp');
-    if (!preg_match('/^(\+62|62|0)8[0-9]{8,12}$/', $noHp)) {
-        $errors['no_hp'] = 'Nomor HP tidak valid';
-    }
     $idKategori = filter_var($input['id_kategori_penjual'] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
     if ($idKategori === false || $idKategori === null) {
-        $errors['id_kategori_penjual'] = 'Kategori penjual wajib dipilih';
+        $errors['id_kategori_penjual'] = 'Kategori penjual wajib dipilih.';
     }
     $alamat = $str('alamat');
 }
@@ -84,6 +84,7 @@ try {
     $stmt->execute([
         ':username' => $username,
         ':email'    => $email,
+        ':no_hp'    => $role === 'pembeli' ? $noHp : null,
         ':hash'     => password_hash($password, PASSWORD_DEFAULT),
         ':status'   => $cfg['status_akun'],
     ]);

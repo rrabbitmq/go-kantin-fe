@@ -1,4 +1,10 @@
 <?php
+require_once __DIR__ . '/../../config/database.php';
+require_once __DIR__ . '/../../config/response.php';
+require_once __DIR__ . '/../../config/cors.php';
+require_once __DIR__ . '/../../config/auth.php';
+
+handleCors();
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     jsonResponse(405, ['message' => 'Method tidak diizinkan']);

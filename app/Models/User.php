@@ -152,4 +152,159 @@ final class User
 
         return array_column($stmt->fetchAll(), 'nama_permission');
     }
+
+    public const STATUSES = ['aktif', 'pending', 'ditolak', 'nonaktif'];
+
+    public static function allWithRoles(): array
+    {
+        $pdo = Database::connection();
+        if (!$pdo) {
+            return [];
+        }
+
+        $rows = $pdo->query(
+            'SELECT u.id_user, u.username, u.email, u.status_akun, u.created_at,
+                    COALESCE(string_agg(r.nama_role, \',\' ORDER BY r.id_role), \'\') AS roles,
+                    COALESCE(string_agg(r.id_role::text, \',\' ORDER BY r.id_role), \'\') AS role_ids
+             FROM users u
+             LEFT JOIN user_roles ur ON ur.id_user = u.id_user
+             LEFT JOIN roles r ON r.id_role = ur.id_role
+             GROUP BY u.id_user
+             ORDER BY u.id_user'
+        )->fetchAll();
+
+        foreach ($rows as &$row) {
+            $row['roles'] = $row['roles'] !== '' ? explode(',', $row['roles']) : [];
+            $row['role_ids'] = $row['role_ids'] !== '' ? array_map('intval', explode(',', $row['role_ids'])) : [];
+        }
+
+        return $rows;
+    }
+
+    public static function usernameTakenByOther(string $username, int $exceptId): bool
+    {
+        $pdo = Database::connection();
+        if (!$pdo) {
+            return false;
+        }
+
+        $stmt = $pdo->prepare('SELECT 1 FROM users WHERE username = ? AND id_user <> ? LIMIT 1');
+        $stmt->execute([$username, $exceptId]);
+
+        return (bool) $stmt->fetchColumn();
+    }
+
+    public static function emailTakenByOther(string $email, int $exceptId): bool
+    {
+        $pdo = Database::connection();
+        if (!$pdo || $email === '') {
+            return false;
+        }
+
+        $stmt = $pdo->prepare('SELECT 1 FROM users WHERE email = ? AND id_user <> ? LIMIT 1');
+        $stmt->execute([$email, $exceptId]);
+
+        return (bool) $stmt->fetchColumn();
+    }
+
+    public static function create(string $username, ?string $email, string $password, string $status, array $roleIds): int
+    {
+        $pdo = Database::connection();
+        if (!$pdo) {
+            throw new \RuntimeException('Database tidak tersedia.');
+        }
+
+        $pdo->beginTransaction();
+
+        try {
+            $stmt = $pdo->prepare(
+                'INSERT INTO users (username, email, password_hash, status_akun)
+                 VALUES (?, ?, ?, ?)
+                 RETURNING id_user'
+            );
+            $stmt->execute([
+                $username,
+                $email !== '' ? $email : null,
+                password_hash($password, PASSWORD_DEFAULT),
+                $status,
+            ]);
+            $idUser = (int) $stmt->fetchColumn();
+
+            self::syncRoles($idUser, $roleIds);
+
+            $pdo->commit();
+
+            return $idUser;
+        } catch (\Throwable $e) {
+            $pdo->rollBack();
+            throw $e;
+        }
+    }
+
+    public static function update(int $idUser, string $username, ?string $email, ?string $password, string $status, array $roleIds): void
+    {
+        $pdo = Database::connection();
+        if (!$pdo) {
+            throw new \RuntimeException('Database tidak tersedia.');
+        }
+
+        $pdo->beginTransaction();
+
+        try {
+            $stmt = $pdo->prepare(
+                'UPDATE users
+                 SET username = ?, email = ?, status_akun = ?, updated_at = CURRENT_TIMESTAMP
+                 WHERE id_user = ?'
+            );
+            $stmt->execute([$username, $email !== '' ? $email : null, $status, $idUser]);
+
+            if ($password !== null && $password !== '') {
+                $pw = $pdo->prepare('UPDATE users SET password_hash = ? WHERE id_user = ?');
+                $pw->execute([password_hash($password, PASSWORD_DEFAULT), $idUser]);
+            }
+
+            self::syncRoles($idUser, $roleIds);
+
+            $pdo->commit();
+        } catch (\Throwable $e) {
+            $pdo->rollBack();
+            throw $e;
+        }
+    }
+
+    /**
+     * Must be called inside a transaction.
+     */
+    public static function syncRoles(int $idUser, array $roleIds): void
+    {
+        $pdo = Database::connection();
+        if (!$pdo) {
+            throw new \RuntimeException('Database tidak tersedia.');
+        }
+
+        $pdo->prepare('DELETE FROM user_roles WHERE id_user = ?')->execute([$idUser]);
+
+        $insert = $pdo->prepare('INSERT INTO user_roles (id_user, id_role) VALUES (?, ?)');
+        foreach (array_unique(array_map('intval', $roleIds)) as $idRole) {
+            $insert->execute([$idUser, $idRole]);
+        }
+
+        if (in_array('pembeli', self::rolesForUser($idUser), true)) {
+            $pdo->prepare(
+                'INSERT INTO keranjang (id_user)
+                 SELECT ? WHERE NOT EXISTS (SELECT 1 FROM keranjang WHERE id_user = ?)'
+            )->execute([$idUser, $idUser]);
+        }
+    }
+
+    public static function delete(int $idUser): void
+    {
+        $pdo = Database::connection();
+        if (!$pdo) {
+            throw new \RuntimeException('Database tidak tersedia.');
+        }
+
+        $stmt = $pdo->prepare('DELETE FROM users WHERE id_user = ?');
+        $stmt->execute([$idUser]);
+    }
 }

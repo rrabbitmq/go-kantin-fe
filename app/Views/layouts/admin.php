@@ -33,6 +33,12 @@ $pageTitle = $pageTitle ?? 'Go Kantin POS';
     <div class="gk-admin-main">
 <?php View::partial('layouts/admin-topbar', compact('currentUser', 'standMeta')); ?>
       <main class="gk-admin-content">
+        <?php if (!empty($flashSuccess)): ?>
+          <div class="gk-admin-alert is-success" role="status"><?= gk_h($flashSuccess) ?></div>
+        <?php endif; ?>
+        <?php if (!empty($flashError)): ?>
+          <div class="gk-admin-alert is-error" role="alert"><?= gk_h($flashError) ?></div>
+        <?php endif; ?>
         <?php require $contentView; ?>
       </main>
     </div>

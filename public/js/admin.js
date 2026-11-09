@@ -238,6 +238,53 @@
     table.draw();
   });
 
+  /* ---------- Superadmin: pengguna & hak akses ---------- */
+  function openUserModal(data) {
+    var isEdit = Number(data.id) > 0;
+    var roles = String(data.roles || '').split(',').filter(Boolean);
+    $('#modal-pengguna-title').text(isEdit ? 'Edit Pengguna' : 'Tambah Pengguna');
+    $('#form-pengguna-id').val(data.id || 0);
+    $('#form-pengguna-username').val(data.username || '');
+    $('#form-pengguna-email').val(data.email || '');
+    $('#form-pengguna-password').val('').prop('required', !isEdit);
+    $('#form-pengguna-password-hint').text(isEdit ? 'Kosongkan jika tidak diubah.' : 'Minimal 8 karakter.');
+    $('#form-pengguna-status').val(data.status || 'aktif');
+    $('[data-role-checkbox]').each(function () {
+      $(this).prop('checked', roles.indexOf(String(this.value)) !== -1);
+    });
+    $('#modal-pengguna').modal('show');
+  }
+
+  $(document).on('click', '#btn-tambah-pengguna', function () {
+    openUserModal({ id: 0, status: 'aktif' });
+  });
+
+  $(document).on('click', '[data-edit-user]', function () {
+    openUserModal($(this).data());
+  });
+
+  $(document).on('submit', '#form-pengguna', function (e) {
+    if (!$('[data-role-checkbox]:checked').length) {
+      e.preventDefault();
+      toast('Pilih minimal satu role');
+    }
+  });
+
+  $(document).on('submit', 'form[data-confirm]', function (e) {
+    if (!window.confirm($(this).data('confirm'))) {
+      e.preventDefault();
+    }
+  });
+
+  $(document).on('change', '#filter-pengguna-role, #filter-pengguna-status', function () {
+    var table = $('#dt-pengguna').DataTable();
+    var role = $('#filter-pengguna-role').val();
+    var st = $('#filter-pengguna-status').val();
+    table.column(3).search(role === 'all' ? '' : '(^|\\s)' + role + '(\\s|$)', true, false);
+    table.column(4).search(st === 'all' ? '' : '^' + st + '$', true, false);
+    table.draw();
+  });
+
   $(document).on('submit', '#form-pengaturan', function (e) {
     e.preventDefault();
     toast('Preview: pengaturan stand disimpan', 'success');
@@ -256,6 +303,16 @@
     }
     if ($('#dt-kasir').length) {
       window.gkDataTable('#dt-kasir', { order: [[1, 'asc']], pageLength: 5 });
+    }
+    if ($('#dt-pengguna').length) {
+      window.gkDataTable('#dt-pengguna', {
+        order: [[0, 'asc']],
+        columnDefs: [{ orderable: false, targets: -1 }]
+      });
+    }
+    var $reopen = $('#modal-pengguna[data-reopen]');
+    if ($reopen.length) {
+      openUserModal($reopen.data());
     }
   });
 })(jQuery, window);

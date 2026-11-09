@@ -900,6 +900,106 @@ textarea {
   gap: 6px;
 }
 
+.gk-admin-actions form {
+  margin: 0;
+}
+
+#dt-pengguna .gk-admin-actions {
+  flex-wrap: nowrap;
+}
+
+.gk-admin-btn-danger {
+  background: #fff;
+  color: var(--gk-red);
+  border: 1px solid #fecaca;
+}
+
+.gk-admin-alert {
+  border-radius: 12px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.gk-admin-alert.is-success {
+  background: var(--gk-green-soft);
+  color: #166534;
+}
+
+.gk-admin-alert.is-error {
+  background: var(--gk-red-soft);
+  color: #991b1b;
+}
+
+.gk-admin-checklist {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 8px;
+}
+
+.gk-admin-checklist label {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 8px 10px;
+  border: 1px solid var(--gk-line);
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  margin: 0;
+}
+
+.gk-admin-checklist label small {
+  display: block;
+  color: var(--gk-muted);
+}
+
+.gk-admin-checklist input {
+  margin-top: 3px;
+}
+
+.gk-admin-role-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.gk-admin-role-tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--gk-orange-soft);
+  color: #c2410c;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.gk-admin-role-card {
+  margin-bottom: 16px;
+}
+
+.gk-admin-role-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.gk-admin-role-card-head p {
+  margin: 4px 0 0;
+  color: var(--gk-muted);
+  font-size: 13px;
+}
+
+.gk-admin-role-card-foot {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+
 .gk-admin-toast {
   position: fixed;
   right: 20px;

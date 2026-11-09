@@ -11,7 +11,7 @@ final class AdminController extends Controller
     {
         $this->requirePenjual();
 
-        $this->renderAdmin('admin/dashboard', [
+        $this->render('admin/dashboard', [
             'pageTitle' => 'Dashboard Admin - Go Kantin',
             'activeNav' => 'dashboard',
             'stats' => [
@@ -267,21 +267,6 @@ final class AdminController extends Controller
 
     private function requirePenjual(): void
     {
-        $this->requireRole('penjual');
-    }
-
-    private function renderAdmin(string $view, array $data): void
-    {
-        $data['currentUser'] = $data['currentUser'] ?? $this->currentUserForLayout();
-        $data['standMeta'] = $data['standMeta'] ?? [
-            'nama' => 'Stand Kantin JTI',
-            'lokasi' => 'Kantin JTI • Lantai 8',
-            'jam' => '08.00 - 15.00 WIB',
-            'status_buka' => true,
-            'role_label' => 'Kasir Stand Terpadu',
-        ];
-        $data['queueBadge'] = $data['queueBadge'] ?? (int) ($data['queueCount'] ?? 4);
-
-        $this->render($view, $data, 'layouts/admin');
+        $this->requireRole('penjual', 'super_admin');
     }
 }

@@ -11,7 +11,7 @@ $statusBuka = !empty($standMeta['status_buka']);
         <!-- <img src="/img/ui/logo.svg" alt="Go Kantin"> -->
         <div>
           <strong>Go Kantin POS</strong>
-          <span>Panel Admin / Kasir Terpadu</span>
+          <span><?= \App\Core\Auth::hasRole('super_admin') ? 'Panel Super Admin' : 'Panel Admin / Kasir Terpadu' ?></span>
         </div>
       </div>
 
@@ -61,6 +61,22 @@ $statusBuka = !empty($standMeta['status_buka']);
           </a>
         </li>
       </ul>
+
+      <?php if (\App\Core\Auth::hasRole('super_admin')): ?>
+      <p class="gk-admin-nav-label">Super Admin</p>
+      <ul class="gk-admin-nav">
+        <li>
+          <a href="/admin/pengguna.php" class="<?= $activeNav === 'pengguna' ? 'is-active' : '' ?>">
+            <i class="fas fa-users-cog"></i><span>Manajemen Pengguna</span>
+          </a>
+        </li>
+        <li>
+          <a href="/admin/hak-akses.php" class="<?= $activeNav === 'hak-akses' ? 'is-active' : '' ?>">
+            <i class="fas fa-user-shield"></i><span>Hak Akses</span>
+          </a>
+        </li>
+      </ul>
+      <?php endif; ?>
 
       <div class="gk-admin-sidebar-footer">
         <div class="gk-admin-status <?= $statusBuka ? 'is-open' : 'is-closed' ?>">

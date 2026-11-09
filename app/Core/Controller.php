@@ -35,6 +35,23 @@ abstract class Controller
         Auth::requireRole(...$roles);
     }
 
+    protected function renderAdmin(string $view, array $data): void
+    {
+        $data['currentUser'] = $data['currentUser'] ?? $this->currentUserForLayout();
+        $data['standMeta'] = $data['standMeta'] ?? [
+            'nama' => 'Stand Kantin JTI',
+            'lokasi' => 'Kantin JTI • Lantai 8',
+            'jam' => '08.00 - 15.00 WIB',
+            'status_buka' => true,
+            'role_label' => Auth::hasRole('super_admin') ? 'Super Admin' : 'Kasir Stand Terpadu',
+        ];
+        $data['queueBadge'] = $data['queueBadge'] ?? (int) ($data['queueCount'] ?? 4);
+        $data['flashSuccess'] = $data['flashSuccess'] ?? gk_flash('success');
+        $data['flashError'] = $data['flashError'] ?? gk_flash('error');
+
+        $this->render($view, $data, 'layouts/admin');
+    }
+
     protected function currentUserForLayout(): array
     {
         $auth = Auth::user();

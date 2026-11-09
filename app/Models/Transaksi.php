@@ -35,6 +35,41 @@ final class Transaksi
         return array_map([self::class, 'enrich'], self::fallbackOrders($userId));
     }
 
+    public static function summaryForUser(int $userId): array
+    {
+        $summary = [
+            'jumlah_pesanan' => 0,
+            'total_belanja' => 0.0,
+            'pesanan_terakhir' => null,
+        ];
+
+        $pdo = Database::connection();
+        if (!$pdo) {
+            return $summary;
+        }
+
+        try {
+            $stmt = $pdo->prepare(
+                'SELECT COUNT(*) AS jumlah_pesanan,
+                        COALESCE(SUM(total_harga) FILTER (WHERE status_transaksi <> \'dibatalkan\'), 0) AS total_belanja,
+                        MAX(tgl_transaksi) AS pesanan_terakhir
+                 FROM transaksi
+                 WHERE id_pembeli = ?'
+            );
+            $stmt->execute([$userId]);
+            $row = $stmt->fetch();
+            if ($row) {
+                $summary['jumlah_pesanan'] = (int) $row['jumlah_pesanan'];
+                $summary['total_belanja'] = (float) $row['total_belanja'];
+                $summary['pesanan_terakhir'] = $row['pesanan_terakhir'];
+            }
+        } catch (\Throwable $e) {
+            // keep zero summary
+        }
+
+        return $summary;
+    }
+
     public static function find(int $id): ?array
     {
         $pdo = Database::connection();

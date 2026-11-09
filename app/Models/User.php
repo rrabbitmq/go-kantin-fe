@@ -297,6 +297,46 @@ final class User
         }
     }
 
+    public static function passwordHash(int $idUser): ?string
+    {
+        $pdo = Database::connection();
+        if (!$pdo) {
+            return null;
+        }
+
+        $stmt = $pdo->prepare('SELECT password_hash FROM users WHERE id_user = ?');
+        $stmt->execute([$idUser]);
+        $hash = $stmt->fetchColumn();
+
+        return $hash !== false ? (string) $hash : null;
+    }
+
+    public static function updateAccount(int $idUser, string $username, ?string $email): void
+    {
+        $pdo = Database::connection();
+        if (!$pdo) {
+            throw new \RuntimeException('Database tidak tersedia.');
+        }
+
+        $stmt = $pdo->prepare(
+            'UPDATE users SET username = ?, email = ?, updated_at = CURRENT_TIMESTAMP WHERE id_user = ?'
+        );
+        $stmt->execute([$username, $email !== '' ? $email : null, $idUser]);
+    }
+
+    public static function updatePassword(int $idUser, string $password): void
+    {
+        $pdo = Database::connection();
+        if (!$pdo) {
+            throw new \RuntimeException('Database tidak tersedia.');
+        }
+
+        $stmt = $pdo->prepare(
+            'UPDATE users SET password_hash = ?, updated_at = CURRENT_TIMESTAMP WHERE id_user = ?'
+        );
+        $stmt->execute([password_hash($password, PASSWORD_DEFAULT), $idUser]);
+    }
+
     public static function delete(int $idUser): void
     {
         $pdo = Database::connection();

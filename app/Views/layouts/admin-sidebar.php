@@ -8,7 +8,7 @@ $statusBuka = !empty($standMeta['status_buka']);
 ?>
     <aside class="gk-admin-sidebar" aria-label="Menu admin stand">
       <div class="gk-admin-brand">
-        <img src="/img/ui/logo.svg" alt="Go Kantin">
+        <!-- <img src="/img/ui/logo.svg" alt="Go Kantin"> -->
         <div>
           <strong>Go Kantin POS</strong>
           <span>Panel Admin / Kasir Terpadu</span>

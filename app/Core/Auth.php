@@ -75,7 +75,7 @@ final class Auth
         return match ($primary) {
             'penjual' => '/admin/dashboard.php',
             'super_admin' => '/auth/pending-area.php',
-            default => '/user/katalog.php',
+            default => '/user/beranda.php',
         };
     }
 

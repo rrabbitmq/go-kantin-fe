@@ -20,7 +20,7 @@ final class QueueController extends Controller
 
         $this->render('pembeli/queue', [
             'pageTitle' => 'Antrian Kantin — Go Kantin',
-            'activeNav' => 'beranda',
+            'activeNav' => 'status',
             'currentUser' => $this->currentUserForLayout(),
             'cartCount' => Keranjang::countForUser((int) Auth::id()),
             'slots' => $slots,

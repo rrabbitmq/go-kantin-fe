@@ -5,13 +5,13 @@ $cartCount = (int) ($cartCount ?? 0);
 $avatar = gk_avatar_letter($currentUser['name'] ?? 'T');
 ?>
     <aside class="gk-sidebar" aria-label="Menu utama">
-      <a href="/user/katalog.php" class="gk-sidebar-brand">
+      <a href="/user/beranda.php" class="gk-sidebar-brand">
         <img src="/img/ui/icons/menu.svg" alt="Go Kantin">
         <span>Go Kantin</span>
       </a>
       <ul class="gk-sidebar-nav">
         <li>
-          <a href="/user/katalog.php" class="<?= $activeNav === 'beranda' ? 'gk-active' : '' ?>">
+          <a href="/user/beranda.php" class="<?= $activeNav === 'beranda' ? 'gk-active' : '' ?>">
             <i class="fas fa-home"></i><span>Beranda</span>
           </a>
         </li>

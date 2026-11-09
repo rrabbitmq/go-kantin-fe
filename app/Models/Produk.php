@@ -2,126 +2,25 @@
 
 namespace App\Models;
 
-use App\Core\Database;
-use PDO;
+use App\Core\ApiClient;
 
 final class Produk
 {
     public static function all(?int $categoryId = null): array
     {
-        $pdo = Database::connection();
-        if ($pdo) {
-            try {
-                if ($categoryId) {
-                    $stmt = $pdo->prepare(
-                        'SELECT p.id_produk AS id,
-                                p.id_kategori_produk AS category_id,
-                                p.nama_produk AS name,
-                                p.deskripsi AS description,
-                                COALESCE(p.gambar, \'/img/menu/1.jpg\') AS image_path,
-                                COALESCE(MIN(v.harga_satuan), 0) AS price,
-                                k.nama_kategori AS category_name,
-                                lower(replace(k.nama_kategori, \' \', \'-\')) AS category_slug
-                         FROM produk p
-                         JOIN kategori_produk k ON k.id_kategori_produk = p.id_kategori_produk
-                         LEFT JOIN varian_produk v ON v.id_produk = p.id_produk AND v.status_aktif = TRUE
-                         WHERE p.status_produk = \'aktif\'
-                           AND p.id_kategori_produk = ?
-                         GROUP BY p.id_produk, k.nama_kategori
-                         ORDER BY p.id_produk'
-                    );
-                    $stmt->execute([$categoryId]);
-                } else {
-                    $stmt = $pdo->query(
-                        'SELECT p.id_produk AS id,
-                                p.id_kategori_produk AS category_id,
-                                p.nama_produk AS name,
-                                p.deskripsi AS description,
-                                COALESCE(p.gambar, \'/img/menu/1.jpg\') AS image_path,
-                                COALESCE(MIN(v.harga_satuan), 0) AS price,
-                                k.nama_kategori AS category_name,
-                                lower(replace(k.nama_kategori, \' \', \'-\')) AS category_slug
-                         FROM produk p
-                         JOIN kategori_produk k ON k.id_kategori_produk = p.id_kategori_produk
-                         LEFT JOIN varian_produk v ON v.id_produk = p.id_produk AND v.status_aktif = TRUE
-                         WHERE p.status_produk = \'aktif\'
-                         GROUP BY p.id_produk, k.nama_kategori
-                         ORDER BY p.id_produk'
-                    );
-                }
-
-                $rows = $stmt->fetchAll();
-                if ($rows) {
-                    return array_map([self::class, 'normalize'], $rows);
-                }
-            } catch (\Throwable $e) {
-                // fallback
-            }
-        }
-
-        $products = self::fallback();
-        if ($categoryId) {
-            $products = array_values(array_filter(
-                $products,
-                static fn(array $p): bool => (int) $p['category_id'] === $categoryId
-            ));
-        }
-
-        return $products;
-    }
+        $path = '/produk' . ($categoryId ? '?kategori=' . $categoryId : '');
+        return self::fetchList($path);
+    }    
 
     public static function find(int $id): ?array
     {
-        $pdo = Database::connection();
-        if ($pdo) {
-            try {
-                $stmt = $pdo->prepare(
-                    'SELECT p.id_produk AS id,
-                            p.id_kategori_produk AS category_id,
-                            p.nama_produk AS name,
-                            p.deskripsi AS description,
-                            COALESCE(p.gambar, \'/img/menu/1.jpg\') AS image_path,
-                            COALESCE(MIN(v.harga_satuan), 0) AS price,
-                            k.nama_kategori AS category_name,
-                            lower(replace(k.nama_kategori, \' \', \'-\')) AS category_slug
-                     FROM produk p
-                     JOIN kategori_produk k ON k.id_kategori_produk = p.id_kategori_produk
-                     LEFT JOIN varian_produk v ON v.id_produk = p.id_produk AND v.status_aktif = TRUE
-                     WHERE p.id_produk = ?
-                     GROUP BY p.id_produk, k.nama_kategori
-                     LIMIT 1'
-                );
-                $stmt->execute([$id]);
-                $row = $stmt->fetch();
-                if ($row) {
-                    return self::normalize($row);
-                }
-            } catch (\Throwable $e) {
-                // fallback
-            }
-        }
-
-        foreach (self::fallback() as $product) {
-            if ((int) $product['id'] === $id) {
-                return $product;
-            }
-        }
-
-        return null;
-    }
+        $rows = self::fetchList('/produk?id=' . $id);
+        return $rows[0] ?? null;
+    }        
 
     public static function bestsellers(int $limit = 6): array
     {
-        $products = array_values(array_filter(
-            self::all(),
-            static fn(array $p): bool => !empty($p['is_bestseller'])
-        ));
-
-        if ($products) {
-            return array_slice($products, 0, $limit);
-        }
-
-        return array_slice(self::all(), 0, $limit);
+        return self::fetchList('/produk?terlaris=1&limit=' . max(1, $limit));
     }
 
     public static function related(int $excludeId, int $limit = 6): array
@@ -132,6 +31,16 @@ final class Produk
         ));
 
         return array_slice($products, 0, $limit);
+    }
+
+    private static function fetchList(string $path): array
+    {
+        $res = ApiClient::get($path);
+        if (!$res['ok'] || !is_array($res['data'])) {
+            return [];
+        }
+
+        return array_map([self::class, 'normalize'], $res['data']);
     }
 
     private static function normalize(array $row): array

@@ -34,11 +34,16 @@ $avatar = gk_avatar_letter($currentUser['name'] ?? 'T');
           </a>
         </li>
         <li>
+          <a href="/user/profil.php" class="<?= $activeNav === 'profil' ? 'gk-active' : '' ?>">
+            <i class="fas fa-user-cog"></i><span>Profil &amp; Pengaturan</span>
+          </a>
+        </li>
+        <li>
           <a href="/auth/logout.php"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
         </li>
       </ul>
       <div class="gk-sidebar-footer">
-        <a href="/user/riwayat-pesanan.php" class="gk-user-chip">
+        <a href="/user/profil.php" class="gk-user-chip">
           <div class="gk-user-avatar"><?= gk_h($avatar) ?></div>
           <div class="gk-user-meta">
             <strong><?= gk_h($currentUser['name'] ?? 'Tamu') ?></strong>

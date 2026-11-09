@@ -11,7 +11,7 @@ final class AdminController extends Controller
     {
         $this->requirePenjual();
 
-        $this->render('admin/dashboard', [
+        $this->renderAdmin('admin/dashboard', [
             'pageTitle' => 'Dashboard Admin - Go Kantin',
             'activeNav' => 'dashboard',
             'stats' => [

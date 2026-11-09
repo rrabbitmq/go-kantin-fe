@@ -7420,6 +7420,153 @@ body,
   }
 }
 
+/* ---------- Profil & Pengaturan Pembeli ---------- */
+.gk-profile-alert {
+  border-radius: var(--gk-radius);
+  padding: 14px 18px;
+  margin-bottom: 18px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.gk-profile-alert-success {
+  background: rgba(46, 170, 110, 0.12);
+  color: #1f8a55;
+}
+
+.gk-profile-alert-error {
+  background: rgba(220, 38, 38, 0.1);
+  color: #b42318;
+}
+
+.gk-profile-hero {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.gk-profile-avatar {
+  width: 64px;
+  height: 64px;
+  font-size: 26px;
+}
+
+.gk-profile-identity {
+  flex: 1;
+  min-width: 0;
+}
+
+.gk-profile-identity strong {
+  display: block;
+  font-size: 20px;
+  color: var(--gk-text);
+}
+
+.gk-profile-identity span {
+  display: block;
+  font-size: 14px;
+  color: var(--gk-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gk-profile-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.gk-profile-stat strong {
+  display: block;
+  font-size: 20px;
+  color: var(--gk-text);
+}
+
+.gk-profile-stat small,
+.gk-profile-stat a {
+  display: inline-block;
+  margin-top: 6px;
+  font-size: 13px;
+  color: var(--gk-muted);
+}
+
+.gk-profile-stat a {
+  color: var(--gk-text);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.gk-profile-stat a i {
+  font-size: 10px;
+  margin-left: 4px;
+}
+
+.gk-profile-forms {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  margin-bottom: 28px;
+}
+
+.gk-profile-form .gk-btn-primary {
+  margin-top: 6px;
+}
+
+.gk-profile-field {
+  margin-bottom: 16px;
+}
+
+.gk-profile-field label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--gk-text);
+}
+
+.gk-profile-field label span,
+.gk-profile-field small {
+  font-weight: 400;
+  font-size: 12px;
+  color: var(--gk-muted);
+}
+
+.gk-profile-field small {
+  display: block;
+  margin-top: 6px;
+}
+
+.gk-profile-field input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--gk-border);
+  border-radius: 12px;
+  background: var(--gk-surface);
+  color: var(--gk-text);
+  font-size: 15px;
+}
+
+.gk-profile-field input:focus {
+  outline: none;
+  border-color: var(--gk-accent);
+  box-shadow: 0 0 0 3px rgba(245, 195, 50, 0.25);
+}
+
+@media (max-width: 992px) {
+  .gk-profile-stats,
+  .gk-profile-forms {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 576px) {
+  .gk-profile-hero {
+    flex-wrap: wrap;
+  }
+}
+
 /* ---------- Menu promo: stack earlier than theme's 580px ---------- */
 @media (max-width: 992px) {
   .sb-promo-content {

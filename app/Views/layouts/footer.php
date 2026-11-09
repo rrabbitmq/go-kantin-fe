@@ -17,5 +17,6 @@
   <script src="/js/plugins/fancybox.min.js"></script>
   <script src="/js/main.js"></script>
   <script src="/js/go-kantin.js"></script>
+  <script src="/js/cart-action.js"></script>
 </body>
 </html>

@@ -15,7 +15,7 @@
           <div class="container">
             <div class="row">
               <div class="col-12 col-lg-8">
-                <form class="sb-checkout-form" id="gk-checkout-form">
+                <form class="sb-checkout-form" id="gk-checkout-form" method="post" action="/user/checkout.php">
                   <div class="gk-queue-tip" id="gk-queue-tip" hidden
                        data-queue-threshold="<?= (int) $queueThreshold ?>"
                        data-current-queue="<?= (int) $currentQueue ?>">

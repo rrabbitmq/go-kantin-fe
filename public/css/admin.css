@@ -1000,6 +1000,94 @@ textarea {
   margin-top: 12px;
 }
 
+/* Profil akun admin */
+a.gk-admin-profile,
+a.gk-admin-userchip {
+  color: inherit;
+  text-decoration: none;
+  border-radius: 12px;
+}
+
+a.gk-admin-profile:hover,
+a.gk-admin-userchip:hover {
+  background: var(--gk-orange-soft);
+  color: inherit;
+}
+
+a.gk-admin-profile {
+  padding: 4px 10px 4px 4px;
+}
+
+.gk-admin-account-hero {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.gk-admin-account-avatar {
+  width: 64px;
+  height: 64px;
+  font-size: 26px;
+}
+
+.gk-admin-account-identity {
+  flex: 1;
+  min-width: 0;
+}
+
+.gk-admin-account-identity strong {
+  display: block;
+  font-size: 18px;
+}
+
+.gk-admin-account-identity > span {
+  display: block;
+  color: var(--gk-muted);
+  font-size: 13px;
+  margin-bottom: 6px;
+  overflow-wrap: anywhere;
+}
+
+.gk-admin-account-stat {
+  font-size: 20px;
+}
+
+.gk-admin-account-link {
+  color: var(--gk-orange);
+  font-weight: 600;
+}
+
+.gk-admin-account-link:hover {
+  color: #c2410c;
+  text-decoration: none;
+}
+
+.gk-admin-account-forms {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  align-items: start;
+}
+
+.gk-admin-account-fields {
+  display: grid;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.gk-admin-account-hint {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--gk-muted);
+}
+
+label .gk-admin-account-hint {
+  display: inline;
+}
+
 .gk-admin-toast {
   position: fixed;
   right: 20px;
@@ -1031,6 +1119,7 @@ textarea {
   }
 
   .gk-admin-grid-2,
+  .gk-admin-account-forms,
   .gk-admin-pos {
     grid-template-columns: 1fr;
   }
@@ -1095,5 +1184,9 @@ textarea {
 
   .gk-admin-form-grid {
     grid-template-columns: 1fr;
+  }
+
+  .gk-admin-account-hero {
+    flex-wrap: wrap;
   }
 }

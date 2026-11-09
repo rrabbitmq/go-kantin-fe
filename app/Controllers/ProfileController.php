@@ -6,32 +6,28 @@ use App\Core\Auth;
 use App\Core\Controller;
 use App\Core\Database;
 use App\Models\Keranjang;
+use App\Models\Role;
 use App\Models\Transaksi;
 use App\Models\User;
 
 final class ProfileController extends Controller
 {
-    private const PATH = '/user/profil.php';
+    private const ADMIN_ROLES = ['penjual', 'super_admin'];
+
+    private string $path = '/user/profil.php';
 
     public function show(): void
     {
         $this->requireRole('pembeli');
 
         $userId = (int) Auth::id();
-        $session = Auth::user() ?? [];
-        $account = User::findById($userId) ?? [
-            'username' => $session['username'] ?? '',
-            'email' => $session['email'] ?? null,
-            'status_akun' => $session['status_akun'] ?? 'aktif',
-            'created_at' => null,
-        ];
 
         $this->render('pembeli/profil', [
             'pageTitle' => 'Profil & Pengaturan - Go Kantin',
             'activeNav' => 'profil',
             'currentUser' => $this->currentUserForLayout(),
             'cartCount' => Keranjang::countForUser($userId),
-            'account' => $account,
+            'account' => $this->account($userId),
             'summary' => Transaksi::summaryForUser($userId),
             'old' => gk_flash('old', []),
             'flashSuccess' => gk_flash('success'),
@@ -42,7 +38,56 @@ final class ProfileController extends Controller
     public function handle(): void
     {
         $this->requireRole('pembeli');
+        $this->processForm();
+    }
 
+    public function showAdmin(): void
+    {
+        $this->requireRole(...self::ADMIN_ROLES);
+
+        $userId = (int) Auth::id();
+        $isSuperAdmin = Auth::hasRole('super_admin');
+
+        $systemStats = null;
+        if ($isSuperAdmin) {
+            $systemStats = [
+                'users' => count(User::allWithRoles()),
+                'roles' => count(Role::all()),
+            ];
+        }
+
+        $this->renderAdmin('admin/profil', [
+            'pageTitle' => 'Profil & Pengaturan Akun - Go Kantin POS',
+            'activeNav' => 'profil',
+            'account' => $this->account($userId),
+            'roles' => User::rolesForUser($userId) ?: Auth::roles(),
+            'isSuperAdmin' => $isSuperAdmin,
+            'systemStats' => $systemStats,
+            'old' => gk_flash('old', []),
+        ]);
+    }
+
+    public function handleAdmin(): void
+    {
+        $this->requireRole(...self::ADMIN_ROLES);
+        $this->path = '/admin/profil.php';
+        $this->processForm();
+    }
+
+    private function account(int $userId): array
+    {
+        $session = Auth::user() ?? [];
+
+        return User::findById($userId) ?? [
+            'username' => $session['username'] ?? '',
+            'email' => $session['email'] ?? null,
+            'status_akun' => $session['status_akun'] ?? 'aktif',
+            'created_at' => null,
+        ];
+    }
+
+    private function processForm(): void
+    {
         if (!gk_csrf_valid()) {
             $this->fail('Sesi formulir kedaluwarsa. Silakan coba lagi.');
         }
@@ -92,7 +137,7 @@ final class ProfileController extends Controller
 
         gk_flash('old');
         $this->flash('success', 'Data akun berhasil diperbarui.');
-        $this->redirect(self::PATH);
+        $this->redirect($this->path);
     }
 
     private function updatePassword(): void
@@ -126,12 +171,12 @@ final class ProfileController extends Controller
         }
 
         $this->flash('success', 'Password berhasil diganti.');
-        $this->redirect(self::PATH);
+        $this->redirect($this->path);
     }
 
     private function fail(string $message): void
     {
         $this->flash('error', $message);
-        $this->redirect(self::PATH);
+        $this->redirect($this->path);
     }
 }

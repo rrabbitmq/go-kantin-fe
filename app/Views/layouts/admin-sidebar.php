@@ -78,18 +78,27 @@ $statusBuka = !empty($standMeta['status_buka']);
       </ul>
       <?php endif; ?>
 
+      <p class="gk-admin-nav-label">Akun</p>
+      <ul class="gk-admin-nav">
+        <li>
+          <a href="/admin/profil.php" class="<?= $activeNav === 'profil' ? 'is-active' : '' ?>">
+            <i class="fas fa-user-cog"></i><span>Profil Saya</span>
+          </a>
+        </li>
+      </ul>
+
       <div class="gk-admin-sidebar-footer">
         <div class="gk-admin-status <?= $statusBuka ? 'is-open' : 'is-closed' ?>">
           <strong>Status Kantin: <?= $statusBuka ? 'Buka' : 'Tutup' ?></strong>
           <span>Jam operasional: <?= gk_h($standMeta['jam'] ?? '08.00 - 15.00 WIB') ?></span>
         </div>
-        <div class="gk-admin-userchip">
+        <a href="/admin/profil.php" class="gk-admin-userchip" title="Profil saya">
           <div class="gk-admin-avatar"><?= gk_h($avatar) ?></div>
           <div>
             <strong><?= gk_h($currentUser['name'] ?? 'Tamu') ?></strong>
             <span><?= gk_h($standMeta['role_label'] ?? 'Kasir Stand') ?></span>
           </div>
-        </div>
+        </a>
         <a href="/auth/logout.php" class="gk-admin-logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
       </div>
     </aside>

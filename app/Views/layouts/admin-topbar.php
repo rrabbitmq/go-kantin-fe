@@ -22,9 +22,9 @@ $avatar = gk_avatar_letter($currentUser['name'] ?? 'T');
             <i class="far fa-bell"></i>
             <em></em>
           </button>
-          <div class="gk-admin-profile">
+          <a href="/admin/profil.php" class="gk-admin-profile" title="Profil saya">
             <div class="gk-admin-avatar"><?= gk_h($avatar) ?></div>
             <span><?= gk_h($currentUser['name'] ?? 'Tamu') ?></span>
-          </div>
+          </a>
         </div>
       </header>

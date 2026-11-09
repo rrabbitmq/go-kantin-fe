@@ -61,7 +61,11 @@ final class ApiClient
         $status = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
         $json = json_decode($raw, true);
         if (!is_array($json)) {
-            $json = [];
+            error_log('ApiClient: respons bukan JSON (HTTP ' . $status . '): ' . substr(trim(strip_tags($raw)), 0, 300));
+            return [
+                'ok' => false, 'status' => $status, 'data' => null, 'errors' => [],
+                'message' => 'Respons dari backend tidak valid. Pastikan backend berjalan di port 8000.',
+            ];
         }
  
         return [

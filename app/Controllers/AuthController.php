@@ -38,8 +38,10 @@ final class AuthController extends Controller
         }
 
         $res = ApiClient::post('/login', ['login' => $login, 'password' => $password]);
-        if (!$res['ok']) {
-            $this->flash('error', $res['message'] ?? 'Login gagal.');
+        if (!$res['ok'] || !is_array($res['data'])) {
+            $this->flash('error', $res['ok']
+                ? 'Respons backend tidak sesuai. Hubungi admin.'
+                : ($res['message'] ?? 'Login gagal.'));
             $this->redirect($loginUrl);
         }
 

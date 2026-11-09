@@ -1,224 +1,104 @@
 <?php
-
+ 
 namespace App\Models;
-
+ 
 use App\Core\Database;
-
+ 
 final class Transaksi
 {
     public static function forUser(int $userId): array
     {
-        $pdo = Database::connection();
-        if ($pdo) {
-            try {
-                $stmt = $pdo->prepare(
-                    'SELECT t.id_transaksi AS id,
-                            t.id_pembeli AS user_id,
-                            t.kode_transaksi AS order_code,
-                            t.status_transaksi AS status,
-                            t.total_harga AS total_amount,
-                            NULL::integer AS eta_minutes,
-                            \'Ambil di Kantin\' AS pickup_label,
-                            \'Kantin JTI • Lantai 8\' AS pickup_location,
-                            t.tgl_transaksi AS created_at
-                     FROM transaksi t
-                     WHERE t.id_pembeli = ?
-                     ORDER BY t.tgl_transaksi DESC, t.id_transaksi DESC'
-                );
-                $stmt->execute([$userId]);
-                return array_map([self::class, 'enrich'], $stmt->fetchAll());
-            } catch (\Throwable $e) {
-                // fallback
-            }
-        }
-
-        return array_map([self::class, 'enrich'], self::fallbackOrders($userId));
+        $stmt = Database::connection()->prepare(
+            self::baseSelect() . ' WHERE t.id_pembeli = :id
+             ORDER BY t.tgl_transaksi DESC, t.id_transaksi DESC
+             LIMIT 50'
+        );
+        $stmt->execute([':id' => $userId]);
+ 
+        return array_map([self::class, 'enrich'], $stmt->fetchAll());
     }
-
-    public static function find(int $id): ?array
+ 
+    /** Hanya mengembalikan transaksi milik $userId (mencegah melihat pesanan orang lain). */
+    public static function findForUser(int $id, int $userId): ?array
     {
-        $pdo = Database::connection();
-        if ($pdo) {
-            try {
-                $stmt = $pdo->prepare(
-                    'SELECT t.id_transaksi AS id,
-                            t.id_pembeli AS user_id,
-                            t.kode_transaksi AS order_code,
-                            t.status_transaksi AS status,
-                            t.total_harga AS total_amount,
-                            NULL::integer AS eta_minutes,
-                            \'Ambil di Kantin\' AS pickup_label,
-                            \'Kantin JTI • Lantai 8\' AS pickup_location,
-                            t.tgl_transaksi AS created_at
-                     FROM transaksi t
-                     WHERE t.id_transaksi = ?'
-                );
-                $stmt->execute([$id]);
-                $row = $stmt->fetch();
-                if ($row) {
-                    return self::enrich($row);
-                }
-            } catch (\Throwable $e) {
-                // fallback
-            }
-        }
-
-        foreach (self::fallbackOrders(1) as $order) {
-            if ((int) $order['id'] === $id) {
-                return self::enrich($order);
-            }
-        }
-
-        return null;
+        $stmt = Database::connection()->prepare(
+            self::baseSelect() . ' WHERE t.id_transaksi = :id AND t.id_pembeli = :u'
+        );
+        $stmt->execute([':id' => $id, ':u' => $userId]);
+        $row = $stmt->fetch();
+ 
+        return $row ? self::enrich($row) : null;
     }
-
+ 
     public static function items(int $orderId): array
     {
-        $pdo = Database::connection();
-        if ($pdo) {
-            try {
-                $stmt = $pdo->prepare(
-                    'SELECT dt.id_detail_transaksi AS id,
-                            dt.id_transaksi AS order_id,
-                            dt.id_varian_produk AS product_id,
-                            CONCAT(dt.nama_produk_snapshot, \' - \', dt.nama_varian_snapshot) AS product_name,
-                            \'/img/menu/1.jpg\' AS image_path,
-                            dt.jumlah AS quantity,
-                            dt.harga_satuan AS unit_price,
-                            \'\' AS note
-                     FROM detail_transaksi dt
-                     WHERE dt.id_transaksi = ?
-                     ORDER BY dt.id_detail_transaksi'
-                );
-                $stmt->execute([$orderId]);
-                $rows = $stmt->fetchAll();
-                if ($rows) {
-                    foreach ($rows as &$row) {
-                        $row['id'] = (int) $row['id'];
-                        $row['quantity'] = (int) $row['quantity'];
-                        $row['unit_price'] = (float) $row['unit_price'];
-                    }
-                    unset($row);
-                    return $rows;
-                }
-            } catch (\Throwable $e) {
-                // fallback
-            }
+        $stmt = Database::connection()->prepare(
+            "SELECT dt.id_detail_transaksi AS id,
+                    dt.id_transaksi AS order_id,
+                    v.id_produk AS product_id,
+                    dt.id_varian_produk AS variant_id,
+                    CASE WHEN lower(dt.nama_varian_snapshot) = 'reguler'
+                         THEN dt.nama_produk_snapshot
+                         ELSE CONCAT(dt.nama_produk_snapshot, ' - ', dt.nama_varian_snapshot)
+                    END AS product_name,
+                    COALESCE(p.gambar, '/img/menu/1.jpg') AS image_path,
+                    dt.jumlah AS quantity,
+                    dt.harga_satuan AS unit_price,
+                    '' AS note
+             FROM detail_transaksi dt
+             JOIN varian_produk v ON v.id_varian_produk = dt.id_varian_produk
+             JOIN produk p ON p.id_produk = v.id_produk
+             WHERE dt.id_transaksi = :id
+             ORDER BY dt.id_detail_transaksi"
+        );
+        $stmt->execute([':id' => $orderId]);
+        $rows = $stmt->fetchAll();
+ 
+        foreach ($rows as &$row) {
+            $row['id']         = (int) $row['id'];
+            $row['order_id']   = (int) $row['order_id'];
+            $row['product_id'] = (int) $row['product_id'];
+            $row['variant_id'] = (int) $row['variant_id'];
+            $row['quantity']   = (int) $row['quantity'];
+            $row['unit_price'] = (float) $row['unit_price'];
         }
-
-        return self::fallbackItems($orderId);
+        unset($row);
+ 
+        return $rows;
     }
-
+ 
+    private static function baseSelect(): string
+    {
+        return "SELECT t.id_transaksi AS id,
+                       t.id_pembeli AS user_id,
+                       t.kode_transaksi AS order_code,
+                       t.status_transaksi AS status,
+                       t.total_harga AS total_amount,
+                       COALESCE(t.catatan_pembeli, '') AS note,
+                       pp.nama_usaha AS store_name,
+                       t.tgl_transaksi AS created_at
+                FROM transaksi t
+                JOIN profil_penjual pp ON pp.id_profil_penjual = t.id_profil_penjual";
+    }
+ 
     private static function enrich(array $order): array
     {
-        $order['id'] = (int) $order['id'];
+        $order['id']           = (int) $order['id'];
+        $order['user_id']      = (int) $order['user_id'];
         $order['total_amount'] = (float) $order['total_amount'];
-        $order['eta_minutes'] = isset($order['eta_minutes']) ? (int) $order['eta_minutes'] : null;
-        $order['status'] = gk_normalize_order_status((string) $order['status']);
-
-        if (!isset($order['menu_count']) || !isset($order['item_count']) || !isset($order['thumbs'])) {
-            $items = self::items($order['id']);
-            $order['menu_count'] = count($items);
-            $order['item_count'] = 0;
-            $thumbs = [];
-            foreach ($items as $item) {
-                $order['item_count'] += (int) $item['quantity'];
-                if (!empty($item['image_path'])) {
-                    $thumbs[] = $item['image_path'];
-                }
+ 
+        $items = self::items($order['id']);
+        $order['menu_count'] = count($items);
+        $order['item_count'] = 0;
+        $thumbs = [];
+        foreach ($items as $item) {
+            $order['item_count'] += $item['quantity'];
+            if ($item['image_path'] !== '') {
+                $thumbs[] = $item['image_path'];
             }
-            $order['thumbs'] = array_values(array_unique($thumbs));
         }
-
+        $order['thumbs'] = array_values(array_unique($thumbs));
+ 
         return $order;
-    }
-
-    private static function fallbackOrders(int $userId): array
-    {
-        if ($userId !== 1 && $userId > 0) {
-            // still show demo history for any authenticated demo buyer during UI migration
-        }
-
-        return [
-            [
-                'id' => 1,
-                'user_id' => $userId,
-                'order_code' => 'ABC-123-XYZ',
-                'status' => 'processing',
-                'total_amount' => 11000,
-                'eta_minutes' => 15,
-                'pickup_label' => 'Ambil di Kantin',
-                'pickup_location' => 'Kantin JTI • Lantai 8',
-                'created_at' => '2026-10-20 11:42:00',
-                'menu_count' => 2,
-                'item_count' => 3,
-                'thumbs' => ['/img/menu/1.jpg', '/img/menu/4.jpg'],
-            ],
-            [
-                'id' => 2,
-                'user_id' => $userId,
-                'order_code' => 'GK-884-21A',
-                'status' => 'ready',
-                'total_amount' => 9000,
-                'eta_minutes' => 5,
-                'pickup_label' => 'Ambil di Kantin',
-                'pickup_location' => 'Kantin JTI • Lantai 8',
-                'created_at' => '2026-10-20 10:15:00',
-                'menu_count' => 1,
-                'item_count' => 1,
-                'thumbs' => ['/img/menu/2.jpg'],
-            ],
-            [
-                'id' => 3,
-                'user_id' => $userId,
-                'order_code' => 'GK-771-09C',
-                'status' => 'done',
-                'total_amount' => 29000,
-                'eta_minutes' => null,
-                'pickup_label' => 'Ambil di Kantin',
-                'pickup_location' => 'Kantin JTI • Lantai 8',
-                'created_at' => '2026-10-19 12:08:00',
-                'menu_count' => 3,
-                'item_count' => 4,
-                'thumbs' => ['/img/menu/3.jpg', '/img/menu/5.jpg', '/img/menu/6.jpg'],
-            ],
-            [
-                'id' => 4,
-                'user_id' => $userId,
-                'order_code' => 'GK-650-44B',
-                'status' => 'done',
-                'total_amount' => 8000,
-                'eta_minutes' => null,
-                'pickup_label' => 'Ambil di Kantin',
-                'pickup_location' => 'Kantin JTI • Lantai 8',
-                'created_at' => '2026-10-18 13:30:00',
-                'menu_count' => 1,
-                'item_count' => 2,
-                'thumbs' => ['/img/menu/4.jpg'],
-            ],
-        ];
-    }
-
-    private static function fallbackItems(int $orderId): array
-    {
-        $map = [
-            1 => [
-                ['id' => 1, 'order_id' => 1, 'product_id' => 13, 'product_name' => 'Oreo Soft Cake', 'image_path' => '/img/menu/1.jpg', 'quantity' => 1, 'unit_price' => 3000, 'note' => ''],
-                ['id' => 2, 'order_id' => 1, 'product_id' => 14, 'product_name' => 'Air Mineral', 'image_path' => '/img/menu/4.jpg', 'quantity' => 2, 'unit_price' => 4000, 'note' => 'satu dingin, satu biasa'],
-            ],
-            2 => [
-                ['id' => 3, 'order_id' => 2, 'product_id' => 16, 'product_name' => 'Tumis Kacang', 'image_path' => '/img/menu/2.jpg', 'quantity' => 1, 'unit_price' => 9000, 'note' => ''],
-            ],
-            3 => [
-                ['id' => 4, 'order_id' => 3, 'product_id' => 3, 'product_name' => 'Ikan Krispi', 'image_path' => '/img/menu/3.jpg', 'quantity' => 2, 'unit_price' => 4000, 'note' => ''],
-                ['id' => 5, 'order_id' => 3, 'product_id' => 5, 'product_name' => 'Carpaccio Ikan', 'image_path' => '/img/menu/5.jpg', 'quantity' => 1, 'unit_price' => 6000, 'note' => ''],
-                ['id' => 6, 'order_id' => 3, 'product_id' => 6, 'product_name' => 'Keju Goreng Madu Minuman', 'image_path' => '/img/menu/6.jpg', 'quantity' => 1, 'unit_price' => 14000, 'note' => ''],
-            ],
-            4 => [
-                ['id' => 7, 'order_id' => 4, 'product_id' => 14, 'product_name' => 'Air Mineral', 'image_path' => '/img/menu/4.jpg', 'quantity' => 2, 'unit_price' => 4000, 'note' => ''],
-            ],
-        ];
-
-        return $map[$orderId] ?? [];
     }
 }

@@ -4,19 +4,19 @@ namespace App\Core;
 
 final class Autoloader
 {
-    public static function register(string $baseDir): void
+    public static function register(string $appPath): void
     {
-        spl_autoload_register(static function (string $class) use ($baseDir): void {
+        spl_autoload_register(static function (string $class) use ($appPath): void {
             $prefix = 'App\\';
             if (strncmp($prefix, $class, strlen($prefix)) !== 0) {
                 return;
             }
 
-            $relative = substr($class, strlen($prefix));
-            $path = $baseDir . DIRECTORY_SEPARATOR . str_replace('\\', DIRECTORY_SEPARATOR, $relative) . '.php';
+            $relative = str_replace('\\', '/', substr($class, strlen($prefix)));
+            $file = rtrim($appPath, '/\\') . '/'. $relative . '.php';
 
-            if (is_file($path)) {
-                require $path;
+            if (is_file($file)) {
+                require $file;
             }
         });
     }

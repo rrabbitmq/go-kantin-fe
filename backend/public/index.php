@@ -18,7 +18,7 @@ $routes = [
     '/api/kategori'         => 'kategori.php',
     '/api/produk'           => 'produk.php',
     '/api/keranjang'        => 'keranjang.php',
-    '/api/keranjang/jumlah' => 'keranjang-jumlah.php',
+    '/api/keranjang/jumlah' => 'keranjangJumlah.php',
     '/api/checkout'         => 'checkout.php',
     '/api/transaksi'        => 'transaksi.php',
 ];

@@ -7,30 +7,55 @@ use App\Core\Controller;
 use App\Models\Keranjang;
  
 final class CartController extends Controller
-{
+    {
     public function index(): void
     {
         $this->requireRole('pembeli');
- 
-        $userId = (int) Auth::id();
-        $cartItems = Keranjang::itemsForUser($userId);
-        $subtotal = 0.0;
-        foreach ($cartItems as $item) {
-            $subtotal += (float) $item['line_total'];
-        }
-        $shipping = $cartItems ? 5000 : 0;
-        $total = $subtotal + $shipping;
- 
+
+        $summary = Keranjang::summary();
+
+        $cartItems = $summary['items'] ?? [];
+        $subtotal  = (float) ($summary['subtotal'] ?? 0.0);
+        $shipping  = (float) ($summary['biaya_layanan'] ?? 0.0);
+        $total     = $subtotal + $shipping;
+
         $this->render('pembeli/cart', [
-            'pageTitle' => 'Keranjang - Go Kantin',
-            'activeNav' => 'cart',
+            'pageTitle'   => 'Keranjang - Go Kantin',
+            'activeNav'   => 'cart',
             'currentUser' => $this->currentUserForLayout(),
-            'cartCount' => $summary['jumlah'],
-            'cartItems' => $summary['items'],
-            'subtotal' => $subtotal,
-            'shipping' => $shipping,
-            'total' => $total,
+            'cartCount'   => (int) ($summary['jumlah'] ?? 0),
+            'cartItems'   => $cartItems,
+            'subtotal'    => $subtotal,
+            'shipping'    => $shipping,
+            'total'       => $total,
         ]);
+    }
+
+    /** Form "Tambahkan" di halaman detail produk (POST /user/cart.php, tanpa JavaScript). */
+    public function addFromForm(): void
+    {
+        $this->requireRole('pembeli');
+
+        $id = (int) ($_POST['id'] ?? 0);
+        $jumlah = max(1, (int) ($_POST['jumlah'] ?? 1));
+
+        if ($id < 1) {
+            $this->flash('error', 'Produk tidak valid.');
+            $this->redirect('/user/menu.php');
+            return;
+        }
+
+        $res = Keranjang::add($id, $jumlah);
+
+        if (!$res['ok']) {
+            $errors = array_map('strval', array_values($res['errors']));
+            $this->flash('error', $errors ? implode(' ', $errors) : ($res['message'] ?? 'Gagal menambahkan ke keranjang.'));
+            $this->redirect('/user/detail-product.php?id=' . $id);
+            return;
+        }
+
+        $this->flash('success', 'Produk ditambahkan ke keranjang.');
+        $this->redirect('/user/cart.php');
     }
  
     /**

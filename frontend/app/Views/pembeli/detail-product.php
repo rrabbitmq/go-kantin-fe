@@ -70,19 +70,24 @@
                       </div>
                     </div>
                   </div>
-                  <div class="sb-buttons-frame">
+                  <form action="/user/cart.php" method="POST" class="sb-buttons-frame">
+                    <input type="hidden" name="aksi" value="add">
+                    <input type="hidden" name="id" value="<?= (int) ($product['id_produk'] ?? $product['id_varian_produk'] ?? $product['id'] ?? 0)?>">
+
                     <div class="sb-input-number-frame">
                       <div class="sb-input-number-btn sb-sub">-</div>
                       <input type="number" value="1" min="1" max="10">
                       <div class="sb-input-number-btn sb-add">+</div>
                     </div>
-                    <a href="/user/cart.php" class="sb-btn sb-atc">
+
+                    <button type="submit" class="sb-btn sb-atc" style="border: none; cursor: pointer;">
                       <span class="sb-icon">
                         <img src="/img/ui/icons/cart.svg" alt="icon">
                       </span>
                       <span class="sb-add-to-cart-text">Tambahkan</span>
                       <span class="sb-added-text">Ditambahkan</span>
-                    </a>
+                    </button>
+                  </form> 
                   </div>
                 </div>
               </div>

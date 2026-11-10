@@ -13,8 +13,8 @@ final class CheckoutController extends Controller
     {
         $this->requireRole('pembeli');
 
-        $userId = (int) Auth::id();
-        $cartItems = Keranjang::itemsForUser($userId);
+        $summary = Keranjang::summary();
+        $cartItems = $summary['items'];
  
         if (!$cartItems) {
             $this->redirect('/user/cart.php');
@@ -23,25 +23,18 @@ final class CheckoutController extends Controller
  
         $slots = Antrian::slots();
         $currentSlot = Antrian::current();
-        if (class_exists(Antrian::class)) {
-            $slots = Antrian::slots();
-            $currentSlot = Antrian::current();
-        }
         $queueThreshold = 30;
         $currentQueue = $currentSlot ? (int) $currentSlot['queue_count'] : 0;
  
-        $subtotal = 0.0;
-        foreach ($cartItems as $item) {
-            $subtotal += (float) $item['line_total'];
-        }
-        $shipping = $cartItems ? 5000 : 0;
+        $subtotal = $summary['subtotal'];
+        $shipping = $summary['biaya_layanan'];
         $total = $subtotal + $shipping;
  
         $this->render('pembeli/checkout', [
             'pageTitle' => 'Checkout - Go Kantin',
             'activeNav' => 'cart',
             'currentUser' => $this->currentUserForLayout(),
-            'cartCount' => Keranjang::countForUser($userId),
+            'cartCount' => $summary['jumlah'],
             'cartItems' => $cartItems,
             'slots' => $slots,
             'currentSlot' => $currentSlot,
@@ -58,9 +51,23 @@ final class CheckoutController extends Controller
     {
         $this->requireRole('pembeli');
  
-        $note = trim((string) ($_POST['catatan'] ?? ''));
-        $res = Transaksi::checkout($note);
+        // Textarea di form bernama "note"
+        $note = trim((string) ($_POST['note'] ?? ($_POST['catatan'] ?? '')));
  
+        //jadwal pengambilan dicatat di awal catatan(belum ada dalam database)
+        if (($_POST['order_timing'] ?? 'now') === 'schedule') {
+            $slotValue = (string) ($_POST['pickup_slot'] ?? '');
+            foreach (Antrian::slots() as $slot) { 
+                if ($slot['slot_value'] === $slotValue) {
+                    $note = trim('[Ambil ' . $slot['slot_label'] . '] ' . $note);
+                    break;
+                }
+            }
+        }
+        $note = mb_substr($note, 0, 500);
+
+        $res = Transaksi::checkout($note);
+
         if (!$res['ok']) {
             $errors = array_map('strval', array_values($res['errors']));
             $this->flash('error', $errors ? implode(' ', $errors) : ($res['message'] ?? 'Checkout gagal.'));

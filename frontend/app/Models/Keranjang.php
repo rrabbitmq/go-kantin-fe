@@ -18,20 +18,20 @@ final class Keranjang
         }
  
         $res = ApiClient::get('/keranjang', $token);
-        if (!$res['ok'] || !is_array($res['data'])) {
+        if (!$res['ok'] ??  false|| !is_array($res['data'] ?? null)) {
             return $empty;
         }
  
         $data = $res['data'];
  
         $items = array_map(static function (array $row): array {
-            $row['id'] = (int) $row['id'];
-            $row['product_id'] = (int) $row['product_id'];
-            $row['variant_id'] = (int) ($row['variant_id'] ?? 0);
-            $row['quantity'] = (int) $row['quantity'];
-            $row['stock'] = (int) ($row['stock'] ?? 0);
-            $row['price'] = (float) $row['price'];
-            $row['line_total'] = (float) $row['line_total'];
+            $row['id']           = (int) ($row['id'] ?? $row['id_detail_keranjang'] ?? 0);
+            $row['product_id']   = (int) ($row['product_id'] ?? $row['id_produk'] ?? 0);
+            $row['variant_id']   = (int) ($row['variant_id'] ?? $row['id_varian_produk'] ?? 0);
+            $row['quantity']     = (int) ($row['quantity'] ?? $row['jumlah'] ?? 0);
+            $row['stock']        = (int) ($row['stock'] ?? $row['stok'] ?? 0);
+            $row['price']        = (float) ($row['price'] ?? $row['harga_satuan'] ?? 0);
+            $row['line_total']   = (float) ($row['line_total'] ?? ($row['quantity'] * $row['price']));
             return $row;
         }, $data['items'] ?? []);
  
@@ -56,20 +56,19 @@ final class Keranjang
         }
  
         $res = ApiClient::get('/keranjang/jumlah', $token);
- 
         return $res['ok'] ? (int) ($res['data']['jumlah'] ?? 0) : 0;
     }
  
     /** Tambah produk ke keranjang. Hasil: ['ok'=>bool, 'message'=>..., 'errors'=>[...], 'data'=>...] */
     public static function add(int $productId, int $quantity = 1, ?int $variantId = null): array
     {
-        $body = ['jumlah' => $quantity];
+
+        $body = ['jumlah'    => $quantity];
         if ($variantId) {
             $body['id_varian_produk'] = $variantId;
-        } else {
+        }else {
             $body['id_produk'] = $productId;
         }
- 
         return ApiClient::post('/keranjang', $body, Auth::token());
     }
  

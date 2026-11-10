@@ -150,6 +150,16 @@
                             </div>
                           </div>
                         </div>
+                        <div class="sb-sum">
+                          <div class="row">
+                            <div class="col-6">
+                              <div class="sb-total-title">Biaya layanan:</div>
+                            </div>
+                            <div class="col-6">
+                              <div class="sb-price-1 text-right"><?=gk_h(gk_format_rupiah($shipping, true)) ?></div>
+                            </div>
+                          </div>
+                      </div>
                         <div class="sb-realy-sum">
                           <div class="row">
                             <div class="col-6">

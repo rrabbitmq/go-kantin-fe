@@ -15,7 +15,7 @@ use App\Models\Keranjang;
  */
 final class CheckoutService
 {
-    public const BIAYA_LAYANAN = 0;
+    public const BIAYA_LAYANAN = 5000;
  
     public static function checkout(int $userId, string $catatan = ''): array
     {

@@ -12,9 +12,9 @@
                 </div>
               </div>
  
-              <?php if (!$cartItems): ?>
+              <?php if (empty($cartItems)): ?>
               <p class="sb-text">Keranjang masih kosong. Yuk pilih menu dulu.</p>
-              <?php endif; ?>
+              <?php else: ?>
  
               <?php foreach ($cartItems as $item): ?>
               <div class="sb-cart-item" data-cart-id="<?= (int) $item['id'] ?>" data-product-id="<?= (int) $item['product_id'] ?>">
@@ -49,6 +49,7 @@
                 </div>
               </div>
               <?php endforeach; ?>
+              <?php endif; ?>
  
               <div class="row justify-content-end">
                 <div class="col-12 col-lg-6">

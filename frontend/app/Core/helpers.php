@@ -147,3 +147,24 @@ function gk_flash_set(string $key, $value): void
 {
     $_SESSION['_flash'][$key] = $value;
 }
+
+function gk_csrf_token(): string
+{
+    if (empty($_SESSION['_csrf'])) {
+        $_SESSION['_csrf'] = bin2hex(random_bytes(32));
+    }
+
+    return $_SESSION['_csrf'];
+}
+
+function gk_csrf_field(): string
+{
+    return '<input type="hidden" name="_csrf" value="' . gk_h(gk_csrf_token()) . '">';
+}
+
+function gk_csrf_valid(): bool
+{
+    $token = (string) ($_POST['_csrf'] ?? '');
+
+    return $token !== '' && hash_equals(gk_csrf_token(), $token);
+}

@@ -12,18 +12,17 @@ final class CheckoutController extends Controller
     public function index(): void
     {
         $this->requireRole('pembeli');
- 
-        $summary = Keranjang::summary();
-        $cartItems = $summary['items'];
+
+        $userId = (int) Auth::id();
+        $cartItems = Keranjang::itemsForUser($userId);
  
         if (!$cartItems) {
             $this->redirect('/user/cart.php');
             return;
         }
  
-        // Model Antrian belum ada di frontend; dilewati sampai tersedia
-        $slots = [];
-        $currentSlot = null;
+        $slots = Antrian::slots();
+        $currentSlot = Antrian::current();
         if (class_exists(Antrian::class)) {
             $slots = Antrian::slots();
             $currentSlot = Antrian::current();
@@ -31,15 +30,18 @@ final class CheckoutController extends Controller
         $queueThreshold = 30;
         $currentQueue = $currentSlot ? (int) $currentSlot['queue_count'] : 0;
  
-        $subtotal = $summary['subtotal'];
-        $shipping = $summary['biaya_layanan'];
+        $subtotal = 0.0;
+        foreach ($cartItems as $item) {
+            $subtotal += (float) $item['line_total'];
+        }
+        $shipping = $cartItems ? 5000 : 0;
         $total = $subtotal + $shipping;
  
         $this->render('pembeli/checkout', [
             'pageTitle' => 'Checkout - Go Kantin',
             'activeNav' => 'cart',
             'currentUser' => $this->currentUserForLayout(),
-            'cartCount' => $summary['jumlah'],
+            'cartCount' => Keranjang::countForUser($userId),
             'cartItems' => $cartItems,
             'slots' => $slots,
             'currentSlot' => $currentSlot,

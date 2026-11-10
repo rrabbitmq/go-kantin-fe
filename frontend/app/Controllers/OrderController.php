@@ -18,7 +18,6 @@ final class OrderController extends Controller
  
         // Tanpa ?id= tampilkan pesanan terbaru milik pembeli
         $order = $orderId > 0 ? Transaksi::find($orderId) : (Transaksi::forUser($userId)[0] ?? null);
- 
         if (!$order) {
             $this->flash('error', 'Pesanan tidak ditemukan.');
             $this->redirect('/user/riwayat-pesanan.php');

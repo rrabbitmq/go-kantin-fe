@@ -12,9 +12,13 @@ final class CartController extends Controller
     {
         $this->requireRole('pembeli');
  
-        $summary = Keranjang::summary();
-        $subtotal = $summary['subtotal'];
-        $shipping = $summary['biaya_layanan'];
+        $userId = (int) Auth::id();
+        $cartItems = Keranjang::itemsForUser($userId);
+        $subtotal = 0.0;
+        foreach ($cartItems as $item) {
+            $subtotal += (float) $item['line_total'];
+        }
+        $shipping = $cartItems ? 5000 : 0;
         $total = $subtotal + $shipping;
  
         $this->render('pembeli/cart', [

@@ -117,11 +117,13 @@ final class Transaksi
                             dt.id_transaksi AS order_id,
                             dt.id_varian_produk AS product_id,
                             CONCAT(dt.nama_produk_snapshot, \' - \', dt.nama_varian_snapshot) AS product_name,
-                            \'/img/menu/1.jpg\' AS image_path,
+                            COALESCE(p.gambar, \'/img/menus/oreo-soft-cake.jpg\') AS image_path,
                             dt.jumlah AS quantity,
                             dt.harga_satuan AS unit_price,
                             \'\' AS note
                      FROM detail_transaksi dt
+                     LEFT JOIN varian_produk v ON v.id_varian_produk = dt.id_varian_produk
+                     LEFT JOIN produk p ON p.id_produk = v.id_produk
                      WHERE dt.id_transaksi = ?
                      ORDER BY dt.id_detail_transaksi'
                 );
@@ -187,35 +189,35 @@ final class Transaksi
                 'created_at' => '2026-10-20 11:42:00',
                 'menu_count' => 2,
                 'item_count' => 3,
-                'thumbs' => ['/img/menu/1.jpg', '/img/menu/4.jpg'],
+                'thumbs' => ['/img/menus/oreo-soft-cake.jpg', '/img/menus/kapal-api.jpg'],
             ],
             [
                 'id' => 2,
                 'user_id' => $userId,
                 'order_code' => 'GK-884-21A',
                 'status' => 'ready',
-                'total_amount' => 9000,
+                'total_amount' => 15000,
                 'eta_minutes' => 5,
                 'pickup_label' => 'Ambil di Kantin',
                 'pickup_location' => 'Kantin JTI • Lantai 8',
                 'created_at' => '2026-10-20 10:15:00',
                 'menu_count' => 1,
                 'item_count' => 1,
-                'thumbs' => ['/img/menu/2.jpg'],
+                'thumbs' => ['/img/menus/nasi-ayam-geprek.jpg'],
             ],
             [
                 'id' => 3,
                 'user_id' => $userId,
                 'order_code' => 'GK-771-09C',
                 'status' => 'done',
-                'total_amount' => 29000,
+                'total_amount' => 30500,
                 'eta_minutes' => null,
                 'pickup_label' => 'Ambil di Kantin',
                 'pickup_location' => 'Kantin JTI • Lantai 8',
                 'created_at' => '2026-10-19 12:08:00',
                 'menu_count' => 3,
                 'item_count' => 4,
-                'thumbs' => ['/img/menu/3.jpg', '/img/menu/5.jpg', '/img/menu/6.jpg'],
+                'thumbs' => ['/img/menus/ayam-krispi.jpg', '/img/menus/risol-mayo.jpg', '/img/menus/air-mineral-club.jpg'],
             ],
             [
                 'id' => 4,
@@ -229,7 +231,7 @@ final class Transaksi
                 'created_at' => '2026-10-18 13:30:00',
                 'menu_count' => 1,
                 'item_count' => 2,
-                'thumbs' => ['/img/menu/4.jpg'],
+                'thumbs' => ['/img/menus/teh-pucuk.png'],
             ],
         ];
     }
@@ -238,19 +240,19 @@ final class Transaksi
     {
         $map = [
             1 => [
-                ['id' => 1, 'order_id' => 1, 'product_id' => 13, 'product_name' => 'Oreo Soft Cake', 'image_path' => '/img/menu/1.jpg', 'quantity' => 1, 'unit_price' => 3000, 'note' => ''],
-                ['id' => 2, 'order_id' => 1, 'product_id' => 14, 'product_name' => 'Air Mineral', 'image_path' => '/img/menu/4.jpg', 'quantity' => 2, 'unit_price' => 4000, 'note' => 'satu dingin, satu biasa'],
+                ['id' => 1, 'order_id' => 1, 'product_id' => 1, 'product_name' => 'Oreo Soft Cake', 'image_path' => '/img/menus/oreo-soft-cake.jpg', 'quantity' => 1, 'unit_price' => 3000, 'note' => ''],
+                ['id' => 2, 'order_id' => 1, 'product_id' => 4, 'product_name' => 'Kapal Api', 'image_path' => '/img/menus/kapal-api.jpg', 'quantity' => 2, 'unit_price' => 4000, 'note' => 'satu panas, satu dingin'],
             ],
             2 => [
-                ['id' => 3, 'order_id' => 2, 'product_id' => 16, 'product_name' => 'Tumis Kacang', 'image_path' => '/img/menu/2.jpg', 'quantity' => 1, 'unit_price' => 9000, 'note' => ''],
+                ['id' => 3, 'order_id' => 2, 'product_id' => 9, 'product_name' => 'Nasi Ayam Geprek', 'image_path' => '/img/menus/nasi-ayam-geprek.jpg', 'quantity' => 1, 'unit_price' => 15000, 'note' => ''],
             ],
             3 => [
-                ['id' => 4, 'order_id' => 3, 'product_id' => 3, 'product_name' => 'Ikan Krispi', 'image_path' => '/img/menu/3.jpg', 'quantity' => 2, 'unit_price' => 4000, 'note' => ''],
-                ['id' => 5, 'order_id' => 3, 'product_id' => 5, 'product_name' => 'Carpaccio Ikan', 'image_path' => '/img/menu/5.jpg', 'quantity' => 1, 'unit_price' => 6000, 'note' => ''],
-                ['id' => 6, 'order_id' => 3, 'product_id' => 6, 'product_name' => 'Keju Goreng Madu Minuman', 'image_path' => '/img/menu/6.jpg', 'quantity' => 1, 'unit_price' => 14000, 'note' => ''],
+                ['id' => 4, 'order_id' => 3, 'product_id' => 2, 'product_name' => 'Ayam Krispi', 'image_path' => '/img/menus/ayam-krispi.jpg', 'quantity' => 2, 'unit_price' => 12000, 'note' => ''],
+                ['id' => 5, 'order_id' => 3, 'product_id' => 12, 'product_name' => 'Risol Mayo', 'image_path' => '/img/menus/risol-mayo.jpg', 'quantity' => 1, 'unit_price' => 3500, 'note' => ''],
+                ['id' => 6, 'order_id' => 3, 'product_id' => 3, 'product_name' => 'Air Mineral Club', 'image_path' => '/img/menus/air-mineral-club.jpg', 'quantity' => 1, 'unit_price' => 3000, 'note' => ''],
             ],
             4 => [
-                ['id' => 7, 'order_id' => 4, 'product_id' => 14, 'product_name' => 'Air Mineral', 'image_path' => '/img/menu/4.jpg', 'quantity' => 2, 'unit_price' => 4000, 'note' => ''],
+                ['id' => 7, 'order_id' => 4, 'product_id' => 6, 'product_name' => 'Teh Pucuk', 'image_path' => '/img/menus/teh-pucuk.png', 'quantity' => 2, 'unit_price' => 4000, 'note' => ''],
             ],
         ];
 

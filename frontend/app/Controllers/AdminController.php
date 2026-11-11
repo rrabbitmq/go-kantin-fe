@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Core\Auth;
 use App\Core\Controller;
+use App\Models\Penjual;
 
 final class AdminController extends Controller
 {
@@ -11,50 +12,37 @@ final class AdminController extends Controller
     {
         $this->requirePenjual();
 
+        $res = Penjual::dashboard();
+        if ($res['ok'] && is_array($res['data'])) {
+            $data = $res['data'];
+        }else {
+            $this->flash('error', $res['message'] ?? 'Data dashboard tidak dapat dimuat');
+            $data = $this->emptyDashboard();
+        }
+
         $this->renderAdmin('admin/dashboard', [
             'pageTitle' => 'Dashboard Admin - Go Kantin',
             'activeNav' => 'dashboard',
-            'stats' => [
-                'pendapatan' => 1257500,
-                'transaksi' => 153,
-                'qris' => 98,
-                'tunai' => 55,
-                'menu_aktif' => 16,
-                'makanan' => 7,
-                'minuman' => 5,
-                'snack' => 4,
-                'stok_menipis' => 3,
-            ],
-            'lowStock' => [
-                ['nama' => 'Ayam Krispi', 'stok' => 4],
-                ['nama' => 'Sosis Solo', 'stok' => 3],
-                ['nama' => 'Kapal Api', 'stok' => 2],
-            ],
-            'categories' => [
-                ['nama' => 'Makanan', 'terjual' => 62, 'sisa' => 84, 'omzet' => 620000],
-                ['nama' => 'Minuman', 'terjual' => 71, 'sisa' => 120, 'omzet' => 355000],
-                ['nama' => 'Snack', 'terjual' => 20, 'sisa' => 45, 'omzet' => 282500],
-            ],
-            'weeklyRevenue' => [
-                ['label' => 'Sen', 'value' => 980000],
-                ['label' => 'Sel', 'value' => 1120000],
-                ['label' => 'Rab', 'value' => 870000],
-                ['label' => 'Kam', 'value' => 1340000],
-                ['label' => 'Jum', 'value' => 1257500],
-            ],
-            'bestsellers' => [
-                ['rank' => 1, 'nama' => 'Air Mineral', 'harga' => 3000, 'stok' => 48, 'terjual' => 62],
-                ['rank' => 2, 'nama' => 'Oreo Soft Cake', 'harga' => 3000, 'stok' => 25, 'terjual' => 41],
-                ['rank' => 3, 'nama' => 'Ayam Krispi', 'harga' => 12000, 'stok' => 4, 'terjual' => 38],
-                ['rank' => 4, 'nama' => 'Teh Pucuk', 'harga' => 4000, 'stok' => 30, 'terjual' => 29],
-                ['rank' => 5, 'nama' => 'Sosis Solo Ayam', 'harga' => 2500, 'stok' => 18, 'terjual' => 24],
-            ],
+            'stats' => $data['stats'],
+            'lowStock' => $data['lowstock'],
+            'categories' => $data['categories'],
+            'weeklyRevenue' => $data['weeklyRevenue'],
+            'bestsellers' => $data['bestsellers'],
+            'queueBadge' => (int) ($data['antiran_aktif'] ?? 0),
         ]);
     }
 
     public function antrian(): void
     {
         $this->requirePenjual();
+
+        $res = Penjual::antrian();
+        $orders = [];
+        if ($res['ok'] && is_array($res['data'])) {
+            $orders = $res['data'];
+        } else {
+            $this->flash('error', $res['message'] ?? 'Antrian pesanan tidak dapat dimuat');
+        }
 
         $orders = [
             [
@@ -73,39 +61,6 @@ final class AdminController extends Controller
                     ['qty' => 1, 'nama' => 'Oreo Soft Cake', 'harga' => 3000],
                     ['qty' => 2, 'nama' => 'Air Mineral', 'harga' => 3000],
                     ['qty' => 1, 'nama' => 'Teh Pucuk', 'harga' => 4000],
-                ],
-            ],
-            [
-                'queue' => 'A-015',
-                'kode' => '#JTI-118-MNM',
-                'status' => 'dibayar',
-                'slot' => '09:30 - 10:00',
-                'pembayar' => 'Tunai di Kasir - Bayar saat Ambil',
-                'metode' => 'tunai',
-                'pembeli' => 'Siti Nurhaliza',
-                'nim' => '2341720042',
-                'waktu' => '09:20',
-                'total' => 15000,
-                'catatan' => '',
-                'items' => [
-                    ['qty' => 1, 'nama' => 'Ayam Krispi', 'harga' => 12000],
-                    ['qty' => 1, 'nama' => 'Air Mineral', 'harga' => 3000],
-                ],
-            ],
-            [
-                'queue' => 'A-016',
-                'kode' => '#JTI-119-MKN',
-                'status' => 'siap_diambil',
-                'slot' => '10:00 - 10:30',
-                'pembayar' => 'QRIS - Lunas',
-                'metode' => 'qris',
-                'pembeli' => 'Budi Santoso',
-                'nim' => '2341720088',
-                'waktu' => '09:05',
-                'total' => 8000,
-                'catatan' => 'tanpa es',
-                'items' => [
-                    ['qty' => 2, 'nama' => 'Teh Pucuk', 'harga' => 4000],
                 ],
             ],
             [
@@ -133,6 +88,43 @@ final class AdminController extends Controller
             'orders' => $orders,
             'queueCount' => count($orders),
         ]);
+    }
+
+    /** POST untuk /admin/antrian.php: digunakan konfirmasi, proses, siap, selesai, atau batalkan pesanan. */
+    public function ubahStatus(): void {
+        $this->requirePenjual();
+
+        $id = (int) ($_POST['id'] ?? 0);
+        $aksi = (string) ($_POST['aksi'] ?? '');
+
+        if ($id < 1 || $aksi === '') {
+            $this->flash('error', 'Permintaan tidak valid');
+            $this->redirect('/admin/antrian.php');
+            return;
+        }
+
+        $res = Penjual::ubahStatus($id, $aksi);
+
+        if ($res['ok']) {
+            $this->flash('success', $res['message'] ?? 'Status pesanan diperbarui');
+        } else {
+            $this->flash('error', $res['message'] ?? 'Status pesanan gagal diperbarui');
+        }
+        $this->redirect('/admin/antrian.php');
+    }
+
+    private function emptyDashboard(): array {
+        return[
+            'stats' => [
+                'pendapatan' => 0, 'transaksi' => 0, 'qris' => 0, 'tunai' => 0,
+                'menu_aktif' => 0, 'makanan' => 0, 'minuman' => 0, 'snack' => 0, 'stok_menipis' => 0,
+            ],
+            'lowStock' => [],
+            'categories' => [],
+            'weeklyRevenue' => [],
+            'bestsellers' => [],
+            'antrian_aktif' => 0,
+        ];
     }
 
     public function pos(): void
@@ -210,18 +202,24 @@ final class AdminController extends Controller
     {
         $this->requirePenjual();
 
-        $rows = [
-            ['kode' => 'ABC-123-XYZ', 'waktu' => '2026-11-02 09:15', 'pembeli' => 'Farhan Ramadhan', 'slot' => '09:30-10:00', 'sumber' => 'online', 'metode' => 'QRIS', 'total' => 11000, 'status' => 'diproses'],
-            ['kode' => 'JTI-118-MNM', 'waktu' => '2026-11-02 09:20', 'pembeli' => 'Siti Nurhaliza', 'slot' => '09:30-10:00', 'sumber' => 'online', 'metode' => 'Tunai', 'total' => 15000, 'status' => 'dibayar'],
-            ['kode' => 'JTI-119-MKN', 'waktu' => '2026-11-02 09:05', 'pembeli' => 'Budi Santoso', 'slot' => '10:00-10:30', 'sumber' => 'online', 'metode' => 'QRIS', 'total' => 8000, 'status' => 'siap_diambil'],
-            ['kode' => 'POS-2026-088', 'waktu' => '2026-11-02 08:45', 'pembeli' => 'Walk-in', 'slot' => '-', 'sumber' => 'pos', 'metode' => 'Tunai', 'total' => 16000, 'status' => 'selesai'],
-            ['kode' => 'POS-2026-087', 'waktu' => '2026-11-02 08:30', 'pembeli' => 'Walk-in', 'slot' => '-', 'sumber' => 'pos', 'metode' => 'QRIS', 'total' => 7000, 'status' => 'selesai'],
-            ['kode' => 'JTI-110-SNK', 'waktu' => '2026-11-02 08:10', 'pembeli' => 'Rina Melati', 'slot' => '08:30-09:00', 'sumber' => 'online', 'metode' => 'QRIS', 'total' => 9000, 'status' => 'selesai'],
-            ['kode' => 'JTI-109-MKN', 'waktu' => '2026-11-01 14:20', 'pembeli' => 'Andi Wijaya', 'slot' => '14:30-15:00', 'sumber' => 'online', 'metode' => 'Tunai', 'total' => 24000, 'status' => 'dibatalkan'],
-            ['kode' => 'JTI-108-MNM', 'waktu' => '2026-11-01 13:00', 'pembeli' => 'Citra Lestari', 'slot' => '13:00-13:30', 'sumber' => 'online', 'metode' => 'QRIS', 'total' => 5000, 'status' => 'menunggu_pembayaran'],
-            ['kode' => 'POS-2026-080', 'waktu' => '2026-11-01 12:15', 'pembeli' => 'Walk-in', 'slot' => '-', 'sumber' => 'pos', 'metode' => 'Tunai', 'total' => 12000, 'status' => 'selesai'],
-            ['kode' => 'JTI-100-ALL', 'waktu' => '2026-11-01 10:00', 'pembeli' => 'Eko Prasetyo', 'slot' => '10:00-10:30', 'sumber' => 'online', 'metode' => 'QRIS', 'total' => 18500, 'status' => 'selesai'],
-        ];
+        $res = Penjual::semuaPesanan();
+        $orders = [];
+        if ($res['ok'] && is_array($res['data'])) {
+            $orders = $res['data'];
+        } else {
+            $this->flash('error', $res['message'] ?? 'Laporan transaksi tidak dapat dimuat');
+        }
+
+        $rows = array_map(static fn (array $o): array => [
+            'kode' => $o['kode_raw'],
+            'waktu' => $o['tanggal'],
+            'pembeli' => $o['pembeli'],
+            'slot' => $o['slot'],
+            'sumber' => 'online',
+            'metode' => $o['metode'] === 'qris' ? 'QRIS' : 'Tunai',
+            'total' => $o['total'],
+            'status' => $o['status'],
+        ], $orders);
 
         $this->renderAdmin('admin/laporan', [
             'pageTitle' => 'Laporan Transaksi - Go Kantin',

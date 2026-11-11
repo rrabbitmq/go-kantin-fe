@@ -9,6 +9,7 @@ $statusLabels = [
     'menunggu_pembayaran' => 'Menunggu',
 ];
 $nextAction = [
+    'menunggu_pembayaran' => ['label' => 'Konfirmasi Pesanan', 'aksi' => 'konfirmasi'],
     'dibayar' => ['label' => 'Mulai Siapkan Makanan', 'action' => 'Mulai proses'],
     'diproses' => ['label' => 'Tandai Siap Ambil', 'action' => 'Tandai siap ambil'],
     'siap_diambil' => ['label' => 'Serahkan & Selesai', 'action' => 'Serahkan & selesai'],
@@ -25,6 +26,7 @@ $slots = array_values(array_unique(array_map(static fn ($o) => $o['slot'], $orde
         <div class="gk-admin-toolbar">
           <div class="gk-admin-pills" role="tablist">
             <button type="button" class="gk-admin-pill is-active" data-filter="all">Semua</button>
+            <button type="button" class="gk-admin-pill" data-filter="menunggu_pembayaran">Menunggu</button>
             <button type="button" class="gk-admin-pill" data-filter="dibayar">Diterima</button>
             <button type="button" class="gk-admin-pill" data-filter="diproses">Dibuat</button>
             <button type="button" class="gk-admin-pill" data-filter="siap_diambil">Siap Ambil</button>
@@ -38,7 +40,10 @@ $slots = array_values(array_unique(array_map(static fn ($o) => $o['slot'], $orde
         </div>
 
         <div class="gk-admin-order-list">
-          <?php foreach ($orders as $order): ?>
+          <?php if (!$orders): ?>
+          <p class="gk-admin-empty">Belum ada pesanan masuk</p>
+          <?php endif; ?>
+          <?php foreach ($orders as $order): ?> 
           <?php
             $status = $order['status'];
             $action = $nextAction[$status] ?? null;
@@ -47,7 +52,8 @@ $slots = array_values(array_unique(array_map(static fn ($o) => $o['slot'], $orde
             class="gk-admin-order-card"
             data-status="<?= gk_h($status) ?>"
             data-slot="<?= gk_h($order['slot']) ?>"
-            data-queue="<?= gk_h($order['queue']) ?>">
+            data-queue="<?= gk_h($order['queue']) ?>"
+            data-order-id="<?= (int) ($order['id'] ?? 0) ?>">
             <div>
               <div class="gk-admin-order-top">
                 <span class="gk-admin-queue"><?= gk_h($order['queue']) ?></span>
@@ -55,7 +61,7 @@ $slots = array_values(array_unique(array_map(static fn ($o) => $o['slot'], $orde
                 <span class="gk-admin-status-chip is-<?= gk_h($status) ?>">
                   <?= gk_h($statusLabels[$status] ?? $status) ?>
                 </span>
-                <span>Ambil: <?= gk_h($order['slot']) ?> WIB</span>
+                <span>Ambil: <?= gk_h($order['slot']) ?><?= preg_match('/\d/', $order['slot']) ? ' WIB ' : '' ?></span>
                 <span><?= gk_h($order['pembayar']) ?></span>
               </div>
               <div class="gk-admin-order-meta">
@@ -79,9 +85,18 @@ $slots = array_values(array_unique(array_map(static fn ($o) => $o['slot'], $orde
               </button>
               <?php endif; ?>
               <?php if ($action): ?>
-              <button type="button" class="gk-admin-btn" data-order-action="<?= gk_h($action['action']) ?>">
-                <?= gk_h($action['label']) ?>
-              </button>
+              <form method="post" action="/admin/antrian.php">
+                <input type="hidden" name="id" value="<?= (int) ($order['id'] ?? 0) ?>">
+                <input type="hidden" name="aksi" value="<?= gk_h($action['aksi']) ?>">
+                <button type="submit" class="gk-admin-btn"><?= gk_h($action['label']) ?></button>
+              </form>
+              <?php endif; ?>
+              <?php if (in_array($status, ['menunggu_pembayaran', 'dibayar', 'diproses'], true)): ?>
+              <form method="post" action="/admin/antrian.php" onsubmit="return confirm('Batalkan pesanan ini? Stok akan dikembalikan.');">
+                <input type="hidden" name="id" value="<?= (int) ($order['id'] ?? 0) ?>">
+                <input type="hidden" name="aksi" value="batal">
+                <button type="submit" class="gk-admin-btn gk-admin-btn-outline gk-admin-btn-sm">Batalkan</button>
+              </form>
               <?php endif; ?>
             </div>
           </article>

@@ -19,7 +19,7 @@ final class Keranjang
                             \'\' AS note,
                             p.nama_produk AS name,
                             v.harga_satuan AS price,
-                            COALESCE(p.gambar, \'/img/menu/1.jpg\') AS image_path,
+                            COALESCE(p.gambar, \'/img/menus/oreo-soft-cake.jpg\') AS image_path,
                             COALESCE(p.deskripsi, \'\') AS description,
                             (v.harga_satuan * dk.jumlah) AS line_total
                      FROM keranjang k
@@ -67,7 +67,7 @@ final class Keranjang
 
         $items = [
             ['id' => 1, 'product_id' => 1, 'quantity' => 1, 'note' => ''],
-            ['id' => 2, 'product_id' => 5, 'quantity' => 1, 'note' => ''],
+            ['id' => 2, 'product_id' => 2, 'quantity' => 1, 'note' => ''],
             ['id' => 3, 'product_id' => 4, 'quantity' => 1, 'note' => ''],
         ];
 

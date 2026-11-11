@@ -12,12 +12,9 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST'){
 }
 
 $roleMap = [
-    'pembeli' => ['status_akun' => 'aktif', 'pesan' => 'Registrasi berhasil. Silahkan Login',
-    ],
-    'penjual' => ['status_akun' => 'pending', 'pesan' => 'Pendaftaran berhasil. Akun menunggu persetujuan admin',
-    ],
-    'super_admin' => ['status_akun' => 'aktif','pesan' => 'Akun admin berhasil dibuat',
-    ],
+    'pembeli' => ['status_akun' => 'aktif', 'pesan' => 'Registrasi berhasil. Silahkan Login'],
+    'penjual' => ['status_akun' => 'pending', 'pesan' => 'Pendaftaran berhasil. Akun menunggu persetujuan admin'],
+    'super_admin' => ['status_akun' => 'aktif','pesan' => 'Akun admin berhasil dibuat'],
 ];
 
 $input = getInput();
@@ -153,4 +150,3 @@ try {
     error_log($e->getMessage());
     jsonResponse(500, ['message' => 'Terjadi kesalahan pada server']);
 }
-?>

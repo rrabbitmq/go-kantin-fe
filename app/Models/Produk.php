@@ -18,7 +18,7 @@ final class Produk
                                 p.id_kategori_produk AS category_id,
                                 p.nama_produk AS name,
                                 p.deskripsi AS description,
-                                COALESCE(p.gambar, \'/img/menu/1.jpg\') AS image_path,
+                                COALESCE(p.gambar, \'/img/menus/oreo-soft-cake.jpg\') AS image_path,
                                 COALESCE(MIN(v.harga_satuan), 0) AS price,
                                 k.nama_kategori AS category_name,
                                 lower(replace(k.nama_kategori, \' \', \'-\')) AS category_slug
@@ -37,7 +37,7 @@ final class Produk
                                 p.id_kategori_produk AS category_id,
                                 p.nama_produk AS name,
                                 p.deskripsi AS description,
-                                COALESCE(p.gambar, \'/img/menu/1.jpg\') AS image_path,
+                                COALESCE(p.gambar, \'/img/menus/oreo-soft-cake.jpg\') AS image_path,
                                 COALESCE(MIN(v.harga_satuan), 0) AS price,
                                 k.nama_kategori AS category_name,
                                 lower(replace(k.nama_kategori, \' \', \'-\')) AS category_slug
@@ -80,7 +80,7 @@ final class Produk
                             p.id_kategori_produk AS category_id,
                             p.nama_produk AS name,
                             p.deskripsi AS description,
-                            COALESCE(p.gambar, \'/img/menu/1.jpg\') AS image_path,
+                            COALESCE(p.gambar, \'/img/menus/oreo-soft-cake.jpg\') AS image_path,
                             COALESCE(MIN(v.harga_satuan), 0) AS price,
                             k.nama_kategori AS category_name,
                             lower(replace(k.nama_kategori, \' \', \'-\')) AS category_slug
@@ -157,22 +157,15 @@ final class Produk
         }
 
         $rows = [
-            [1, 1, 'Keju Goreng Madu', 14000, '/img/menu/1.jpg', 'Snack favorit dengan rasa manis gurih', 'keju, madu, tepung', false, 12, true],
-            [2, 1, 'Salmon Asap', 19000, '/img/menu/4.jpg', 'Salmon asap lembut dengan topping segar', 'tomat, nori, keju feta', true, 4, true],
-            [3, 1, 'Ikan Krispi', 4000, '/img/menu/3.jpg', 'Ikan goreng renyah', 'ikan, tepung, rempah', false, 8, false],
-            [4, 2, 'Sup Telur', 11000, '/img/menu/4.jpg', 'Hangat dan mengenyangkan', 'telur, kaldu, daun bawang', false, 6, false],
-            [5, 3, 'Carpaccio Ikan', 7990, '/img/menu/2.jpg', 'Hidangan segar siap saji', 'ikan, lemon, minyak zaitun', false, 5, true],
-            [6, 2, 'Keju Goreng Madu Minuman', 14000, '/img/menu/6.jpg', 'Varian minuman manis', 'susu, keju, madu', false, 3, false],
-            [7, 1, 'Sup Telur Spesial', 11000, '/img/menu/7.jpg', 'Sup telur porsi kantin', 'telur, kaldu', false, 4, false],
-            [8, 3, 'Carpaccio Ringan', 6000, '/img/menu/8.jpg', 'Porsi snack ringan', 'ikan, saus', false, 2, false],
-            [9, 3, 'Keju Goreng Madu Snack', 14000, '/img/menu/9.jpg', 'Porsi snack keju madu', 'keju, madu', false, 7, false],
-            [10, 2, 'Carpaccio Minuman', 6000, '/img/menu/10.jpg', 'Minuman khusus kantin', 'es, sirup', false, 1, false],
-            [13, 3, 'Oreo Soft Cake', 3000, '/img/menu/1.jpg', 'Kue lembut rasa oreo', 'oreo, tepung, susu', false, 15, true],
-            [14, 2, 'Air Mineral', 4000, '/img/menu/4.jpg', 'Air mineral dingin/biasa', 'air mineral', true, 20, false],
-            [15, 3, 'Kulit Crispy', 14000, '/img/menu/1.jpg', 'Kulit crispy renyah', 'kulit, bumbu', false, 10, true],
-            [16, 1, 'Tumis Kacang', 9000, '/img/menu/2.jpg', 'Tumis kacang gurih', 'kacang, bawang', true, 9, true],
-            [17, 1, 'Tahu Isi Pedas', 9000, '/img/menu/3.jpg', 'Tahu isi pedas', 'tahu, cabai', true, 11, true],
-            [18, 2, 'Kopi', 4000, '/img/menu/4.jpg', 'Kopi panas kantin', 'kopi, gula', false, 18, true],
+            [1, 3, 'Oreo Soft Cake', 3000, '/img/menus/oreo-soft-cake.jpg', 'Kue lembut rasa oreo', 'oreo, tepung, susu', false, 15, true],
+            [2, 1, 'Ayam Krispi', 12000, '/img/menus/ayam-krispi.jpg', 'Ayam goreng tepung renyah', 'ayam, tepung, rempah', false, 12, true],
+            [3, 2, 'Air Mineral Club', 3000, '/img/menus/air-mineral-club.jpg', 'Air mineral dingin atau biasa', 'air mineral', true, 20, true],
+            [4, 2, 'Kapal Api', 4000, '/img/menus/kapal-api.jpg', 'Kopi panas kantin', 'kopi, gula', true, 8, false],
+            [6, 2, 'Teh Pucuk', 4000, '/img/menus/teh-pucuk.png', 'Teh dalam kemasan dingin', 'teh, gula', true, 9, true],
+            [7, 3, 'Sosis Solo Ayam', 2500, '/img/menus/Sosis%20solo.jpg', 'Sosis solo isi daging gurih', 'daging, kulit dadar', false, 6, false],
+            [8, 3, 'Tahu Isi Sayur', 2500, '/img/menus/Tahu%20isi%20sayur.jpg', 'Tahu goreng isi sayuran', 'tahu, wortel, kol', true, 7, false],
+            [9, 1, 'Nasi Ayam Geprek', 15000, '/img/menus/nasi-ayam-geprek.jpg', 'Nasi dengan ayam geprek sambal', 'nasi, ayam, sambal', false, 14, true],
+            [12, 3, 'Risol Mayo', 3500, '/img/menus/risol-mayo.jpg', 'Risol isi mayones dan telur', 'tepung, mayones, telur', false, 10, true],
         ];
 
         $out = [];

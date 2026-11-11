@@ -6,6 +6,7 @@ use App\Core\ApiClient;
 use App\Core\Auth;
 use App\Core\Controller;
 use App\Core\Rbac;
+use App\Models\KategoriPenjual;
 
 final class AuthController extends Controller
 {
@@ -113,16 +114,6 @@ final class AuthController extends Controller
             $this->flash('error', 'Konfirmasi password tidak cocok.');
             $this->redirect('/auth/register.php');
         }
-
-        if (User::usernameExists($username)) {
-            $this->flash('error', 'Username sudah digunakan.');
-            $this->redirect('/auth/register.php');
-        }
-
-        if ($email !== '' && User::emailExists($email)) {
-            $this->flash('error', 'Email sudah digunakan.');
-            $this->redirect('/auth/register.php');
-        }
         
         $res = ApiClient::post('/register', [
             'role' => 'pembeli',
@@ -148,6 +139,89 @@ final class AuthController extends Controller
  
         $this->flash('success', 'Registrasi berhasil. Silakan login.');
         $this->redirect('/auth/login.php');
+    }
+
+    public function showRegisterPenjual(): void {
+        $this->requireGuest();
+
+        $this->render('auth/register-penjual', [
+            'pageTitle' => 'Daftar Penjual - Go Kantin',
+            'error' => gk_flash('error'),
+            'old' => gk_flash('old', []),
+            'kategori' => KategoriPenjual::all(),
+        ], 'layouts/auth');
+    }
+
+    /** Pendaftaran penjual: akun berstatus "pending" sampai disetujui admin. */
+    public function registerPenjual(): void
+    {
+        $this->requireGuest();
+
+        $back = '/auth/penjual/register.php';
+        $field = static fn (string $k): string => trim((string) ($_POST[$k] ?? ''));
+
+        $username = $field('username');
+        $namaUsaha = $field('nama_usaha');
+        $noHp = $field('no_hp');
+        $email = $field('email');
+        $alamat = $field('alamat');
+        $idKategori = (int) ($_POST['id_kategori_penjual'] ?? 0);
+        $password = (string) ($_POST['password'] ?? '');
+        $passwordConfirm = (string) ($_POST['password_confirm'] ?? '');
+
+        $this->flash('old', [
+            'username' => $username,
+            'nama_usaha' => $namaUsaha,
+            'no_hp' => $noHp,
+            'email' => $email,
+            'alamat' => $alamat,
+            'id_kategori_penjual' => $idKategori,
+        ]);
+
+        $error = null;
+        if (!preg_match('/^[a-zA-Z0-9._-]{3,50}$/', $username)) {
+            $error = 'Username 3–50 karakter (huruf, angka, titik, underscore, strip).';
+        } elseif ($namaUsaha === '' || mb_strlen($namaUsaha) > 100) {
+            $error = 'Nama usaha wajib diisi (maksimal 100 karakter).';
+        } elseif ($idKategori < 1) {
+            $error = 'Kategori usaha wajib dipilih.';
+        } elseif (!preg_match('/^(\+62|62|0)8[0-9]{8,12}$/', $noHp)) {
+            $error = 'Nomor HP tidak valid.';
+        } elseif ($email !== '' && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $error = 'Format email tidak valid.';
+        } elseif (strlen($password) < 8) {
+            $error = 'Password minimal 8 karakter.';
+        } elseif ($password !== $passwordConfirm) {
+            $error = 'Konfirmasi password tidak cocok.';
+        }
+
+        if ($error !== null) {
+            $this->flash('error', $error);
+            $this->redirect($back);
+            return;
+        }
+
+        $res = ApiClient::post('/register', [
+            'role' => 'penjual',
+            'username' => $username,
+            'nama_usaha' => $namaUsaha,
+            'id_kategori_penjual' => $idKategori,
+            'no_hp' => $noHp,
+            'email' => $email,
+            'alamat' => $alamat,
+            'password' => $password,
+        ]);
+
+        if (!$res['ok']) {
+            $messages = array_map('strval', array_values($res['errors']));
+            $this->flash('error', $messages ? implode(' ', $messages) : ($res['message'] ?? 'Gagal mendaftar.'));
+            $this->redirect($back);
+            return;
+        }
+
+        gk_flash('old', []);
+        $this->flash('success', 'Pendaftaran berhasil. Akun kamu menunggu persetujuan admin sebelum bisa dipakai login.');
+        $this->redirect('/auth/penjual/login.php');
     }
  
     public function logout(): void

@@ -50,6 +50,9 @@ $old = $old ?? [];
     </div>
   <?php else: ?>
     <div class="gk-auth-links">
+      Belum punya akun penjual? <a href="/auth/penjual/register.php">Daftar sebagai penjual</a>
+    </div>
+    <div class="gk-auth-links">
       <a href="/auth/login.php">Kembali ke login pembeli</a>
     </div>
   <?php endif; ?>

@@ -87,7 +87,7 @@ function gk_filter_class_for_category(string $slug): string
     return $map[strtolower($slug)] ?? 'main-dishes';
 }
 
-function gk_format_order_datetime(string $datetime): string
+function gk_format_date(string $datetime): string
 {
     $ts = strtotime($datetime);
     if ($ts === false) {
@@ -99,12 +99,17 @@ function gk_format_order_datetime(string $datetime): string
         7 => 'Jul', 8 => 'Agu', 9 => 'Sep', 10 => 'Okt', 11 => 'Nov', 12 => 'Des',
     ];
 
-    $day = date('j', $ts);
-    $month = $months[(int) date('n', $ts)];
-    $year = date('Y', $ts);
-    $time = date('H:i', $ts);
+    return date('j', $ts) . ' ' . $months[(int) date('n', $ts)] . ' ' . date('Y', $ts);
+}
 
-    return $day . ' ' . $month . ' ' . $year . ' • ' . $time;
+function gk_format_order_datetime(string $datetime): string
+{
+    $ts = strtotime($datetime);
+    if ($ts === false) {
+        return $datetime;
+    }
+
+    return gk_format_date($datetime) . ' • ' . date('H:i', $ts);
 }
 
 function gk_ingredient_spans(string $ingredients): string

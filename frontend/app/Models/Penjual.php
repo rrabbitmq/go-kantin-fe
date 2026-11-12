@@ -7,7 +7,7 @@ use App\Core\Auth;
 
 /** untuk Data dasboard/atrian penjual diambil dari API backend, hasil: array ApiClient (ok, message, data)*/
 final class Penjual {
-    public static function dashboar(): array {
+    public static function dashboard(): array {
         return ApiClient::get('/penjual/dashboard', Auth::token());
     }
 

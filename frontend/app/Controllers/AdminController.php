@@ -24,7 +24,7 @@ final class AdminController extends Controller
             'pageTitle' => 'Dashboard Admin - Go Kantin',
             'activeNav' => 'dashboard',
             'stats' => $data['stats'],
-            'lowStock' => $data['lowstock'],
+            'lowStock' => $data['lowStock'],
             'categories' => $data['categories'],
             'weeklyRevenue' => $data['weeklyRevenue'],
             'bestsellers' => $data['bestsellers'],

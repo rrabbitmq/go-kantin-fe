@@ -6,13 +6,13 @@ $statusLabels = [
     'siap_diambil' => 'Siap Ambil',
     'selesai' => 'Selesai',
     'dibatalkan' => 'Dibatalkan',
-    'menunggu_pembayaran' => 'Menunggu',
+    'menunggu_pembayaran' => 'Menunggu Konfirmasi',
 ];
 $nextAction = [
     'menunggu_pembayaran' => ['label' => 'Konfirmasi Pesanan', 'aksi' => 'konfirmasi'],
-    'dibayar' => ['label' => 'Mulai Siapkan Makanan', 'action' => 'Mulai proses'],
-    'diproses' => ['label' => 'Tandai Siap Ambil', 'action' => 'Tandai siap ambil'],
-    'siap_diambil' => ['label' => 'Serahkan & Selesai', 'action' => 'Serahkan & selesai'],
+    'dibayar' => ['label' => 'Mulai Siapkan Makanan', 'aksi' => 'proses'],
+    'diproses' => ['label' => 'Tandai Siap Ambil', 'aksi' => 'siap'],
+    'siap_diambil' => ['label' => 'Serahkan & Selesai', 'aksi' => 'selesai'],
 ];
 $slots = array_values(array_unique(array_map(static fn ($o) => $o['slot'], $orders)));
 ?>
@@ -41,9 +41,9 @@ $slots = array_values(array_unique(array_map(static fn ($o) => $o['slot'], $orde
 
         <div class="gk-admin-order-list">
           <?php if (!$orders): ?>
-          <p class="gk-admin-empty">Belum ada pesanan masuk</p>
+          <p class="gk-admin-empty">Belum ada pesanan masuk.</p>
           <?php endif; ?>
-          <?php foreach ($orders as $order): ?> 
+          <?php foreach ($orders as $order): ?>
           <?php
             $status = $order['status'];
             $action = $nextAction[$status] ?? null;
@@ -61,7 +61,7 @@ $slots = array_values(array_unique(array_map(static fn ($o) => $o['slot'], $orde
                 <span class="gk-admin-status-chip is-<?= gk_h($status) ?>">
                   <?= gk_h($statusLabels[$status] ?? $status) ?>
                 </span>
-                <span>Ambil: <?= gk_h($order['slot']) ?><?= preg_match('/\d/', $order['slot']) ? ' WIB ' : '' ?></span>
+                <span>Ambil: <?= gk_h($order['slot']) ?><?= preg_match('/\d/', $order['slot']) ? ' WIB' : '' ?></span>
                 <span><?= gk_h($order['pembayar']) ?></span>
               </div>
               <div class="gk-admin-order-meta">

@@ -40,9 +40,9 @@ final class Transaksi
     }
  
     /** Buat pesanan dari isi keranjang. Hasil: ['ok'=>bool, 'message'=>..., 'data'=>['orders'=>[...]]] */
-    public static function checkout(string $note = ''): array
+    public static function checkout(string $note = '', string $metode = 'tunai'): array
     {
-        return ApiClient::post('/checkout', ['catatan' => $note], Auth::token());
+        return ApiClient::post('/checkout', ['catatan' => $note, 'metode_bayar' => $metode], Auth::token());
     }
  
     private static function detail(int $id): ?array

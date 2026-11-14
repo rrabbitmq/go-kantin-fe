@@ -66,6 +66,11 @@ final class CheckoutController extends Controller
         }
         $note = mb_substr($note, 0, 500);
 
+        $metode = (string) ($_POST['metode_bayar'] ?? 'tunai');
+        if(!in_array($metode, ['qris', 'tunai'], true)) {
+            $metode = 'tunai'; 
+        }
+
         $res = Transaksi::checkout($note);
 
         if (!$res['ok']) {

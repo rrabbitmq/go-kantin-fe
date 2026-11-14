@@ -47,6 +47,13 @@ $slots = array_values(array_unique(array_map(static fn ($o) => $o['slot'], $orde
           <?php
             $status = $order['status'];
             $action = $nextAction[$status] ?? null;
+            $metodeBayar = $order['metode'] ?? 'tunai';
+            if ($action && $status === 'menunggu_pembayaran') {
+              $action['label'] = $metodeBayar === 'qris' ? 'Verifikasi Pembayaran QRIS' : 'Terima Pesanan';
+            }
+            if ($action && $status === 'siap_diambil' && $metodeBayar !== 'qris') {
+              $action['label'] = 'Terima Tunai & selesai';
+            }
           ?>
           <article
             class="gk-admin-order-card"
@@ -79,11 +86,6 @@ $slots = array_values(array_unique(array_map(static fn ($o) => $o['slot'], $orde
             </div>
             <div class="gk-admin-order-actions">
               <div class="gk-admin-order-total"><?= gk_h(gk_format_rupiah($order['total'])) ?></div>
-              <?php if ($order['metode'] === 'qris'): ?>
-              <button type="button" class="gk-admin-btn gk-admin-btn-outline gk-admin-btn-sm" data-order-action="Cek bukti QRIS">
-                Cek Bukti QRIS
-              </button>
-              <?php endif; ?>
               <?php if ($action): ?>
               <form method="post" action="/admin/antrian.php">
                 <input type="hidden" name="id" value="<?= (int) ($order['id'] ?? 0) ?>">

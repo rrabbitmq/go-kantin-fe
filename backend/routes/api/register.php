@@ -20,7 +20,7 @@ $roleMap = [
 $input = getInput();
 $str = fn(string $k): string => is_string($input[$k] ?? null) ? trim($input[$k]) : ''; 
 
-$role = $str['role'] ?: 'pembeli';
+$role = $str('role') ?: 'pembeli';  
 if (!isset($roleMap[$role])) {
     jsonResponse(400, ['message' => 'validasi gagal', 'errors' => ['role' => 'Role tidak valid']]);
 }

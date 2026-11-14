@@ -6,8 +6,7 @@ namespace App\Core;
  * Pemanggil API backend lewat cURL (server ke server).
 */
 
-final class ApiClient
-{
+final class ApiClient {
     private static function baseUrl(): string
     {
         static $url = null;
@@ -18,18 +17,20 @@ final class ApiClient
         return $url;
     }
  
-    public static function post(string $path, array $body = [], ?string $token = null): array
-    {
+    public static function post(string $path, array $body = [], ?string $token = null): array {
         return self::request('POST', $path, $body, $token);
     }
+
+    /** POST multipart/form-data (untuk upload file). Nilai berupa string, angka, atau CURLFile. */
+    public static function postForm(string $path, array $fields = [], ?string $token = null): array {
+        return self::request('POST', $path, $fields, $token, true);
+    }
  
-    public static function get(string $path, ?string $token = null): array
-    {
+    public static function get(string $path, ?string $token = null): array {
         return self::request('GET', $path, [], $token);
     }
  
-    public static function request(string $method, string $path, array $body = [], ?string $token = null): array
-    {
+    public static function request(string $method, string $path, array $body = [], ?string $token = null): array {
         $headers = ['Accept: application/json'];
         if ($token) {
             $headers[] = 'Authorization: Bearer ' . $token;
@@ -43,8 +44,13 @@ final class ApiClient
             CURLOPT_TIMEOUT        => 15,
         ];
         if ($body) {
-            $headers[] = 'Content-Type: application/json';
-            $opts[CURLOPT_POSTFIELDS] = json_encode($body);
+            if ($multipart) {
+                // Array (boleh berisi CURLFile) -> dikirim sebagai multipart/form-data
+                $opts[CURLOPT_POSTFIELDS] = $body;
+            } else {
+                $headers[] = 'Content-Type: application/json';
+                $opts[CURLOPT_POSTFIELDS] = json_encode($body);
+            }
         }
         $opts[CURLOPT_HTTPHEADER] = $headers;
         curl_setopt_array($ch, $opts);

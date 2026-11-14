@@ -8,8 +8,7 @@ use App\Core\Controller;
 use App\Core\Rbac;
 use App\Models\KategoriPenjual;
 
-final class AuthController extends Controller
-{
+final class AuthController extends Controller {
     public function showLogin(string $intent = 'pembeli'): void
     {
         $this->requireGuest();
@@ -23,8 +22,7 @@ final class AuthController extends Controller
         ], 'layouts/auth');
     }
 
-    public function login(string $intent = 'pembeli'): void
-    {
+    public function login(string $intent = 'pembeli'): void {
         $this->requireGuest();
         
         $loginUrl = $intent === 'penjual' ? '/auth/penjual/login.php' : '/auth/login.php';
@@ -58,8 +56,7 @@ final class AuthController extends Controller
         $this->redirect(Auth::redirectPathForRoles($roles));
     }
 
-    public function showRegister(): void
-    {
+    public function showRegister(): void {
         $this->requireGuest();
 
         $this->render('auth/register', [
@@ -69,8 +66,7 @@ final class AuthController extends Controller
         ], 'layouts/auth');
     }
 
-    public function register(): void
-    {
+    public function register(): void {
         $this->requireGuest();
 
         $username = trim((string) ($_POST['username'] ?? ''));
@@ -153,8 +149,7 @@ final class AuthController extends Controller
     }
 
     /** Pendaftaran penjual: akun berstatus "pending" sampai disetujui admin. */
-    public function registerPenjual(): void
-    {
+    public function registerPenjual(): void {
         $this->requireGuest();
 
         $back = '/auth/penjual/register.php';
@@ -224,8 +219,7 @@ final class AuthController extends Controller
         $this->redirect('/auth/penjual/login.php');
     }
  
-    public function logout(): void
-    {
+    public function logout(): void {
         $token = Auth::token();
         if ($token) {
             ApiClient::post('/logout', [], $token); // cabut token di backend
@@ -236,8 +230,7 @@ final class AuthController extends Controller
         $this->redirect('/auth/login.php');
     }
  
-    public function pendingArea(): void
-    {
+    public function pendingArea(): void {
         $this->requireRole('penjual', 'super_admin');
  
         $roles = Auth::roles();

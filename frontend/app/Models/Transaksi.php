@@ -5,10 +5,8 @@ namespace App\Models;
 use App\Core\ApiClient;
 use App\Core\Auth;
  
-final class Transaksi
-{
-    public static function forUser(int $userId): array
-    {
+final class Transaksi {
+    public static function forUser(int $userId): array {
         $res = ApiClient::get('/transaksi', Auth::token());
         if (!$res['ok'] || !is_array($res['data'])) {
             return [];
@@ -17,15 +15,13 @@ final class Transaksi
         return array_map([self::class, 'enrich'], $res['data']);
     }
  
-    public static function find(int $id): ?array
-    {
+    public static function find(int $id): ?array {
         $detail = self::detail($id);
  
         return $detail ? self::enrich($detail['order']) : null;
     }
  
-    public static function items(int $orderId): array
-    {
+    public static function items(int $orderId): array {
         $detail = self::detail($orderId);
         if (!$detail) {
             return [];
@@ -40,13 +36,11 @@ final class Transaksi
     }
  
     /** Buat pesanan dari isi keranjang. Hasil: ['ok'=>bool, 'message'=>..., 'data'=>['orders'=>[...]]] */
-    public static function checkout(string $note = '', string $metode = 'tunai'): array
-    {
+    public static function checkout(string $note = '', string $metode = 'tunai'): array {
         return ApiClient::post('/checkout', ['catatan' => $note, 'metode_bayar' => $metode], Auth::token());
     }
  
-    private static function detail(int $id): ?array
-    {
+    private static function detail(int $id): ?array {
         static $cache = [];
  
         if (!array_key_exists($id, $cache)) {
@@ -57,8 +51,7 @@ final class Transaksi
         return $cache[$id];
     }
  
-    private static function enrich(array $order): array
-    {
+    private static function enrich(array $order): array {
         $order['id'] = (int) $order['id'];
         $order['total_amount'] = (float) $order['total_amount'];
         $order['eta_minutes'] = isset($order['eta_minutes']) ? (int) $order['eta_minutes'] : null;

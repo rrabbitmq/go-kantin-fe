@@ -53,5 +53,6 @@ $pageTitle = $pageTitle ?? 'Go Kantin POS';
   <script src="/js/plugins/dataTables.bootstrap4.min.js"></script>
   <script src="/js/admin-datatable.js"></script>
   <script src="/js/admin.js"></script>
+  <script src="/js/admin-menu.js"></script>
 </body>
 </html>

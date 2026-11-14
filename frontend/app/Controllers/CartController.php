@@ -6,10 +6,8 @@ use App\Core\Auth;
 use App\Core\Controller;
 use App\Models\Keranjang;
  
-final class CartController extends Controller
-    {
-    public function index(): void
-    {
+final class CartController extends Controller {
+    public function index(): void {
         $this->requireRole('pembeli');
 
         $summary = Keranjang::summary();
@@ -65,8 +63,7 @@ final class CartController extends Controller
      *   update -> id = id item keranjang, jumlah
      *   remove -> id = id item keranjang
      */
-    public function action(): void
-    {
+    public function action(): void {
         header('Content-Type: application/json; charset=utf-8');
  
         if (!Auth::check() || !Auth::hasRole('pembeli')) {

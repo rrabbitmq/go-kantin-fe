@@ -5,11 +5,9 @@ namespace App\Models;
 use App\Core\ApiClient;
 use App\Core\Auth;
  
-final class Keranjang
-{
+final class Keranjang {
     
-    public static function summary(): array
-    {
+    public static function summary(): array {
         $empty = ['items' => [], 'jumlah' => 0, 'subtotal' => 0.0, 'biaya_layanan' => 0.0];
  
         $token = Auth::token();
@@ -43,13 +41,11 @@ final class Keranjang
         ];
     }
  
-    public static function itemsForUser(int $userId): array
-    {
+    public static function itemsForUser(int $userId): array {
         return self::summary()['items'];
     }
  
-    public static function countForUser(int $userId): int
-    {
+    public static function countForUser(int $userId): int {
         $token = Auth::token();
         if (!$token) {
             return 0;
@@ -60,8 +56,7 @@ final class Keranjang
     }
  
     /** Tambah produk ke keranjang. Hasil: ['ok'=>bool, 'message'=>..., 'errors'=>[...], 'data'=>...] */
-    public static function add(int $productId, int $quantity = 1, ?int $variantId = null): array
-    {
+    public static function add(int $productId, int $quantity = 1, ?int $variantId = null): array {
 
         $body = ['jumlah'    => $quantity];
         if ($variantId) {
@@ -73,16 +68,14 @@ final class Keranjang
     }
  
     /** $detailId = kolom 'id' dari item keranjang */
-    public static function updateQuantity(int $detailId, int $quantity): array
-    {
+    public static function updateQuantity(int $detailId, int $quantity): array {
         return ApiClient::request('PUT', '/keranjang', [
             'id_detail_keranjang' => $detailId,
             'jumlah' => $quantity,
         ], Auth::token());
     }
  
-    public static function remove(int $detailId): array
-    {
+    public static function remove(int $detailId): array {
         return ApiClient::request('DELETE', '/keranjang?id=' . $detailId, [], Auth::token());
     }
 }

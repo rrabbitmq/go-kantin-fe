@@ -7,10 +7,8 @@ use App\Models\Antrian;
 use App\Models\Keranjang;
 use App\Models\Transaksi;
  
-final class CheckoutController extends Controller
-{
-    public function index(): void
-    {
+final class CheckoutController extends Controller {
+    public function index(): void {
         $this->requireRole('pembeli');
 
         $summary = Keranjang::summary();
@@ -47,8 +45,7 @@ final class CheckoutController extends Controller
     }
  
     /** Membuat pesanan dari keranjang (POST /user/checkout.php, field opsional: catatan). */
-    public function store(): void
-    {
+    public function store(): void {
         $this->requireRole('pembeli');
  
         // Textarea di form bernama "note"

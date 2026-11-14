@@ -4,12 +4,11 @@ namespace App\Controllers;
 
 use App\Core\Auth;
 use App\Core\Controller;
+use App\Models\KategoriProduk;
 use App\Models\Penjual;
 
-final class AdminController extends Controller
-{
-    public function dashboard(): void
-    {
+final class AdminController extends Controller {
+    public function dashboard(): void {
         $this->requirePenjual();
 
         $res = Penjual::dashboard();
@@ -32,8 +31,7 @@ final class AdminController extends Controller
         ]);
     }
 
-    public function antrian(): void
-    {
+    public function antrian(): void {
         $this->requirePenjual();
 
         $res = Penjual::antrian();
@@ -43,6 +41,13 @@ final class AdminController extends Controller
         } else {
             $this->flash('error', $res['message'] ?? 'Antrian pesanan tidak dapat dimuat');
         }
+
+        $this->renderAdmin('admin/antrian', [
+            'pageTitle' => 'Antrian Pesanan - Go Kantin',
+            'activeNav' => 'antrian',
+            'orders' => $orders,
+            'queueCount' => count($orders),
+        ]);
 
         $orders = [
             [
@@ -81,13 +86,6 @@ final class AdminController extends Controller
                 ],
             ],
         ];
-
-        $this->renderAdmin('admin/antrian', [
-            'pageTitle' => 'Antrian Pesanan - Go Kantin',
-            'activeNav' => 'antrian',
-            'orders' => $orders,
-            'queueCount' => count($orders),
-        ]);
     }
 
     /** POST untuk /admin/antrian.php: digunakan konfirmasi, proses, siap, selesai, atau batalkan pesanan. */
@@ -127,8 +125,7 @@ final class AdminController extends Controller
         ];
     }
 
-    public function pos(): void
-    {
+    public function pos(): void {
         $this->requirePenjual();
 
         $products = [
@@ -150,9 +147,23 @@ final class AdminController extends Controller
         ]);
     }
 
-    public function menu(): void
-    {
+    public function menu(): void {
         $this->requirePenjual();
+
+        $res = Penjual::menu();
+        $products = [];
+        if ($res['ok'] && is_array($res['data'])) {
+            $products = $res['data'];
+        } else {
+            $this->flash('error', $res['message'] ?? 'Daftar menu tidak dapat dimuat.');
+        }
+
+        $this->renderAdmin('admin/menu', [
+            'pageTitle' => 'Manajemen Menu & Stok - Go Kantin',
+            'activeNav' => 'menu',
+            'products' => $products,
+            'categories' => KategoriProduk::all(),
+        ]);
 
         $products = [
             ['id' => 1, 'nama' => 'Oreo Soft Cake', 'kategori' => 'Snack', 'varian' => 1, 'harga' => 3000, 'stok' => 25, 'status' => 'aktif', 'gambar' => '/img/menu/1.jpg'],
@@ -176,20 +187,107 @@ final class AdminController extends Controller
         ]);
     }
 
+   /** POST /admin/menu.php (aksi=simpan): tambah atau ubah menu, termasuk upload gambar. */
+    public function simpanMenu(): void
+    {
+        $this->requirePenjual();
+
+        // Kalau ukuran request melebihi post_max_size, PHP mengosongkan $_POST dan $_FILES
+        if (!$_POST && (int) ($_SERVER['CONTENT_LENGTH'] ?? 0) > 0) {
+            $this->flash('error', 'Ukuran data yang dikirim terlalu besar. Gunakan gambar maksimal 2 MB.');
+            $this->redirect('/admin/menu.php');
+            return;
+        }
+
+        $upload = $_FILES['gambar'] ?? null;
+        $kodeUpload = $upload['error'] ?? UPLOAD_ERR_NO_FILE;
+        if ($kodeUpload === UPLOAD_ERR_INI_SIZE || $kodeUpload === UPLOAD_ERR_FORM_SIZE) {
+            $this->flash('error', 'Ukuran gambar maksimal 2 MB.');
+            $this->redirect('/admin/menu.php');
+            return;
+        }
+
+        $fields = [
+            'nama' => trim((string) ($_POST['nama'] ?? '')),
+            'id_kategori' => (int) ($_POST['id_kategori'] ?? 0),
+            'harga' => trim((string) ($_POST['harga'] ?? '')),
+            'stok' => trim((string) ($_POST['stok'] ?? '')),
+            'status' => (string) ($_POST['status'] ?? 'aktif'),
+            'deskripsi' => trim((string) ($_POST['deskripsi'] ?? '')),
+        ];
+        $id = (int) ($_POST['id'] ?? 0);
+        if ($id > 0) {
+            $fields['id'] = $id;
+        }
+
+        $res = Penjual::simpanMenu($fields, $upload);
+
+        if ($res['ok']) {
+            $this->flash('success', $res['message'] ?? 'Menu disimpan.');
+        } else {
+            $messages = array_map('strval', array_values($res['errors']));
+            $this->flash('error', $messages ? implode(' ', $messages) : ($res['message'] ?? 'Menu gagal disimpan.'));
+        }
+
+        $this->redirect('/admin/menu.php');
+    }
+
+    /** POST /admin/menu.php (aksi=nonaktif). */
+    public function nonaktifkanMenu(): void
+    {
+        $this->requirePenjual();
+
+        $id = (int) ($_POST['id'] ?? 0);
+        if ($id < 1) {
+            $this->flash('error', 'Menu tidak valid.');
+            $this->redirect('/admin/menu.php');
+            return;
+        }
+
+        $res = Penjual::nonaktifkanMenu($id);
+        $this->flash($res['ok'] ? 'success' : 'error', $res['message'] ?? ($res['ok'] ? 'Menu dinonaktifkan.' : 'Menu gagal dinonaktifkan.'));
+        $this->redirect('/admin/menu.php');
+    }
+
+    /** POST /admin/menu.php (aksi=stok): tambah, kurangi, atau atur stok. */
+    public function ubahStok(): void
+    {
+        $this->requirePenjual();
+
+        $idVarian = (int) ($_POST['id_varian'] ?? 0);
+        $jenis = (string) ($_POST['jenis'] ?? '');
+        $jumlah = (int) ($_POST['jumlah'] ?? 0);
+        $keterangan = trim((string) ($_POST['keterangan'] ?? ''));
+
+        if ($idVarian < 1) {
+            $this->flash('error', 'Menu tidak valid.');
+            $this->redirect('/admin/menu.php');
+            return;
+        }
+
+        $res = Penjual::ubahStok($idVarian, $jenis, $jumlah, $keterangan);
+
+        if ($res['ok']) {
+            $this->flash('success', $res['message'] ?? 'Stok diperbarui.');
+        } else {
+            $messages = array_map('strval', array_values($res['errors']));
+            $this->flash('error', $messages ? implode(' ', $messages) : ($res['message'] ?? 'Stok gagal diperbarui.'));
+        }
+
+        $this->redirect('/admin/menu.php');
+    }
+
     public function mutasiStok(): void
     {
         $this->requirePenjual();
 
-        $logs = [
-            ['waktu' => '2026-11-02 08:05', 'produk' => 'Ayam Krispi / Original', 'jenis' => 'masuk', 'jumlah' => 20, 'sebelum' => 0, 'sesudah' => 20, 'petugas' => 'Pak Purwo', 'keterangan' => 'Stok pagi'],
-            ['waktu' => '2026-11-02 08:10', 'produk' => 'Air Mineral / 600ml', 'jenis' => 'masuk', 'jumlah' => 50, 'sebelum' => 0, 'sesudah' => 50, 'petugas' => 'Pak Purwo', 'keterangan' => 'Restock'],
-            ['waktu' => '2026-11-02 09:18', 'produk' => 'Oreo Soft Cake / Default', 'jenis' => 'keluar', 'jumlah' => 1, 'sebelum' => 26, 'sesudah' => 25, 'petugas' => 'Sistem', 'keterangan' => 'Pesanan A-014'],
-            ['waktu' => '2026-11-02 09:22', 'produk' => 'Ayam Krispi / Original', 'jenis' => 'keluar', 'jumlah' => 1, 'sebelum' => 5, 'sesudah' => 4, 'petugas' => 'Sistem', 'keterangan' => 'Pesanan A-015'],
-            ['waktu' => '2026-11-02 09:45', 'produk' => 'Kapal Api / Sachet', 'jenis' => 'penyesuaian', 'jumlah' => -3, 'sebelum' => 5, 'sesudah' => 2, 'petugas' => 'Pak Purwo', 'keterangan' => 'Opname rusak'],
-            ['waktu' => '2026-11-02 10:02', 'produk' => 'Mie Goreng / Pedas', 'jenis' => 'keluar', 'jumlah' => 2, 'sebelum' => 2, 'sesudah' => 0, 'petugas' => 'Sistem', 'keterangan' => 'POS walk-in'],
-            ['waktu' => '2026-11-01 14:30', 'produk' => 'Teh Pucuk / 350ml', 'jenis' => 'pembatalan', 'jumlah' => 2, 'sebelum' => 28, 'sesudah' => 30, 'petugas' => 'Sistem', 'keterangan' => 'Pesanan dibatalkan'],
-            ['waktu' => '2026-11-01 11:00', 'produk' => 'Sosis Solo Ayam / Default', 'jenis' => 'masuk', 'jumlah' => 30, 'sebelum' => 0, 'sesudah' => 30, 'petugas' => 'Bu Sari', 'keterangan' => 'Stok siang'],
-        ];
+        $res = Penjual::stokLog();
+        $logs = [];
+        if ($res['ok'] && is_array($res['data'])) {
+            $logs = $res['data'];
+        } else {
+            $this->flash('error', $res['message'] ?? 'Riwayat stok tidak dapat dimuat.');
+        }
 
         $this->renderAdmin('admin/mutasi-stok', [
             'pageTitle' => 'Mutasi Stok - Go Kantin',
@@ -246,8 +344,7 @@ final class AdminController extends Controller
         ]);
     }
 
-    public function kasir(): void
-    {
+    public function kasir(): void {
         $this->requirePenjual();
 
         $cashiers = [
@@ -263,8 +360,7 @@ final class AdminController extends Controller
         ]);
     }
 
-    private function requirePenjual(): void
-    {
+    private function requirePenjual(): void {
         $this->requireRole('penjual');
     }
 

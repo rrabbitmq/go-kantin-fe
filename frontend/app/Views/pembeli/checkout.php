@@ -88,7 +88,7 @@
                     <ul>
                       <li class="sb-radio">
                         <input type="radio" id="option-1" name="selector" checked>
-                        <label for="option-1">Qris</label>
+                        <label for="option-1">QRIS</label>
                         <div class="sb-check"></div>
                       </li>
                       <li class="sb-radio">

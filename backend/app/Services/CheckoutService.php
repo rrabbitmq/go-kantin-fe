@@ -16,7 +16,12 @@ use App\Models\Keranjang;
 final class CheckoutService {
     public const BIAYA_LAYANAN = 5000;
  
-    public static function checkout(int $userId, string $catatan = ''): array {
+    public static function checkout(int $userId, string $catatan = '', string $metode = 'tunai'): array {
+        $metode = strtolower(trim($metode));
+        if (!in_array($metode, ['tunai', 'qris'], true)) {
+            throw new HttpException(400, 'Metode pembayaran harus tunai atau qris.');
+        }
+        
         $pdo = Database::connection();
         $pdo->beginTransaction();
  

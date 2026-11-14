@@ -87,12 +87,12 @@
                     <h3 class="sb-mb-30">Metode pembayaran</h3>
                     <ul>
                       <li class="sb-radio">
-                        <input type="radio" id="option-1" name="selector" checked>
+                        <input type="radio" id="option-1" name="metode_bayar" value="qris" checked>
                         <label for="option-1">QRIS</label>
                         <div class="sb-check"></div>
                       </li>
                       <li class="sb-radio">
-                        <input type="radio" id="option-3" name="selector">
+                        <input type="radio" id="option-3" name="metode_bayar" value="tunai">
                         <label for="option-3">Tunai (Bayar di tempat)</label>
                         <div class="sb-check"></div>
                       </li>

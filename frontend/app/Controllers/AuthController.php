@@ -152,7 +152,7 @@ final class AuthController extends Controller {
     public function registerPenjual(): void {
         $this->requireGuest();
 
-        $back = '/auth/penjual/register.php';
+        $back = '/auth/penjual/register-penjual.php';
         $field = static fn (string $k): string => trim((string) ($_POST[$k] ?? ''));
 
         $username = $field('username');

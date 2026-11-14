@@ -32,7 +32,7 @@ $kategori = $kategori ?? [];
     <div class="gk-auth-alert gk-auth-alert-error">Daftar kategori usaha belum dapat dimuat. Pastikan backend berjalan, lalu muat ulang halaman.</div>
   <?php endif; ?>
 
-  <form method="post" action="/auth/penjual/register.php">
+  <form method="post" action="/auth/penjual/register-penjual.php">
     <div class="gk-auth-field">
       <label for="username">Username</label>
       <input type="text" id="username" name="username" value="<?= gk_h($old['username'] ?? '') ?>" required autofocus>

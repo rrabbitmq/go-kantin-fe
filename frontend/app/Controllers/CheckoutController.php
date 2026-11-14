@@ -68,7 +68,7 @@ final class CheckoutController extends Controller {
             $metode = 'tunai'; 
         }
 
-        $res = Transaksi::checkout($note);
+        $res = Transaksi::checkout($note, $metode);
 
         if (!$res['ok']) {
             $errors = array_map('strval', array_values($res['errors']));

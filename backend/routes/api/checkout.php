@@ -26,7 +26,7 @@ if (!in_array($metode, ['tunai', 'qris'], true)) {
 }
  
 try {
-    $orders = CheckoutService::checkout((int) $auth['sub'], $catatan);
+    $orders = CheckoutService::checkout((int) $auth['sub'], $catatan, $metode);
  
     jsonResponse(201, [
         'success' => true,

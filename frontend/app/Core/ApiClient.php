@@ -30,7 +30,7 @@ final class ApiClient {
         return self::request('GET', $path, [], $token);
     }
  
-    public static function request(string $method, string $path, array $body = [], ?string $token = null): array {
+    public static function request(string $method, string $path, array $body = [], ?string $token = null, bool $multipart = false): array {
         $headers = ['Accept: application/json'];
         if ($token) {
             $headers[] = 'Authorization: Bearer ' . $token;
@@ -58,6 +58,7 @@ final class ApiClient {
         $raw = curl_exec($ch);
         if ($raw === false) {
             error_log('ApiClient: ' . curl_error($ch));
+            curl_close($ch);
             return [
                 'ok' => false, 'status' => 0, 'data' => null, 'errors' => [],
                 'message' => 'Server backend tidak dapat dihubungi. Pastikan backend sudah berjalan.',
@@ -65,6 +66,7 @@ final class ApiClient {
         }
  
         $status = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
         $json = json_decode($raw, true);
         if (!is_array($json)) {
             error_log('ApiClient: respons bukan JSON (HTTP ' . $status . '): ' . substr(trim(strip_tags($raw)), 0, 300));

@@ -364,7 +364,7 @@ final class AdminController extends Controller {
         $this->requireRole('penjual');
     }
 
-    private function renderAdmin(string $view, array $data): void
+    protected function renderAdmin(string $view, array $data): void
     {
         $data['currentUser'] = $data['currentUser'] ?? $this->currentUserForLayout();
         $data['standMeta'] = $data['standMeta'] ?? [

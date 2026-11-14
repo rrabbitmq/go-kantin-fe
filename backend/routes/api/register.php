@@ -50,7 +50,8 @@ if (in_array($role, ['pembeli', 'penjual'], true) && !preg_match('/^(\+62|62|0)8
     $errors['no_hp'] = 'Nomor HP tidak valid.';
 }
 
-$namaUsaha = $noHp = $alamat = '';
+$namaUsaha = ''; 
+$alamat = '';
 $idKategori = null;
 if ($role === 'penjual') {
     $namaUsaha = $str('nama_usaha');
@@ -74,8 +75,8 @@ try {
     $pdo->beginTransaction();
 
     $stmt = $pdo->prepare(
-        'INSERT INTO users (username, email, password_hash, status_akun)
-         VALUES (:username, :email, :hash, :status)
+        'INSERT INTO users (username, email, no_hp, password_hash, status_akun)
+         VALUES (:username, :email, :no_hp, :hash, :status)
          RETURNING id_user'
     );
     $stmt->execute([

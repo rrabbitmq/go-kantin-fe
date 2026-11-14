@@ -41,10 +41,16 @@ final class PesananService
         try {
             // Kunci baris pesanan, dan pastikan milik penjual yang login
             $stmt = $pdo->prepare(
-                'SELECT kode_transaksi, status_transaksi
-                 FROM transaksi
+                "SELECT t.kode_transaksi,
+                        t.status_transaksi,
+                        COALESCE(m.kode_metode, 'tunai') AS metode,
+                        COALESCE(p.status_pembayaran, 'pending') AS status_bayar
+                 FROM transaksi t
+                 LEFT JOIN pembayaran p ON p.id_transaksi = t.id_transaksi
+                 LEFT JOIN metode_pembayaran m ON m.id_metode_pembayaran = p.id_metode_pembayaran
                  WHERE id_transaksi = :id AND id_profil_penjual = :p
-                 FOR UPDATE'
+                 LIMIT 1
+                 FOR UPDATE OF t"
             );
             $stmt->execute([':id' => $idTransaksi, ':p' => $profilId]);
             $row = $stmt->fetch();
@@ -58,6 +64,16 @@ final class PesananService
 
             if ($aksi === 'batal') {
                 self::kembalikanStok($pdo, $idTransaksi, $userId, $row['kode_transaksi']);
+                self::batalkanPembayaran($pdo, $idTransaksi);
+                if ($row['status_bayar'] === 'dibayar') {
+                    $pesan = 'Pesanan dibatalkan dan stok dikembalikan. Pembayaran perlu dikembalikan ke pembeli.';
+                }
+            } elseif ($aksi === 'konfirmasi' && $row['metode'] === 'qris') {
+                self::tandaiDibayar($pdo, $idTransaksi);
+                $pesan = 'Pembayaran QRIS terverifikasi. Pesanan diterima.';
+            } elseif ($aksi === 'selesai' && $row['metode'] === 'tunai') {
+                self::tandaiDibayar($pdo, $idTransaksi);
+                $pesan = 'Pembayaran tunai diterima. Pesanan selesai.';
             }
 
             $sql = 'UPDATE transaksi SET status_transaksi = :s';
@@ -73,7 +89,7 @@ final class PesananService
                 'id'         => $idTransaksi,
                 'order_code' => $row['kode_transaksi'],
                 'status'     => $aturan['ke'],
-                'pesan'      => self::PESAN[$aksi],
+                'pesan'      => $pesan,
             ];
         } catch (\Throwable $e) {
             if ($pdo->inTransaction()) {
@@ -81,6 +97,24 @@ final class PesananService
             }
             throw $e;
         }
+    }
+
+    private static function tandaiDibayar(\PDO $pdo, int $idTransaksi): void
+    {
+        $pdo->prepare(
+            "UPDATE pembayaran
+             SET status_pembayaran = 'dibayar', waktu_bayar = CURRENT_TIMESTAMP
+             WHERE id_transaksi = :id AND status_pembayaran = 'pending'"
+        )->execute([':id' => $idTransaksi]);
+    }
+
+    private static function batalkanPembayaran(\PDO $pdo, int $idTransaksi): void
+    {
+        $pdo->prepare(
+            "UPDATE pembayaran
+             SET status_pembayaran = CASE WHEN status_pembayaran = 'dibayar' THEN 'dikembalikan' ELSE 'dibatalkan' END
+             WHERE id_transaksi = :id AND status_pembayaran IN ('pending', 'dibayar')"
+        )->execute([':id' => $idTransaksi]);
     }
 
     private static function kembalikanStok(\PDO $pdo, int $idTransaksi, int $userId, string $kode): void

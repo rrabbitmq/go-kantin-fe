@@ -23,6 +23,15 @@ final class CheckoutService
         $pdo->beginTransaction();
  
         try {
+            $stmt = $pdo->prepare(
+                'SELECT id_metode_pembayaran FROM metode_pembayaran WHERE kode_metode = :k AND status_aktif = TRUE'
+            );
+            $stmt->execute([':k' => $metode]);
+            $idMetode = $stmt->fetchColumn();
+            if (!$idMetode) {
+                throw new HttpException(400, 'Metode pembayaran tidak tersedia.');
+            }
+
             $idKeranjang = Keranjang::idForUser($pdo, $userId);
  
             $stmt = $pdo->prepare(
@@ -130,11 +139,24 @@ final class CheckoutService
                         ':s'  => (float) $r['harga_satuan'] * $n,
                     ]);
                 }
+
+                // Satu pesanan = satu catatan pembayaran (status awal: pending)
+                $pdo->prepare(
+                    "INSERT INTO pembayaran
+                        (id_transaksi, id_metode_pembayaran, provider, referensi_provider, jumlah_bayar, status_pembayaran)
+                    VALUES (:t, :m, 'manual', :ref, :jumlah, 'pending')"
+                )->execute([
+                    ':t'        => $idTransaksi,
+                    ':m'        => (int) $idMetode,
+                    ':ref'      => $kode,
+                    ':jumlah'   => $total,
+                ]);
  
                 $hasil[] = [
                     'id'           => $idTransaksi,
                     'order_code'   => $kode,
                     'status'       => 'menunggu_pembayaran',
+                    'metode'       => $metode,
                     'item_count'   => $totalProduk,
                     'total_amount' => $total,
                 ];

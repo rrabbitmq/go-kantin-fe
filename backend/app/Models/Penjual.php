@@ -186,13 +186,33 @@ final class Penjual {
 
         $selesai = (int) ($ringkas['transaksi'] ?? 0);
 
+        // 8. Transaksi selesai per metode
+        $stmt = $pdo->prepare(
+            "SELECT COALESCE(pb.kode_metode, 'tunai) AS metode, COUNT(*) AS jumlah
+            FROM transaksi t
+            LEFT JOIN LATERAL (
+                SELECT m.kode_metode
+                FROM pembayaran p
+                JOIN metode_pembayaran m ON m.id_metode_pembayaran = p.id_metode_pembayaran
+                WHERE p.id_transaksi = t.id_transaksi
+                ORDER BY p.id_pembayaran DESC
+                LIMIT 1
+            ) pb ON TRUE
+            WHERE t.id_profil_penjual = :p AND t.status_transaksi = 'selesai'
+            GROUP BY 1"
+        );
+        $stmt->execute([':p' => $profilId]);
+        $perMetode = [];
+        foreach ($stmt->fetchAll() as $r) {
+            $perMetode[$r['metode']] = (int) $r['jumlah'];
+        }
+
         return [
             'stats' => [
                 'pendapatan'   => (float) ($ringkas['pendapatan'] ?? 0),
                 'transaksi'    => $selesai,
-                // Metode bayar belum disimpan di database: sementara semua dihitung "tunai"
-                'qris'         => 0,
-                'tunai'        => $selesai,
+                'qris'         => $perMetode['qris'] ?? 0,
+                'tunai'        => $perMetode['tunai'] ?? 0,
                 'menu_aktif'   => array_sum($perKategori),
                 'makanan'      => $perKategori['makanan'] ?? 0,
                 'minuman'      => $perKategori['minuman'] ?? 0,
@@ -237,9 +257,19 @@ final class Penjual {
                        to_char(t.tgl_transaksi AT TIME ZONE 'Asia/Jakarta', 'HH24:MI') AS waktu,
                        to_char(t.tgl_transaksi AT TIME ZONE 'Asia/Jakarta', 'YYYY-MM-DD HH24:MI') AS tanggal,
                        u.username AS pembeli,
-                       COALESCE(u.no_hp, u.email, '-') AS kontak
+                       COALESCE(u.no_hp, u.email, '-') AS kontak,
+                       COALESCE(pb.kode_metode, 'tunai') AS metode,
+                       COALESCE(pb.status_pembayaran, 'pending') AS status_bayar
                 FROM harian t
                 JOIN users u ON u.id_user = t.id_pembeli
+                LEFT JOIN LATERAL (
+                    SELECT m.kode_metode, p.status_pembayaran
+                    FROM pembayaran p
+                    JOIN metode_pembayaran m ON m.id_metode_pembayaran = p.id_metode_pembayaran
+                    WHERE p.id_transaksi = t.id_transaksi
+                    ORDER BY p.id_pembayaran DESC
+                    LIMIT 1
+                ) pb ON TRUE
                 WHERE t.status_transaksi IN (" . implode(',', $holders) . ")
                 ORDER BY t.tgl_transaksi $urut, t.id_transaksi $urut
                 LIMIT " . max(1, min($limit, 500));
@@ -291,9 +321,9 @@ final class Penjual {
                 'kode_raw' => $r['kode_transaksi'],
                 'status'   => $r['status'],
                 'slot'     => $slot,
-                // Metode bayar belum disimpan di database: sementara dianggap bayar saat ambil
-                'pembayar' => 'Bayar saat ambil',
-                'metode'   => 'tunai',
+                'pembayar' => self::labelBayar($r['metode'], $r['status_bayar']),
+                'metode'   => $r['metode'],
+                'status_bayar' => $r['status_bayar'],
                 'pembeli'  => $r['pembeli'],
                 'nim'      => $r['kontak'],
                 'waktu'    => $r['waktu'],
@@ -305,6 +335,24 @@ final class Penjual {
         }
 
         return $out;
+    }
+
+    private static function labelBayar(string $metode, string $status): string
+    {
+        if ($metode === 'qris') {
+            return 'QRIS - ' . match ($status) {
+                'dibayar' => 'Terverifikasi',
+                'dikembalikan' => 'Perlu dikembalikan',
+                'dibatalkan' => 'Dibatalkan',
+                default => 'Menunggu verifikasi',
+            };
+        }
+
+        return 'Tunai - ' . match ($status) {
+            'dibayar' => 'Lunas',
+            'dibatalkan', 'dikembalikan' => 'Dibatalkan',
+            default => 'Bayar saat ambil',
+        };
     }
 
     private static function namaItem(string $produk, string $varian): string

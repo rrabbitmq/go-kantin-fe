@@ -76,9 +76,19 @@ final class Transaksi
                        t.total_harga AS total_amount,
                        COALESCE(t.catatan_pembeli, '') AS note,
                        pp.nama_usaha AS store_name,
-                       t.tgl_transaksi AS created_at
+                       t.tgl_transaksi AS created_at,
+                       COALESCE(pb.kode_metode, 'tunai') AS payment_method,
+                       COALESCE(pb.status_pembayaran, 'pending') AS payment_status
                 FROM transaksi t
-                JOIN profil_penjual pp ON pp.id_profil_penjual = t.id_profil_penjual";
+                JOIN profil_penjual pp ON pp.id_profil_penjual = t.id_profil_penjual
+                LEFT JOIN LATERAL(
+                    SELECT m.kode_metode, p.status_pembayaran
+                    FROM pembayaran p
+                    JOIN metode_pembayaran m ON m.id_metode_pembayaran = p.id_metode_pembayaran
+                    WHERE p.id_transaksi = t.id_transaksi
+                    ORDER BY p.id_pembayaran DESC
+                    LIMIT 1
+                )pb ON TRUE";
     }
  
     private static function enrich(array $order): array

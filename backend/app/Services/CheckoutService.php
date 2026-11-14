@@ -13,12 +13,10 @@ use App\Models\Keranjang;
  * - Status awal: menunggu_pembayaran.
  * Semua langkah berjalan dalam satu transaksi database (gagal satu = batal semua).
  */
-final class CheckoutService
-{
+final class CheckoutService {
     public const BIAYA_LAYANAN = 5000;
  
-    public static function checkout(int $userId, string $catatan = ''): array
-    {
+    public static function checkout(int $userId, string $catatan = ''): array {
         $pdo = Database::connection();
         $pdo->beginTransaction();
  

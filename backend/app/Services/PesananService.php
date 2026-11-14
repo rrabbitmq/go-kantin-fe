@@ -10,8 +10,7 @@ use App\Core\HttpException;
  *   menunggu_pembayaran --konfirmasi--> dibayar --proses--> diproses --siap--> siap_diambil --selesai--> selesai
  * Pesanan yang belum selesai bisa dibatalkan (stok dikembalikan dan dicatat di stok_log).
  */
-final class PesananService
-{
+final class PesananService {
     private const TRANSISI = [
         'konfirmasi' => ['dari' => ['menunggu_pembayaran'], 'ke' => 'dibayar'],
         'proses'     => ['dari' => ['dibayar'], 'ke' => 'diproses'],
@@ -28,8 +27,7 @@ final class PesananService
         'batal'      => 'Pesanan dibatalkan dan stok dikembalikan.',
     ];
 
-    public static function ubahStatus(int $profilId, int $idTransaksi, string $aksi, int $userId): array
-    {
+    public static function ubahStatus(int $profilId, int $idTransaksi, string $aksi, int $userId): array {
         if (!isset(self::TRANSISI[$aksi])) {
             throw new HttpException(400, 'Aksi tidak dikenal.');
         }
@@ -61,6 +59,8 @@ final class PesananService
             if (!in_array($row['status_transaksi'], $aturan['dari'], true)) {
                 throw new HttpException(409, 'Status pesanan sudah berubah. Muat ulang halaman.');
             }
+
+            $pesan = self::PESAN[$aksi];
 
             if ($aksi === 'batal') {
                 self::kembalikanStok($pdo, $idTransaksi, $userId, $row['kode_transaksi']);
@@ -99,8 +99,7 @@ final class PesananService
         }
     }
 
-    private static function tandaiDibayar(\PDO $pdo, int $idTransaksi): void
-    {
+    private static function tandaiDibayar(\PDO $pdo, int $idTransaksi): void {
         $pdo->prepare(
             "UPDATE pembayaran
              SET status_pembayaran = 'dibayar', waktu_bayar = CURRENT_TIMESTAMP
@@ -108,8 +107,7 @@ final class PesananService
         )->execute([':id' => $idTransaksi]);
     }
 
-    private static function batalkanPembayaran(\PDO $pdo, int $idTransaksi): void
-    {
+    private static function batalkanPembayaran(\PDO $pdo, int $idTransaksi): void {
         $pdo->prepare(
             "UPDATE pembayaran
              SET status_pembayaran = CASE WHEN status_pembayaran = 'dibayar' THEN 'dikembalikan' ELSE 'dibatalkan' END
@@ -117,8 +115,7 @@ final class PesananService
         )->execute([':id' => $idTransaksi]);
     }
 
-    private static function kembalikanStok(\PDO $pdo, int $idTransaksi, int $userId, string $kode): void
-    {
+    private static function kembalikanStok(\PDO $pdo, int $idTransaksi, int $userId, string $kode): void {
         $stmt = $pdo->prepare('SELECT id_varian_produk, jumlah FROM detail_transaksi WHERE id_transaksi = :id');
         $stmt->execute([':id' => $idTransaksi]);
 

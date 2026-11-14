@@ -3,6 +3,7 @@
 namespace App\Models;
  
 use App\Core\Database;
+use App\Core\Media;
 use App\Core\HttpException;
 use PDO;
  
@@ -21,8 +22,7 @@ final class Keranjang
         return (int) $stmt->fetchColumn();
     }
  
-    public static function itemsForUser(int $userId): array
-    {
+    public static function itemsForUser(int $userId): array{
         $stmt = Database::connection()->prepare(
             "SELECT dk.id_detail_keranjang AS id,
                     k.id_user AS user_id,
@@ -57,6 +57,7 @@ final class Keranjang
             $row['quantity']   = (int) $row['quantity'];
             $row['price']      = (float) $row['price'];
             $row['stock']      = (int) $row['stock'];
+            $row['image_path'] = Media::url($row['image_path']);
             $row['line_total'] = (float) $row['line_total'];
         }
         unset($row);
@@ -64,8 +65,7 @@ final class Keranjang
         return $rows;
     }
  
-    public static function countForUser(int $userId): int
-    {
+    public static function countForUser(int $userId): int{
         $stmt = Database::connection()->prepare(
             'SELECT COALESCE(SUM(dk.jumlah), 0)
              FROM keranjang k
@@ -81,8 +81,7 @@ final class Keranjang
      * Tambah ke keranjang. Kirim $variantId, atau $productId (varian aktif
      * termurah yang stoknya ada akan dipilih otomatis).
      */
-    public static function addItem(int $userId, ?int $variantId, ?int $productId, int $quantity): void
-    {
+    public static function addItem(int $userId, ?int $variantId, ?int $productId, int $quantity): void{
         $pdo = Database::connection();
  
         if ($variantId === null) {
@@ -139,8 +138,7 @@ final class Keranjang
         )->execute([':k' => $idKeranjang, ':v' => $variantId, ':j' => $baru]);
     }
  
-    public static function setQuantity(int $userId, int $detailId, int $quantity): void
-    {
+    public static function setQuantity(int $userId, int $detailId, int $quantity): void{
         $pdo = Database::connection();
  
         $stmt = $pdo->prepare(
@@ -164,8 +162,7 @@ final class Keranjang
             ->execute([':j' => $quantity, ':d' => $detailId]);
     }
  
-    public static function removeItem(int $userId, int $detailId): void
-    {
+    public static function removeItem(int $userId, int $detailId): void{
         $stmt = Database::connection()->prepare(
             'DELETE FROM detail_keranjang dk
              USING keranjang k

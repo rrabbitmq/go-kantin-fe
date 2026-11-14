@@ -3,11 +3,10 @@
 namespace App\Models;
  
 use App\Core\Database;
+use App\Core\Media;
  
-final class Transaksi
-{
-    public static function forUser(int $userId): array
-    {
+final class Transaksi {
+    public static function forUser(int $userId): array {
         $stmt = Database::connection()->prepare(
             self::baseSelect() . ' WHERE t.id_pembeli = :id
              ORDER BY t.tgl_transaksi DESC, t.id_transaksi DESC
@@ -19,8 +18,7 @@ final class Transaksi
     }
  
     /** Hanya mengembalikan transaksi milik $userId (mencegah melihat pesanan orang lain). */
-    public static function findForUser(int $id, int $userId): ?array
-    {
+    public static function findForUser(int $id, int $userId): ?array {
         $stmt = Database::connection()->prepare(
             self::baseSelect() . ' WHERE t.id_transaksi = :id AND t.id_pembeli = :u'
         );
@@ -30,8 +28,7 @@ final class Transaksi
         return $row ? self::enrich($row) : null;
     }
  
-    public static function items(int $orderId): array
-    {
+    public static function items(int $orderId): array {
         $stmt = Database::connection()->prepare(
             "SELECT dt.id_detail_transaksi AS id,
                     dt.id_transaksi AS order_id,
@@ -59,6 +56,7 @@ final class Transaksi
             $row['order_id']   = (int) $row['order_id'];
             $row['product_id'] = (int) $row['product_id'];
             $row['variant_id'] = (int) $row['variant_id'];
+            $row['image_path'] = Media::url($row['image_path']);
             $row['quantity']   = (int) $row['quantity'];
             $row['unit_price'] = (float) $row['unit_price'];
         }
@@ -67,8 +65,7 @@ final class Transaksi
         return $rows;
     }
  
-    private static function baseSelect(): string
-    {
+    private static function baseSelect(): string {
         return "SELECT t.id_transaksi AS id,
                        t.id_pembeli AS user_id,
                        t.kode_transaksi AS order_code,
@@ -91,8 +88,7 @@ final class Transaksi
                 )pb ON TRUE";
     }
  
-    private static function enrich(array $order): array
-    {
+    private static function enrich(array $order): array {
         $order['id']           = (int) $order['id'];
         $order['user_id']      = (int) $order['user_id'];
         $order['total_amount'] = (float) $order['total_amount'];

@@ -3,11 +3,10 @@
 namespace App\Models;
  
 use App\Core\Database;
+use App\Core\Media;
  
-final class Produk
-{
-    public static function all(?int $categoryId = null, bool $terlaris = false, int $limit = 50): array
-    {
+final class Produk {
+    public static function all(?int $categoryId = null, bool $terlaris = false, int $limit = 50): array {
         $where  = [];
         $params = [];
         if ($categoryId) {
@@ -18,8 +17,7 @@ final class Produk
         return self::query($where, $params, $terlaris, $limit);
     }
  
-    public static function find(int $id): ?array
-    {
+    public static function find(int $id): ?array {
         $rows = self::query(['p.id_produk = :id'], [':id' => $id], false, 1);
         if (!$rows) {
             return null;
@@ -31,8 +29,7 @@ final class Produk
         return $product;
     }
  
-    public static function variants(int $productId): array
-    {
+    public static function variants(int $productId): array {
         $stmt = Database::connection()->prepare(
             'SELECT id_varian_produk AS id, nama_varian AS name, harga_satuan AS price, stok AS stock
              FROM varian_produk
@@ -52,8 +49,7 @@ final class Produk
         return $rows;
     }
  
-    private static function query(array $extraWhere, array $params, bool $terlaris, int $limit): array
-    {
+    private static function query(array $extraWhere, array $params, bool $terlaris, int $limit): array {
         $where = array_merge(["p.status_produk = 'aktif'", 'k.status_aktif = TRUE'], $extraWhere);
         $order = $terlaris ? 'COALESCE(s.terjual, 0) DESC, p.id_produk' : 'p.id_produk';
  

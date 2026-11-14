@@ -337,8 +337,7 @@ final class Penjual {
         return $out;
     }
 
-    private static function labelBayar(string $metode, string $status): string
-    {
+    private static function labelBayar(string $metode, string $status): string {
         if ($metode === 'qris') {
             return 'QRIS - ' . match ($status) {
                 'dibayar' => 'Terverifikasi',
@@ -355,8 +354,7 @@ final class Penjual {
         };
     }
 
-    private static function namaItem(string $produk, string $varian): string
-    {
+    private static function namaItem(string $produk, string $varian): string {
         return strtolower($varian) === 'reguler' ? $produk : $produk . ' - ' . $varian;
     }
 }

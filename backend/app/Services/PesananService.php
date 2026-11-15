@@ -46,7 +46,7 @@ final class PesananService {
                  FROM transaksi t
                  LEFT JOIN pembayaran p ON p.id_transaksi = t.id_transaksi
                  LEFT JOIN metode_pembayaran m ON m.id_metode_pembayaran = p.id_metode_pembayaran
-                 WHERE id_transaksi = :id AND id_profil_penjual = :p
+                 WHERE t.id_transaksi = :id AND t.id_profil_penjual = :p
                  LIMIT 1
                  FOR UPDATE OF t"
             );

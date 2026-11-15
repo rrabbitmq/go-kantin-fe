@@ -111,7 +111,7 @@
                 <div class="gk-admin-form-grid">
                   <div class="gk-admin-field" style="grid-column:1 / -1;">
                     <label for="form-produk-nama">Nama produk</label>
-                    <input type="text" id="form-produk-nama" class="gk-admin-input">
+                    <input type="text" id="form-produk-nama" name="nama" class="gk-admin-input" maxlength="150" required>
                   </div>
                   <div class="gk-admin-field">
                     <label for="form-produk-kategori">Kategori</label>
@@ -131,11 +131,11 @@
                   </div>
                   <div class="gk-admin-field">
                     <label for="form-produk-harga">Harga</label>
-                    <input type="number" id="form-produk-harga" name="harga" class="gk-admin-input" min="0">
+                    <input type="number" id="form-produk-harga" name="harga" class="gk-admin-input" min="0" required>
                   </div>
                   <div class="gk-admin-field">
                     <label for="form-produk-stok">Stok</label>
-                    <input type="number" id="form-produk-stok" name="stok" class="gk-admin-input" min="0">
+                    <input type="number" id="form-produk-stok" name="stok" class="gk-admin-input" min="0" required>
                   </div>
                 <div class="gk-admin-field" style="grid-column:1 / -1;">
                     <label for="form-produk-deskripsi">Deskripsi (opsional)</label>
@@ -157,10 +157,10 @@
           </div>
 
         <div class="modal fade" id="modal-stok" tabindex="-1" role="dialog" aria-hidden="true">
-          <form class="modal-content" method="post" action="/admin/menu.php">
+          <div class="modal-dialog" role="document">
+            <form class="modal-content" method="post" action="/admin/menu.php">
               <input type="hidden" name="aksi" value="stok">
               <input type="hidden" name="id_varian" id="form-stok-varian" value="">
-            <div class="modal-content">
               <div class="modal-header">
                 <h5 class="modal-title">Sesuaikan Stok</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Tutup"><span>&times;</span></button>
@@ -173,15 +173,15 @@
                 <div class="gk-admin-form-grid">
                   <div class="gk-admin-field">
                     <label for="form-stok-jenis">Jenis</label>
-                    <select id="form-stok-jenis" class="gk-admin-select">
-                      <option value="masuk">masuk</option>
-                      <option value="keluar">keluar</option>
-                      <option value="penyesuaian">penyesuaian</option>
+                    <select id="form-stok-jenis" name="jenis" class="gk-admin-select">
+                      <option value="masuk">masuk (tambah stok)</option>
+                      <option value="keluar">keluar (kurangi stok)</option>
+                      <option value="penyesuaian">penyesuaian (atur stok menjadi jumlah ini)</option>
                     </select>
                   </div>
                   <div class="gk-admin-field">
                     <label for="form-stok-jumlah">Jumlah</label>
-                    <input type="number" id="form-stok-jumlah" name="jumlah" class="gk-admin-input" min="1" value="1">
+                    <input type="number" id="form-stok-jumlah" name="jumlah" class="gk-admin-input" min="0" value="1" required>
                   </div>
                   <div class="gk-admin-field" style="grid-column:1 / -1;">
                     <label for="form-stok-keterangan">Keterangan (opsional)</label>
@@ -191,7 +191,7 @@
               </div>
               <div class="modal-footer">
                 <button type="button" class="gk-admin-btn gk-admin-btn-ghost" data-dismiss="modal">Batal</button>
-                <button type="button" class="gk-admin-btn" data-preview-save="Preview: stok disesuaikan">Terapkan</button>
+                <button type="submit" class="gk-admin-btn">Terapkan</button>
               </div>
             </form>
           </div>

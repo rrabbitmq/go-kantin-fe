@@ -1,7 +1,7 @@
 <?php
 use App\Core\HttpException;
 use App\Models\Penjual;
-use App\Services\PesananServices;
+use App\Services\PesananService;
 
 require_once __DIR__ . '/../../config/response.php';
 require_once __DIR__ . '/../../config/cors.php';

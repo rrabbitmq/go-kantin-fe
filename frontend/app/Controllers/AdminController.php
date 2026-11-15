@@ -48,44 +48,6 @@ final class AdminController extends Controller {
             'orders' => $orders,
             'queueCount' => count($orders),
         ]);
-
-        $orders = [
-            [
-                'queue' => 'A-014',
-                'kode' => '#ABC-123-XYZ',
-                'status' => 'diproses',
-                'slot' => '09:30 - 10:00',
-                'pembayar' => 'QRIS - Bukti Diunggah',
-                'metode' => 'qris',
-                'pembeli' => 'Farhan Ramadhan',
-                'nim' => '2341720001',
-                'waktu' => '09:15',
-                'total' => 11000,
-                'catatan' => 'satu dingin, satu biasa',
-                'items' => [
-                    ['qty' => 1, 'nama' => 'Oreo Soft Cake', 'harga' => 3000],
-                    ['qty' => 2, 'nama' => 'Air Mineral', 'harga' => 3000],
-                    ['qty' => 1, 'nama' => 'Teh Pucuk', 'harga' => 4000],
-                ],
-            ],
-            [
-                'queue' => 'A-017',
-                'kode' => '#JTI-126-SNK',
-                'status' => 'dibayar',
-                'slot' => '10:00 - 10:30',
-                'pembayar' => 'QRIS - Bukti Diunggah',
-                'metode' => 'qris',
-                'pembeli' => 'Dewi Anggraini',
-                'nim' => '2341720110',
-                'waktu' => '09:40',
-                'total' => 10000,
-                'catatan' => 'pedas level 1',
-                'items' => [
-                    ['qty' => 2, 'nama' => 'Tahu Isi Sayur', 'harga' => 2500],
-                    ['qty' => 2, 'nama' => 'Sosis Solo Ayam', 'harga' => 2500],
-                ],
-            ],
-        ];
     }
 
     /** POST untuk /admin/antrian.php: digunakan konfirmasi, proses, siap, selesai, atau batalkan pesanan. */
@@ -163,27 +125,6 @@ final class AdminController extends Controller {
             'activeNav' => 'menu',
             'products' => $products,
             'categories' => KategoriProduk::all(),
-        ]);
-
-        $products = [
-            ['id' => 1, 'nama' => 'Oreo Soft Cake', 'kategori' => 'Snack', 'varian' => 1, 'harga' => 3000, 'stok' => 25, 'status' => 'aktif', 'gambar' => '/img/menu/1.jpg'],
-            ['id' => 2, 'nama' => 'Ayam Krispi', 'kategori' => 'Makanan', 'varian' => 2, 'harga' => 12000, 'stok' => 4, 'status' => 'aktif', 'gambar' => '/img/menu/2.jpg'],
-            ['id' => 3, 'nama' => 'Air Mineral', 'kategori' => 'Minuman', 'varian' => 1, 'harga' => 3000, 'stok' => 48, 'status' => 'aktif', 'gambar' => '/img/menu/3.jpg'],
-            ['id' => 4, 'nama' => 'Kapal Api', 'kategori' => 'Minuman', 'varian' => 1, 'harga' => 4000, 'stok' => 2, 'status' => 'aktif', 'gambar' => '/img/menu/4.jpg'],
-            ['id' => 5, 'nama' => 'La Segar Twist', 'kategori' => 'Minuman', 'varian' => 1, 'harga' => 5000, 'stok' => 18, 'status' => 'aktif', 'gambar' => '/img/menu/5.jpg'],
-            ['id' => 6, 'nama' => 'Teh Pucuk', 'kategori' => 'Minuman', 'varian' => 1, 'harga' => 4000, 'stok' => 30, 'status' => 'aktif', 'gambar' => '/img/menu/6.jpg'],
-            ['id' => 7, 'nama' => 'Sosis Solo Ayam', 'kategori' => 'Snack', 'varian' => 1, 'harga' => 2500, 'stok' => 18, 'status' => 'aktif', 'gambar' => '/img/menu/7.jpg'],
-            ['id' => 8, 'nama' => 'Tahu Isi Sayur', 'kategori' => 'Snack', 'varian' => 1, 'harga' => 2500, 'stok' => 22, 'status' => 'aktif', 'gambar' => '/img/menu/8.jpg'],
-            ['id' => 9, 'nama' => 'Nasi Ayam Geprek', 'kategori' => 'Makanan', 'varian' => 3, 'harga' => 15000, 'stok' => 12, 'status' => 'aktif', 'gambar' => '/img/menu/9.jpg'],
-            ['id' => 10, 'nama' => 'Mie Goreng', 'kategori' => 'Makanan', 'varian' => 2, 'harga' => 10000, 'stok' => 0, 'status' => 'habis', 'gambar' => '/img/menu/10.jpg'],
-            ['id' => 11, 'nama' => 'Es Teh Manis', 'kategori' => 'Minuman', 'varian' => 1, 'harga' => 3000, 'stok' => 40, 'status' => 'nonaktif', 'gambar' => '/img/menu/11.jpg'],
-            ['id' => 12, 'nama' => 'Risoles Mayo', 'kategori' => 'Snack', 'varian' => 1, 'harga' => 3500, 'stok' => 15, 'status' => 'aktif', 'gambar' => '/img/menu/12.jpg'],
-        ];
-
-        $this->renderAdmin('admin/menu', [
-            'pageTitle' => 'Manajemen Menu & Stok - Go Kantin',
-            'activeNav' => 'menu',
-            'products' => $products,
         ]);
     }
 

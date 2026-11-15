@@ -16,6 +16,20 @@ final class ApiClient {
         }
         return $url;
     }
+
+    /**
+     * Hanya saat backend berjalan lokal (127.0.0.1 / localhost): sertakan awal jawaban backend
+     * di pesan error, supaya penyebabnya (misalnya "Class ... not found") langsung terlihat.
+     */
+    private static function debugDetail(string $raw): string {
+        if (!preg_match('#^https?://(127\.0\.0\.1|localhost)([:/]|$)#', self::baseUrl())) {
+            return '';
+        }
+
+        $ringkas = preg_replace('/\s+/', ' ', trim(strip_tags($raw)));
+
+        return $ringkas !== '' ? ' [Detail: ' . mb_substr($ringkas, 0, 220) . ']' : '';
+    }
  
     public static function post(string $path, array $body = [], ?string $token = null): array {
         return self::request('POST', $path, $body, $token);

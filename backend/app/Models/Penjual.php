@@ -188,7 +188,7 @@ final class Penjual {
 
         // 8. Transaksi selesai per metode
         $stmt = $pdo->prepare(
-            "SELECT COALESCE(pb.kode_metode, 'tunai) AS metode, COUNT(*) AS jumlah
+            "SELECT COALESCE(pb.kode_metode, 'tunai') AS metode, COUNT(*) AS jumlah
             FROM transaksi t
             LEFT JOIN LATERAL (
                 SELECT m.kode_metode

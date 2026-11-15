@@ -4,7 +4,7 @@
 /** @var array $categories */
 /** @var array $weeklyRevenue */
 /** @var array $bestsellers */
-$maxRevenue = max(array_column($weeklyRevenue, 'value') ?: [1]);
+$maxRevenue = max(1, max(array_column($weeklyRevenue, 'value') ?: [1]));
 ?>
         <div class="gk-admin-page-head">
           <div>

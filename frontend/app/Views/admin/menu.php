@@ -5,7 +5,7 @@
         <div class="gk-admin-page-head">
           <div>
             <h1>Manajemen Menu &amp; Stok</h1>
-            <p>Kelola katalog produk, harga, stok, dan status tampil di POS / pembeli.</p>
+            <p>Kelola katalog produk, varian, harga, stok, dan status tampil di POS / pembeli.</p>
           </div>
           <button type="button" class="gk-admin-btn" id="btn-tambah-produk">
             <i class="fas fa-plus"></i> Tambah Menu
@@ -43,6 +43,10 @@
             </thead>
             <tbody>
               <?php foreach ($products as $p): ?>
+              <?php
+                $variants = is_array($p['variants'] ?? null) ? $p['variants'] : [];
+                $variantsJson = json_encode($variants, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+              ?>
               <tr>
                 <td>
                   <img class="gk-admin-thumb" src="<?= gk_h($p['gambar']) ?>" alt="">
@@ -65,21 +69,20 @@
                       data-edit-product
                       data-id="<?= (int) $p['id'] ?>"
                       data-nama="<?= gk_h($p['nama']) ?>"
-                      data-kategori="<?= gk_h($p['kategori']) ?>"
-                      data-harga="<?= (int) $p['harga'] ?>"
-                      data-stok="<?= (int) $p['stok'] ?>"
+                      data-kategori-id="<?= (int) ($p['kategori_id'] ?? 0) ?>"
                       data-status="<?= gk_h($p['status']) ?>"
                       data-deskripsi="<?= gk_h($p['deskripsi']) ?>"
-                      data-gambar="<?= gk_h($p['gambar']) ?>">
+                      data-gambar="<?= gk_h($p['gambar']) ?>"
+                      data-variants="<?= gk_h((string) $variantsJson) ?>">
                       Edit
                     </button>
-                    <?php if ((int) $p['id_varian'] > 0): ?>
+                    <?php if ($variants !== []): ?>
                     <button
                       type="button"
                       class="gk-admin-btn gk-admin-btn-outline gk-admin-btn-sm"
                       data-adjust-stock
                       data-nama="<?= gk_h($p['nama']) ?>"
-                      data-varian="<?= (int) $p['id_varian'] ?>">
+                      data-variants="<?= gk_h((string) $variantsJson) ?>">
                       Stok
                     </button>
                     <?php endif; ?>
@@ -100,10 +103,11 @@
         </div>
 
         <div class="modal fade" id="modal-produk" tabindex="-1" role="dialog" aria-hidden="true">
-          <div class="modal-dialog" role="document">
-            <form class="modal-content" method="post" action="/admin/menu.php" enctype="multipart/form-data">
+          <div class="modal-dialog modal-lg" role="document">
+            <form class="modal-content" method="post" action="/admin/menu.php" enctype="multipart/form-data" id="form-produk">
               <input type="hidden" name="aksi" value="simpan">
               <input type="hidden" name="id" id="form-produk-id" value="">
+              <input type="hidden" name="varian_json" id="form-produk-varian-json" value="[]">
               <div class="modal-header">
                 <h5 class="modal-title" id="modal-produk-title">Tambah Menu</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Tutup"><span>&times;</span></button>
@@ -124,23 +128,25 @@
                   </div>
                   <div class="gk-admin-field">
                     <label for="form-produk-status">Status</label>
-                    <select id="form-produk-status" class="gk-admin-select">
+                    <select id="form-produk-status" name="status" class="gk-admin-select">
                       <option value="aktif">aktif</option>
                       <option value="habis">habis</option>
                       <option value="nonaktif">nonaktif</option>
                     </select>
                   </div>
-                  <div class="gk-admin-field">
-                    <label for="form-produk-harga">Harga</label>
-                    <input type="number" id="form-produk-harga" name="harga" class="gk-admin-input" min="0" required>
-                  </div>
-                  <div class="gk-admin-field">
-                    <label for="form-produk-stok">Stok</label>
-                    <input type="number" id="form-produk-stok" name="stok" class="gk-admin-input" min="0" required>
-                  </div>
-                <div class="gk-admin-field" style="grid-column:1 / -1;">
+                  <div class="gk-admin-field" style="grid-column:1 / -1;">
                     <label for="form-produk-deskripsi">Deskripsi (opsional)</label>
                     <textarea id="form-produk-deskripsi" name="deskripsi" class="gk-admin-input" rows="2" maxlength="1000"></textarea>
+                  </div>
+                  <div class="gk-admin-field" style="grid-column:1 / -1;">
+                    <div class="gk-admin-varian-head">
+                      <label>Varian (nama, harga, stok)</label>
+                      <button type="button" class="gk-admin-btn gk-admin-btn-outline gk-admin-btn-sm" id="btn-tambah-varian">
+                        <i class="fas fa-plus"></i> Tambah varian
+                      </button>
+                    </div>
+                    <div id="form-produk-varian-list" class="gk-admin-varian-list"></div>
+                    <p class="gk-admin-hint">Minimal 1 varian. Hapus dari form = nonaktifkan varian (riwayat transaksi tetap aman).</p>
                   </div>
                   <div class="gk-admin-field" style="grid-column:1 / -1;">
                     <label for="form-produk-gambar">Gambar (JPG/JPEG/PNG/WEBP maks 2 MB)</label>
@@ -154,14 +160,13 @@
                 <button type="submit" class="gk-admin-btn">Simpan</button>
               </div>
             </form>
-            </div>
           </div>
+        </div>
 
         <div class="modal fade" id="modal-stok" tabindex="-1" role="dialog" aria-hidden="true">
           <div class="modal-dialog" role="document">
             <form class="modal-content" method="post" action="/admin/menu.php">
               <input type="hidden" name="aksi" value="stok">
-              <input type="hidden" name="id_varian" id="form-stok-varian" value="">
               <div class="modal-header">
                 <h5 class="modal-title">Sesuaikan Stok</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Tutup"><span>&times;</span></button>
@@ -172,6 +177,10 @@
                   <input type="text" id="form-stok-nama" class="gk-admin-input" readonly>
                 </div>
                 <div class="gk-admin-form-grid">
+                  <div class="gk-admin-field" style="grid-column:1 / -1;">
+                    <label for="form-stok-varian">Varian</label>
+                    <select id="form-stok-varian" name="id_varian" class="gk-admin-select" required></select>
+                  </div>
                   <div class="gk-admin-field">
                     <label for="form-stok-jenis">Jenis</label>
                     <select id="form-stok-jenis" name="jenis" class="gk-admin-select">

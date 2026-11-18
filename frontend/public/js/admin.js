@@ -277,17 +277,13 @@
     var $btn = $(this);
     $('#modal-produk-title').text('Edit Menu');
     $('#form-produk-nama').val($btn.data('nama'));
-    $('#form-produk-kategori').val($btn.data('kategori'));
-    $('#form-produk-harga').val($btn.data('harga'));
-    $('#form-produk-stok').val($btn.data('stok'));
     $('#form-produk-status').val($btn.data('status'));
     $('#modal-produk').modal('show');
   });
 
   $(document).on('click', '#btn-tambah-produk', function () {
     $('#modal-produk-title').text('Tambah Menu');
-    $('#form-produk-nama, #form-produk-harga, #form-produk-stok').val('');
-    $('#form-produk-kategori').val('Makanan');
+    $('#form-produk-nama').val('');
     $('#form-produk-status').val('aktif');
     $('#modal-produk').modal('show');
   });

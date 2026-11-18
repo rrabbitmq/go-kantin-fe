@@ -873,6 +873,80 @@ a.gk-admin-userchip:hover {
   width: 100%;
 }
 
+.gk-admin-varian-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.gk-admin-varian-head label {
+  margin: 0;
+}
+
+.gk-admin-varian-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.gk-admin-varian-row {
+  display: grid;
+  grid-template-columns: minmax(140px, 1.5fr) minmax(100px, 0.9fr) minmax(100px, 0.9fr) 40px;
+  gap: 12px;
+  align-items: end;
+  padding: 12px;
+  border: 1px solid var(--gk-line);
+  border-radius: 12px;
+  background: #fafbfc;
+}
+
+.gk-admin-varian-row .gk-admin-field {
+  margin: 0;
+  min-width: 0;
+}
+
+.gk-admin-varian-row .gk-admin-input {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.gk-admin-varian-row .js-varian-remove {
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  padding: 0;
+  margin: 0 0 1px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+
+.gk-admin-hint {
+  margin: 8px 0 0;
+  font-size: 12px;
+  color: #6f6f87;
+}
+
+@media (max-width: 768px) {
+  .gk-admin-varian-row {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .gk-admin-varian-row .gk-admin-field:first-of-type {
+    grid-column: 1 / -1;
+  }
+
+  .gk-admin-varian-row .js-varian-remove {
+    grid-column: 2;
+    justify-self: end;
+  }
+}
+
 .gk-admin-switch {
   display: inline-flex;
   align-items: center;

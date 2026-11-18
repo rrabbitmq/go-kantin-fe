@@ -172,13 +172,43 @@ final class AdminController extends Controller {
             return;
         }
 
+        $variants = [];
+        $rawJson = trim((string) ($_POST['varian_json'] ?? ''));
+        if ($rawJson !== '') {
+            $decoded = json_decode($rawJson, true);
+            if (is_array($decoded)) {
+                foreach ($decoded as $row) {
+                    if (!is_array($row)) {
+                        continue;
+                    }
+                    $variants[] = [
+                        'id' => (int) ($row['id'] ?? 0),
+                        'nama' => trim((string) ($row['nama'] ?? '')),
+                        'harga' => (int) ($row['harga'] ?? 0),
+                        'stok' => (int) ($row['stok'] ?? 0),
+                    ];
+                }
+            }
+        } elseif (is_array($_POST['varian'] ?? null)) {
+            foreach ($_POST['varian'] as $row) {
+                if (!is_array($row)) {
+                    continue;
+                }
+                $variants[] = [
+                    'id' => (int) ($row['id'] ?? 0),
+                    'nama' => trim((string) ($row['nama'] ?? '')),
+                    'harga' => (int) ($row['harga'] ?? 0),
+                    'stok' => (int) ($row['stok'] ?? 0),
+                ];
+            }
+        }
+
         $fields = [
             'nama' => trim((string) ($_POST['nama'] ?? '')),
             'id_kategori' => (int) ($_POST['id_kategori'] ?? 0),
-            'harga' => trim((string) ($_POST['harga'] ?? '')),
-            'stok' => trim((string) ($_POST['stok'] ?? '')),
             'status' => (string) ($_POST['status'] ?? 'aktif'),
             'deskripsi' => trim((string) ($_POST['deskripsi'] ?? '')),
+            'varian_json' => json_encode($variants, JSON_UNESCAPED_UNICODE),
         ];
         $id = (int) ($_POST['id'] ?? 0);
         if ($id > 0) {

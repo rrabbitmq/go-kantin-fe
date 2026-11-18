@@ -11,7 +11,7 @@ function getConnection(): PDO
     $port = getenv('DB_PORT') ?: 5432;
     $name = getenv('DB_NAME') ?:'go_kantin';
     $user = getenv('DB_USER') ?: 'postgres';
-    $pass = getenv('DB_PASS') ?: 'postgres';
+    $pass = getenv('DB_PASS') ?: 'komenprom';
 
     $pdo = new PDO(
         "pgsql:host=$host;port=$port;dbname=$name",

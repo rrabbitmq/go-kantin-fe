@@ -14,7 +14,8 @@ handleCors();
 /*
  * GET    /api/penjual/menu            daftar menu milik penjual
  * POST   /api/penjual/menu            tambah menu (tanpa "id") atau ubah menu (dengan "id")
- *                                     multipart/form-data: nama, id_kategori, harga, stok, status, deskripsi, gambar (file)
+ *                                     multipart/form-data: nama, id_kategori, status, deskripsi, gambar,
+ *                                     varian_json=[{id?,nama,harga,stok},...] (atau harga+stok legacy → Reguler)
  * DELETE /api/penjual/menu?id=ID      nonaktifkan menu
  */
 $auth   = requireRole('penjual');

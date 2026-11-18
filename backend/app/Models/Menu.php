@@ -17,20 +17,26 @@ final class Menu {
                     p.gambar,
                     p.status_produk AS status,
                     COALESCE(vc.n, 0) AS varian,
-                    pv.id_varian_produk AS id_varian,
-                    COALESCE(pv.harga_satuan, 0) AS harga,
-                    COALESCE(pv.stok, 0) AS stok
+                    COALESCE(vc.id_varian, 0) AS id_varian,
+                    COALESCE(vc.harga_min, 0) AS harga,
+                    COALESCE(vc.stok_total, 0) AS stok,
+                    COALESCE(vc.items, '[]'::json) AS variants_json
              FROM produk p
              JOIN kategori_produk k ON k.id_kategori_produk = p.id_kategori_produk
              LEFT JOIN LATERAL (
-                 SELECT v.id_varian_produk, v.harga_satuan, v.stok
-                 FROM varian_produk v
-                 WHERE v.id_produk = p.id_produk AND v.status_aktif = TRUE
-                 ORDER BY v.id_varian_produk
-                 LIMIT 1
-             ) pv ON TRUE
-             LEFT JOIN LATERAL (
-                 SELECT COUNT(*) AS n
+                 SELECT COUNT(*)::int AS n,
+                        MIN(v.harga_satuan) AS harga_min,
+                        SUM(v.stok)::int AS stok_total,
+                        (ARRAY_AGG(v.id_varian_produk ORDER BY v.id_varian_produk))[1] AS id_varian,
+                        json_agg(
+                            json_build_object(
+                                'id', v.id_varian_produk,
+                                'nama', v.nama_varian,
+                                'harga', v.harga_satuan,
+                                'stok', v.stok
+                            )
+                            ORDER BY v.id_varian_produk
+                        ) AS items
                  FROM varian_produk v
                  WHERE v.id_produk = p.id_produk AND v.status_aktif = TRUE
              ) vc ON TRUE
@@ -48,6 +54,23 @@ final class Menu {
             $r['harga']       = (int) round((float) $r['harga']);
             $r['stok']        = (int) $r['stok'];
             $r['gambar']      = Media::url($r['gambar']);
+
+            $variants = json_decode((string) ($r['variants_json'] ?? '[]'), true);
+            unset($r['variants_json']);
+            $r['variants'] = [];
+            if (is_array($variants)) {
+                foreach ($variants as $v) {
+                    if (!is_array($v)) {
+                        continue;
+                    }
+                    $r['variants'][] = [
+                        'id' => (int) ($v['id'] ?? 0),
+                        'nama' => (string) ($v['nama'] ?? ''),
+                        'harga' => (int) round((float) ($v['harga'] ?? 0)),
+                        'stok' => (int) ($v['stok'] ?? 0),
+                    ];
+                }
+            }
         }
         unset($r);
 

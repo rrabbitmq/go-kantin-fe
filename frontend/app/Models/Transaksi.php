@@ -14,6 +14,32 @@ final class Transaksi {
  
         return array_map([self::class, 'enrich'], $res['data']);
     }
+
+    /** Ringkasan profil: jumlah pesanan, total belanja, pesanan terakhir. */
+    public static function summaryForUser(int $userId): array {
+        $orders = self::forUser($userId);
+        $jumlah = count($orders);
+        $total = 0.0;
+        $terakhir = null;
+
+        foreach ($orders as $order) {
+            if (($order['status'] ?? '') === 'done' || ($order['status'] ?? '') === 'selesai') {
+                $total += (float) ($order['total_amount'] ?? 0);
+            } else {
+                $total += (float) ($order['total_amount'] ?? 0);
+            }
+            $waktu = $order['created_at'] ?? $order['tanggal'] ?? $order['tgl_transaksi'] ?? null;
+            if ($waktu && ($terakhir === null || strcmp((string) $waktu, (string) $terakhir) > 0)) {
+                $terakhir = $waktu;
+            }
+        }
+
+        return [
+            'jumlah_pesanan' => $jumlah,
+            'total_belanja' => $total,
+            'pesanan_terakhir' => $terakhir,
+        ];
+    }
  
     public static function find(int $id): ?array {
         $detail = self::detail($id);

@@ -57,4 +57,20 @@ final class Penjual {
             'keterangan' => $keterangan,
         ], Auth::token());
     }
+
+    public static function stand(): array {
+        return ApiClient::get('/penjual/stand', Auth::token());
+    }
+
+    public static function simpanStand(array $fields): array {
+        return ApiClient::request('PUT', '/penjual/stand', $fields, Auth::token());
+    }
+
+    public static function pos(): array {
+        return ApiClient::get('/penjual/pos', Auth::token());
+    }
+
+    public static function aksiPos(array $body): array {
+        return ApiClient::post('/penjual/pos', $body, Auth::token());
+    }
 }

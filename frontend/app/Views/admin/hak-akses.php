@@ -81,7 +81,7 @@
               <div class="modal-body">
                 <div class="gk-admin-field" style="margin-bottom:12px;">
                   <label for="form-role-nama">Nama role</label>
-                  <input type="text" name="nama_role" id="form-role-nama" class="gk-admin-input" required minlength="3" maxlength="50" pattern="[a-z0-9_]+" placeholder="contoh: kasir">
+                  <input type="text" name="nama_role" id="form-role-nama" class="gk-admin-input" required minlength="3" maxlength="50" pattern="[a-z0-9_]+" placeholder="contoh: auditor">
                   <small class="text-muted">Huruf kecil, angka, dan underscore.</small>
                 </div>
                 <div class="gk-admin-field">

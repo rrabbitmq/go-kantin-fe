@@ -33,24 +33,30 @@
             </div>
 
             <div class="gk-admin-product-grid">
+              <?php if (!$products): ?>
+                <p class="sub">Belum ada menu aktif untuk POS.</p>
+              <?php endif; ?>
               <?php foreach ($products as $p): ?>
-              <?php $disabled = (int) $p['stok'] <= 0; ?>
+              <?php
+                $varianId = (int) ($p['id_varian'] ?? $p['id'] ?? 0);
+                $disabled = (int) ($p['stok'] ?? 0) <= 0 || $varianId < 1;
+              ?>
               <article
                 class="gk-admin-product-card<?= $disabled ? ' is-disabled' : '' ?>"
-                data-kategori="<?= gk_h($p['kategori']) ?>"
-                data-nama="<?= gk_h($p['nama']) ?>">
-                <img src="<?= gk_h($p['gambar']) ?>" alt="<?= gk_h($p['nama']) ?>">
+                data-kategori="<?= gk_h($p['kategori'] ?? '') ?>"
+                data-nama="<?= gk_h($p['nama'] ?? '') ?>">
+                <img src="<?= gk_h($p['gambar'] ?? '/img/menu/1.jpg') ?>" alt="<?= gk_h($p['nama'] ?? '') ?>">
                 <div class="gk-admin-product-body">
-                  <strong><?= gk_h($p['nama']) ?></strong>
-                  <span class="meta"><?= gk_h($p['kategori']) ?> · Stok: <?= (int) $p['stok'] ?></span>
-                  <span class="price"><?= gk_h(gk_format_rupiah($p['harga'])) ?></span>
+                  <strong><?= gk_h($p['nama'] ?? '') ?></strong>
+                  <span class="meta"><?= gk_h($p['kategori'] ?? '') ?> · Stok: <?= (int) ($p['stok'] ?? 0) ?></span>
+                  <span class="price"><?= gk_h(gk_format_rupiah($p['harga'] ?? 0)) ?></span>
                   <button
                     type="button"
                     class="gk-admin-btn gk-admin-btn-outline gk-admin-btn-sm"
                     data-add-pos
-                    data-id="<?= (int) $p['id'] ?>"
-                    data-nama="<?= gk_h($p['nama']) ?>"
-                    data-harga="<?= (int) $p['harga'] ?>"
+                    data-id="<?= $varianId ?>"
+                    data-nama="<?= gk_h($p['nama'] ?? '') ?>"
+                    data-harga="<?= (int) ($p['harga'] ?? 0) ?>"
                     <?= $disabled ? 'disabled' : '' ?>>
                     + Tambah ke Nota POS
                   </button>
@@ -99,19 +105,15 @@
                 </button>
               </div>
               <div class="modal-body">
-                <div class="gk-admin-status is-open" style="margin-bottom:12px;">
-                  <strong>Tiket QR Valid</strong>
-                  <span>Antrean A-014 · Farhan Ramadhan · Ambil 09:30-10:00 · QRIS</span>
+                <div id="gk-qr-status" class="gk-admin-status is-open" style="margin-bottom:12px;">
+                  <strong id="gk-qr-heading">Memuat tiket…</strong>
+                  <span id="gk-qr-meta"></span>
                 </div>
-                <div class="gk-admin-order-items">
-                  <div>1x Oreo Soft Cake — Rp3.000</div>
-                  <div>2x Air Mineral — Rp6.000</div>
-                  <div style="margin-top:8px;font-weight:700;">Total Transaksi: Rp11.000</div>
-                </div>
+                <div class="gk-admin-order-items" id="gk-qr-items"></div>
               </div>
               <div class="modal-footer">
                 <button type="button" class="gk-admin-btn gk-admin-btn-ghost" data-dismiss="modal">Batal</button>
-                <button type="button" class="gk-admin-btn" id="gk-qr-handover">Serahkan / Selesai</button>
+                <button type="button" class="gk-admin-btn" id="gk-qr-handover" hidden>Serahkan / Selesai</button>
               </div>
             </div>
           </div>

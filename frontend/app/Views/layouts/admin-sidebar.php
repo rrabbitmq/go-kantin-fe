@@ -12,7 +12,7 @@ $isSuper = \App\Core\Auth::hasRole('super_admin') && !\App\Core\Auth::hasRole('p
         <img src="/img/ui/logo.svg" alt="Go Kantin">
         <div>
           <strong>Go Kantin POS</strong>
-          <span><?= \App\Core\Auth::hasRole('super_admin') ? 'Panel Super Admin' : 'Panel Admin / Kasir Terpadu' ?></span>
+          <span><?= \App\Core\Auth::hasRole('super_admin') ? 'Panel Super Admin' : 'Panel Admin Stand' ?></span>
         </div>
       </div>
 
@@ -20,7 +20,7 @@ $isSuper = \App\Core\Auth::hasRole('super_admin') && !\App\Core\Auth::hasRole('p
 <?php if ($isSuper): ?>
       <ul class="gk-admin-nav">
         <li>
-          <a href="/admin/dashboard.php" class="<?= $activeNav === 'dashboard' ? 'is-active' : '' ?>">
+          <a href="/admin/pengguna.php" class="<?= $activeNav === 'pengguna' ? 'is-active' : '' ?>">
             <i class="fas fa-chart-pie"></i><span>Manajemen Pengguna</span>
           </a>
         </li>
@@ -76,8 +76,8 @@ $isSuper = \App\Core\Auth::hasRole('super_admin') && !\App\Core\Auth::hasRole('p
           </a>
         </li>
         <li>
-          <a href="/admin/kasir.php" class="<?= $activeNav === 'kasir' ? 'is-active' : '' ?>">
-            <i class="fas fa-user-friends"></i><span>Akun Kasir Stand</span>
+          <a href="/admin/profil.php" class="<?= $activeNav === 'profil' ? 'is-active' : '' ?>">
+            <i class="fas fa-user-cog"></i><span>Profil Akun</span>
           </a>
         </li>
       </ul>
@@ -90,13 +90,13 @@ $isSuper = \App\Core\Auth::hasRole('super_admin') && !\App\Core\Auth::hasRole('p
           <span>Jam operasional: <?= gk_h($standMeta['jam'] ?? '08.00 - 15.00 WIB') ?></span>
         </div>
 <?php endif; ?>
-        <div class="gk-admin-userchip">
+        <a href="/admin/profil.php" class="gk-admin-userchip">
           <div class="gk-admin-avatar"><?= gk_h($avatar) ?></div>
           <div>
             <strong><?= gk_h($currentUser['name'] ?? 'Tamu') ?></strong>
-            <span><?= $isSuper ? 'Super Admin' : gk_h($standMeta['role_label'] ?? 'Kasir Stand') ?></span>
+            <span><?= $isSuper ? 'Super Admin' : gk_h($standMeta['role_label'] ?? 'Admin Stand') ?></span>
           </div>
-        </div>
+        </a>
         <a href="/auth/logout.php" class="gk-admin-logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
       </div>
     </aside>

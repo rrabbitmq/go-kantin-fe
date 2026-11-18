@@ -34,6 +34,11 @@ $avatar = gk_avatar_letter($currentUser['name'] ?? 'T');
           </a>
         </li>
         <li>
+          <a href="/user/queue.php" class="<?= $activeNav === 'queue' ? 'gk-active' : '' ?>">
+            <i class="fas fa-users"></i><span>Antrian</span>
+          </a>
+        </li>
+        <li>
           <a href="/auth/logout.php"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
         </li>
       </ul>

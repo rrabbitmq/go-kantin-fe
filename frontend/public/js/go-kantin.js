@@ -70,12 +70,41 @@
     });
   }
 
+  function closeNotifPanel() {
+    var $panel = $('#gk-notif-panel');
+    if (!$panel.length) return;
+    $panel.prop('hidden', true);
+    $('#gk-notif-toggle').attr('aria-expanded', 'false');
+  }
+
   $(document).on('click', '.gk-menu-toggle', function (e) {
     e.preventDefault();
     if (isDesktop()) {
       applyCollapsed(!$('.gk-app').hasClass('gk-sidebar-collapsed'));
     } else {
       $('.gk-app').toggleClass('gk-sidebar-open');
+    }
+  });
+
+  $(document).on('click', '#gk-notif-toggle', function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    var $panel = $('#gk-notif-panel');
+    if (!$panel.length) return;
+    var open = $panel.prop('hidden');
+    $panel.prop('hidden', !open);
+    $(this).attr('aria-expanded', open ? 'true' : 'false');
+  });
+
+  $(document).on('click', function (e) {
+    if (!$(e.target).closest('.gk-topbar-notif').length) {
+      closeNotifPanel();
+    }
+  });
+
+  $(document).on('keydown', function (e) {
+    if (e.key === 'Escape') {
+      closeNotifPanel();
     }
   });
 
@@ -204,5 +233,6 @@
     updateToggleIcon();
     initCheckoutTiming();
     initMenuCarousels();
+    closeNotifPanel();
   });
 })(jQuery);

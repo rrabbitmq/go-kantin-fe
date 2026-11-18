@@ -2,4 +2,10 @@
 
 require __DIR__ . '/../../app/bootstrap.php';
 
-(new App\Controllers\AdminController())->pengaturan();
+$controller = new App\Controllers\AdminController();
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $controller->simpanPengaturan();
+} else {
+    $controller->pengaturan();
+}

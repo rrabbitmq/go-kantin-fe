@@ -2,4 +2,10 @@
 
 require __DIR__ . '/../../app/bootstrap.php';
 
-(new App\Controllers\AdminController())->pos();
+$controller = new App\Controllers\AdminController();
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $controller->aksiPos();
+} else {
+    $controller->pos();
+}

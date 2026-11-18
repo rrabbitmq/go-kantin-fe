@@ -26,6 +26,8 @@ $routes = [
     '/api/penjual/pesanan'  => 'penjual-pesanan.php',
     '/api/penjual/menu'     => 'penjual-menu.php',
     '/api/penjual/stok'     => 'penjual-stok.php',
+    '/api/penjual/stand'    => 'penjual-stand.php',
+    '/api/penjual/pos'      => 'penjual-pos.php',
 ];
  
 if (isset($routes[$path])) {

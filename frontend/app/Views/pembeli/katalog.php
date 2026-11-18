@@ -1,3 +1,11 @@
+<?php
+/**
+ * @var array $categories
+ * @var array $bestsellers
+ */
+$categories = $categories ?? [];
+$bestsellers = $bestsellers ?? [];
+?>
         <section class="sb-p-90-60">
           <div class="container">
             <div class="row">

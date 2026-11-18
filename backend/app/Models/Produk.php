@@ -87,6 +87,7 @@ final class Produk {
             $row['category_id'] = (int) $row['category_id'];
             $row['price']       = (float) $row['price'];
             $row['terjual']     = (int) $row['terjual'];
+            $row['image_path']  = Media::url($row['image_path'] ?? '');
         }
         unset($row);
  

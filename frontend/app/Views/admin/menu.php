@@ -1,5 +1,6 @@
 <?php
 /** @var array $products */
+/** @var array $categories */
 ?>
         <div class="gk-admin-page-head">
           <div>
@@ -142,7 +143,7 @@
                     <textarea id="form-produk-deskripsi" name="deskripsi" class="gk-admin-input" rows="2" maxlength="1000"></textarea>
                   </div>
                   <div class="gk-admin-field" style="grid-column:1 / -1;">
-                    <label for="form-produk-gambar">Gambar (JPG, PNG, atau WEBP, maks 2 MB)</label>
+                    <label for="form-produk-gambar">Gambar (JPG/JPEG/PNG/WEBP maks 2 MB)</label>
                     <input type="file" id="form-produk-gambar" name="gambar" class="gk-admin-input" accept="image/jpeg,image/png,image/webp">
                     <img id="form-produk-preview" src="" alt="Pratinjau gambar" style="display:none;margin-top:10px;max-width:140px;border-radius:10px;">
                   </div>

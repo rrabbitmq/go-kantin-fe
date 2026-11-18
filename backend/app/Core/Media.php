@@ -8,12 +8,12 @@ namespace App\Core;
  */
 
 final class Media {
-    private const FOLDER = 'upload/menu';
+    private const FOLDER = 'uploads/menu';
     private const MAKS_BYTE = 2087152;
     private const TIPE = [
         IMAGETYPE_JPEG => 'jpg',
-        IMAGETYPE_JPEG => 'png',
-        IMAGETYPE_JPEG => 'webp',
+        IMAGETYPE_PNG => 'png',
+        IMAGETYPE_WEBP => 'webp',
     ];
 
     /** Ubah path gambar di database menjadi URL yang bisa dibuka browser. */
@@ -23,7 +23,7 @@ final class Media {
         if ($path === '') {
             return '/img/menu/1.jpg'; //gambar bawaan FE
         }
-        if (str_starts_with($path, '/uploads/')) {
+        if (str_starts_with($path, '/uploads/') || str_starts_with($path, '/upload/')) {
             return self::baseUrl() . $path; //file upload di server BE
         }
 

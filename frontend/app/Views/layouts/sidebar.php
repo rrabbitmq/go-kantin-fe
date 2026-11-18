@@ -30,7 +30,7 @@ $avatar = gk_avatar_letter($currentUser['name'] ?? 'T');
         </li>
         <li>
           <a href="/user/status-pesanan.php" class="<?= $activeNav === 'status' ? 'gk-active' : '' ?>">
-            <i class="fas fa-clock"></i><span>Pantau Pesananmu</span>
+            <i class="fas fa-clock"></i><span>Pesanan</span>
           </a>
         </li>
         <li>

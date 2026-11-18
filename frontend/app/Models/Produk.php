@@ -55,6 +55,37 @@ final class Produk
         $row['ingredients'] = $row['ingredients'] ?? ($row['description'] ?? '');
         $row['filter_class'] = $row['filter_class'] ?? gk_filter_class_for_category($slug);
 
+        $variants = [];
+        if (!empty($row['variants']) && is_array($row['variants'])) {
+            foreach ($row['variants'] as $variant) {
+                if (!is_array($variant)) {
+                    continue;
+                }
+                $variants[] = [
+                    'id' => (int) ($variant['id'] ?? 0),
+                    'name' => (string) ($variant['name'] ?? 'Reguler'),
+                    'price' => (float) ($variant['price'] ?? 0),
+                    'stock' => (int) ($variant['stock'] ?? 0),
+                ];
+            }
+        }
+        $row['variants'] = $variants;
+
+        $stockTotal = 0;
+        $minInStock = null;
+        foreach ($variants as $variant) {
+            $stockTotal += $variant['stock'];
+            if ($variant['stock'] > 0) {
+                $minInStock = $minInStock === null
+                    ? $variant['price']
+                    : min($minInStock, $variant['price']);
+            }
+        }
+        $row['stock_total'] = $stockTotal;
+        if ($minInStock !== null) {
+            $row['price'] = (float) $minInStock;
+        }
+
         return $row;
     }
 

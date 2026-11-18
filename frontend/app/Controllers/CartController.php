@@ -35,20 +35,21 @@ final class CartController extends Controller {
         $this->requireRole('pembeli');
 
         $id = (int) ($_POST['id'] ?? 0);
+        $variantId = (int) ($_POST['id_varian_produk'] ?? $_POST['id_varian'] ?? 0);
         $jumlah = max(1, (int) ($_POST['jumlah'] ?? 1));
 
-        if ($id < 1) {
+        if ($id < 1 && $variantId < 1) {
             $this->flash('error', 'Produk tidak valid.');
             $this->redirect('/user/menu.php');
             return;
         }
 
-        $res = Keranjang::add($id, $jumlah);
+        $res = Keranjang::add($id, $jumlah, $variantId > 0 ? $variantId : null);
 
         if (!$res['ok']) {
             $errors = array_map('strval', array_values($res['errors']));
             $this->flash('error', $errors ? implode(' ', $errors) : ($res['message'] ?? 'Gagal menambahkan ke keranjang.'));
-            $this->redirect('/user/detail-product.php?id=' . $id);
+            $this->redirect($id > 0 ? '/user/detail-product.php?id=' . $id : '/user/menu.php');
             return;
         }
 
@@ -59,7 +60,7 @@ final class CartController extends Controller {
     /**
      * Dipanggil lewat fetch() (halaman keranjang, tombol "Tambah", dll). Selalu membalas JSON.
      * POST: aksi = add | update | remove
-     *   add    -> id = id produk,        jumlah
+     *   add    -> id = id produk (opsional jika id_varian_produk diisi), jumlah, id_varian_produk?
      *   update -> id = id item keranjang, jumlah
      *   remove -> id = id item keranjang
      */
@@ -80,19 +81,29 @@ final class CartController extends Controller {
  
         $aksi = (string) ($_POST['aksi'] ?? '');
         $id = (int) ($_POST['id'] ?? 0);
+        $variantId = (int) ($_POST['id_varian_produk'] ?? $_POST['id_varian'] ?? 0);
         $jumlah = (int) ($_POST['jumlah'] ?? 1);
- 
-        if ($id < 1) {
-            http_response_code(400);
-            echo json_encode(['ok' => false, 'message' => 'ID tidak valid.']);
-            return;
-        }
- 
+
         if ($aksi === 'add') {
-            $res = Keranjang::add($id, max(1, $jumlah));
+            if ($id < 1 && $variantId < 1) {
+                http_response_code(400);
+                echo json_encode(['ok' => false, 'message' => 'ID tidak valid.']);
+                return;
+            }
+            $res = Keranjang::add($id, max(1, $jumlah), $variantId > 0 ? $variantId : null);
         } elseif ($aksi === 'update') {
+            if ($id < 1) {
+                http_response_code(400);
+                echo json_encode(['ok' => false, 'message' => 'ID tidak valid.']);
+                return;
+            }
             $res = Keranjang::updateQuantity($id, $jumlah);
         } elseif ($aksi === 'remove') {
+            if ($id < 1) {
+                http_response_code(400);
+                echo json_encode(['ok' => false, 'message' => 'ID tidak valid.']);
+                return;
+            }
             $res = Keranjang::remove($id);
         } else {
             http_response_code(400);

@@ -5889,6 +5889,72 @@ body,
   line-height: 1.2;
 }
 
+.gk-density-card.is-sepi .gk-density-badge {
+  background: rgba(46, 125, 70, 0.14);
+  color: #1f6b3a;
+}
+
+.gk-density-card.is-sedang .gk-density-badge {
+  background: rgba(201, 148, 20, 0.18);
+  color: #8a6a00;
+}
+
+.gk-density-card.is-ramai .gk-density-badge,
+.gk-density-card.is-penuh .gk-density-badge {
+  background: rgba(192, 57, 43, 0.12);
+  color: #c0392b;
+}
+
+.gk-density-card.is-sepi .gk-stat-icon {
+  background: rgba(46, 125, 70, 0.12);
+  color: #1f6b3a;
+}
+
+.gk-density-card.is-sedang .gk-stat-icon {
+  background: rgba(201, 148, 20, 0.16);
+  color: #8a6a00;
+}
+
+.gk-menu-carousel {
+  margin: 8px 0 28px;
+}
+
+.gk-menu-carousel-head {
+  align-items: flex-end;
+  margin-bottom: 12px;
+  gap: 12px;
+}
+
+.gk-menu-carousel .sb-cate-title {
+  font-size: 1.35rem;
+  margin: 0 0 4px;
+}
+
+.gk-menu-carousel .sb-text {
+  margin: 0;
+  font-size: 14px;
+}
+
+.gk-menu-carousel .sb-right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.gk-menu-carousel .sb-slider-nav .sb-prev-btn,
+.gk-menu-carousel .sb-slider-nav .sb-next-btn {
+  background: transparent;
+}
+
+.gk-menu-carousel-empty {
+  margin-bottom: 0;
+}
+
+.gk-menu-carousel-empty p {
+  margin: 0;
+}
+
 .gk-stat-body span {
   font-size: 13px;
   font-weight: 500;

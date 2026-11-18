@@ -143,6 +143,47 @@
     syncTimingUI();
   }
 
+  function initMenuCarousels() {
+    if (typeof window.Swiper === 'undefined') {
+      return;
+    }
+
+    $('.gk-menu-carousel').each(function () {
+      var $section = $(this);
+      var el = $section.find('.gk-menu-carousel-slider')[0];
+      if (!el || el.swiper) {
+        return;
+      }
+
+      var slideCount = $section.find('.swiper-slide').length;
+      var canLoop = slideCount > 4;
+
+      new window.Swiper(el, {
+        slidesPerView: 4,
+        spaceBetween: 18,
+        speed: 800,
+        watchOverflow: true,
+        loop: canLoop,
+        autoplay: canLoop
+          ? {
+              delay: 3500,
+              disableOnInteraction: false,
+              pauseOnMouseEnter: true,
+            }
+          : false,
+        navigation: {
+          prevEl: $section.find('.gk-menu-carousel-prev')[0],
+          nextEl: $section.find('.gk-menu-carousel-next')[0],
+        },
+        breakpoints: {
+          1200: { slidesPerView: 3, spaceBetween: 16 },
+          992: { slidesPerView: 2, spaceBetween: 14 },
+          768: { slidesPerView: 1.15, spaceBetween: 12 },
+        },
+      });
+    });
+  }
+
   $(function () {
     var saved = false;
     try {
@@ -155,11 +196,13 @@
     syncNavTitles();
     updateToggleIcon();
     initCheckoutTiming();
+    initMenuCarousels();
   });
 
   document.addEventListener('swup:contentReplaced', function () {
     syncActiveNav();
     updateToggleIcon();
     initCheckoutTiming();
+    initMenuCarousels();
   });
 })(jQuery);

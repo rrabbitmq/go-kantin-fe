@@ -5,5 +5,5 @@ return [
     'port'     => 5432,
     'dbname'   => 'go_kantin',
     'user'     => 'postgres',
-    'password' => 'postgres',
+    'password' => 'komenprom',
 ];

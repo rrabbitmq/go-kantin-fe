@@ -2,12 +2,14 @@
 /**
  * @var array|null $product
  * @var array      $related
+ * @var int        $cartCount
  */
 
 use App\Core\View;
 
 $product = $product ?? null;
 $related = $related ?? [];
+$cartCount = (int) ($cartCount ?? 0);
 $variants = is_array($product['variants'] ?? null) ? $product['variants'] : [];
 $stockTotal = (int) ($product['stock_total'] ?? 0);
 $modalPayload = $product ? [
@@ -17,6 +19,8 @@ $modalPayload = $product ? [
     'price' => (float) $product['price'],
     'variants' => $variants,
 ] : null;
+$priceInt = $product ? (int) round((float) $product['price']) : 0;
+$priceFmt = number_format($priceInt, 0, ',', '.');
 ?>
 <?php if (!$product): ?>
 <section class="sb-p-90-90">
@@ -31,49 +35,52 @@ $modalPayload = $product ? [
 <?php else: ?>
 <section class="sb-p-90-0 gk-product-detail">
   <div class="container">
-    <div class="row align-items-center">
-      <div class="col-lg-6">
-        <div class="gk-product-media sb-mb-30">
-          <img src="<?= gk_h($product['image_path']) ?>" alt="<?= gk_h($product['name']) ?>">
-          <?php if (!empty($product['is_vegan'])): ?>
-            <div class="gk-product-badge"><i class="fas fa-leaf"></i> Nabati</div>
-          <?php endif; ?>
-        </div>
+    <div class="gk-product-detail-layout">
+      <div class="gk-product-media">
+        <img src="<?= gk_h($product['image_path']) ?>" alt="<?= gk_h($product['name']) ?>">
+        <?php if (!empty($product['is_vegan'])): ?>
+          <div class="gk-product-badge"><i class="fas fa-leaf"></i> Nabati</div>
+        <?php endif; ?>
       </div>
-      <div class="col-lg-6">
-        <div class="gk-product-info sb-mb-90">
-          <div class="gk-product-price-frame">
-            <h1><?= gk_h($product['name']) ?></h1>
-            <div class="gk-product-price"><?= gk_h(gk_format_rupiah($product['price'])) ?></div>
-          </div>
+      <div class="gk-product-info">
+        <div class="gk-product-price-frame">
+          <h1><?= gk_h($product['name']) ?></h1>
+          <div class="gk-product-price"><sub>Rp</sub> <?= gk_h($priceFmt) ?></div>
+        </div>
 
-          
-
-          <?php if (!empty($product['description']) || !empty($product['ingredients'])): ?>
-            <p class="gk-product-desc">
-              <?= gk_h((string) ($product['description'] ?: $product['ingredients'])) ?>
-            </p>
-          <?php endif; ?>
-
-          <div class="gk-stock-pill<?= $stockTotal <= 0 ? ' is-empty' : '' ?>">
+        <p class="gk-product-desc">
+          <?= !empty($product['description'])
+            ? gk_h((string) $product['description'])
+            : 'Tidak ada deskripsi.' ?>
+        </p>
+        <div class="gk-product-actions">
+          <p class="gk-stock-text<?= $stockTotal <= 0 ? ' is-empty' : '' ?>">
             <i class="fas fa-box"></i>
             <?php if ($stockTotal > 0): ?>
               Stok tersedia: <?= $stockTotal ?>
             <?php else: ?>
               Stok habis
             <?php endif; ?>
+          </p>
+          <div class="gk-product-actions-right">
+            <button
+              type="button"
+              class="gk-product-cart-btn"
+              data-open-variant-modal
+              data-product="<?= gk_h(json_encode($modalPayload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)) ?>"
+              <?= $stockTotal <= 0 ? 'disabled' : '' ?>>
+              <span class="gk-product-cart-icon">
+                <i class="fas fa-plus"></i>
+              </span>
+              <span>Tambahkan</span>
+            </button>
+            <a href="/user/cart.php" class="gk-product-cart-link" aria-label="Buka keranjang">
+              <i class="fas fa-shopping-cart"></i>
+              <?php if ($cartCount > 0): ?>
+                <span class="gk-product-cart-badge"><?= $cartCount ?></span>
+              <?php endif; ?>
+            </a>
           </div>
-          <button
-            type="button"
-            class="gk-product-cart-btn"
-            data-open-variant-modal
-            data-product="<?= gk_h(json_encode($modalPayload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)) ?>"
-            <?= $stockTotal <= 0 ? 'disabled' : '' ?>>
-            <span class="gk-product-cart-icon">
-              <img src="/img/ui/icons/cart.svg" alt="">
-            </span>
-            <span>Tambahkan</span>
-          </button>
         </div>
       </div>
     </div>

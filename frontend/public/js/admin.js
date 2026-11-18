@@ -40,11 +40,6 @@
     return 'Rp' + Number(n || 0).toLocaleString('id-ID');
   }
 
-  /* Sidebar mobile */
-  $(document).on('click', '[data-admin-toggle]', function () {
-    $('#gk-admin-app').toggleClass('is-sidebar-open');
-  });
-
   /* ---------- Antrian ---------- */
   function filterOrders() {
     var status = $('.gk-admin-pills [data-filter].is-active').data('filter') || 'all';

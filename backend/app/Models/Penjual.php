@@ -27,6 +27,65 @@ final class Penjual {
         return $id ? (int) $id : null;
     }
 
+    /** Profil usaha untuk pengaturan stand dan meta sidebar. */
+    public static function profil(int $profilId): ?array {
+        $stmt = Database::connection()->prepare(
+            "SELECT id_profil_penjual, id_user, nama_usaha, no_hp,
+                    COALESCE(alamat, '') AS alamat,
+                    to_char(COALESCE(jam_buka, TIME '08:00'), 'HH24:MI') AS jam_buka,
+                    to_char(COALESCE(jam_tutup, TIME '15:00'), 'HH24:MI') AS jam_tutup,
+                    COALESCE(status_buka, TRUE) AS status_buka
+             FROM profil_penjual
+             WHERE id_profil_penjual = :p"
+        );
+        $stmt->execute([':p' => $profilId]);
+        $row = $stmt->fetch();
+        if (!$row) {
+            return null;
+        }
+
+        return [
+            'id' => (int) $row['id_profil_penjual'],
+            'id_user' => (int) $row['id_user'],
+            'nama_usaha' => $row['nama_usaha'],
+            'lokasi' => $row['alamat'],
+            'no_hp' => (string) ($row['no_hp'] ?? ''),
+            'jam_buka' => $row['jam_buka'],
+            'jam_tutup' => $row['jam_tutup'],
+            'status_buka' => (bool) $row['status_buka'],
+            'jam' => str_replace(':', '.', $row['jam_buka']) . ' - ' . str_replace(':', '.', $row['jam_tutup']) . ' WIB',
+        ];
+    }
+
+    public static function updateProfil(int $profilId, array $data): array {
+        $stmt = Database::connection()->prepare(
+            'UPDATE profil_penjual
+             SET nama_usaha = :nama,
+                 alamat = :alamat,
+                 no_hp = :hp,
+                 jam_buka = CAST(:buka AS TIME),
+                 jam_tutup = CAST(:tutup AS TIME),
+                 status_buka = :buka_status
+             WHERE id_profil_penjual = :p
+             RETURNING id_profil_penjual'
+        );
+        $stmt->execute([
+            ':nama' => $data['nama_usaha'],
+            ':alamat' => $data['lokasi'] !== '' ? $data['lokasi'] : null,
+            ':hp' => $data['no_hp'] !== '' ? $data['no_hp'] : null,
+            ':buka' => $data['jam_buka'],
+            ':tutup' => $data['jam_tutup'],
+            ':buka_status' => $data['status_buka'] ? 'true' : 'false',
+            ':p' => $profilId,
+        ]);
+
+        if (!$stmt->fetchColumn()) {
+            throw new \RuntimeException('Profil penjual tidak ditemukan.');
+        }
+
+        return self::profil($profilId) ?? [];
+    }
+
     public static function dashboard(int $profilId): array {
         $pdo = Database::connection();
         $in = self::PEMASUKAN;

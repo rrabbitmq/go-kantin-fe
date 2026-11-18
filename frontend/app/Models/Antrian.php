@@ -2,8 +2,12 @@
 
 namespace App\Models;
 
+use App\Core\ApiClient;
+
 final class Antrian
 {
+    public const KAPASITAS_SLOT = 20;
+
     public static function slots(): array
     {
         // Belum ada tabel slot antrian di DDL — fallback demo.
@@ -27,5 +31,50 @@ final class Antrian
 
         $slots = self::slots();
         return $slots[0] ?? null;
+    }
+
+    /** Kepadatan slot 30 menit saat ini dari API backend. */
+    public static function kepadatan(): array
+    {
+        $fallback = self::fallbackKepadatan();
+        $res = ApiClient::get('/antrian/kepadatan');
+        if (!$res['ok'] || !is_array($res['data'])) {
+            return $fallback;
+        }
+
+        $data = $res['data'];
+        $aktif = (int) ($data['aktif'] ?? 0);
+        $kapasitas = (int) ($data['kapasitas'] ?? self::KAPASITAS_SLOT);
+        $persen = (int) ($data['persen'] ?? 0);
+        $label = (string) ($data['label'] ?? \gk_queue_density_label($persen));
+
+        return [
+            'aktif' => $aktif,
+            'kapasitas' => $kapasitas > 0 ? $kapasitas : self::KAPASITAS_SLOT,
+            'persen' => max(0, min(100, $persen)),
+            'label' => $label,
+            'slot_label' => (string) ($data['slot_label'] ?? $fallback['slot_label']),
+            'pesan' => (string) ($data['pesan'] ?? \gk_queue_density_message($label)),
+        ];
+    }
+
+    private static function fallbackKepadatan(): array
+    {
+        $tz = new \DateTimeZone('Asia/Jakarta');
+        $now = new \DateTimeImmutable('now', $tz);
+        $minute = (int) $now->format('i');
+        $slotStartMinute = $minute < 30 ? 0 : 30;
+        $slotStart = $now->setTime((int) $now->format('H'), $slotStartMinute, 0);
+        $slotEnd = $slotStart->modify('+30 minutes');
+        $label = 'Sepi';
+
+        return [
+            'aktif' => 0,
+            'kapasitas' => self::KAPASITAS_SLOT,
+            'persen' => 0,
+            'label' => $label,
+            'slot_label' => $slotStart->format('H.i') . '–' . $slotEnd->format('H.i'),
+            'pesan' => \gk_queue_density_message($label),
+        ];
     }
 }

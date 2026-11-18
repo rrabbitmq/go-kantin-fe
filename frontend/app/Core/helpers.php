@@ -29,6 +29,41 @@ function gk_queue_label(int $count, int $threshold = 30): string
     return 'Sepi';
 }
 
+/** Label kepadatan dari persen kapasitas slot (0–100). */
+function gk_queue_density_label(int $persen): string
+{
+    if ($persen >= 100) {
+        return 'Penuh';
+    }
+    if ($persen >= 81) {
+        return 'Ramai';
+    }
+    if ($persen >= 41) {
+        return 'Sedang';
+    }
+    return 'Sepi';
+}
+
+function gk_queue_density_message(string $label): string
+{
+    return match ($label) {
+        'Penuh' => 'Kapasitas pesanan sudah penuh',
+        'Ramai' => 'Kapasitas pesanan hampir penuh',
+        default => 'Kapasitas pesanan masih tersedia',
+    };
+}
+
+/** Modifier CSS untuk badge/kartu kepadatan. */
+function gk_queue_density_tone(string $label): string
+{
+    return match ($label) {
+        'Penuh' => 'penuh',
+        'Ramai' => 'ramai',
+        'Sedang' => 'sedang',
+        default => 'sepi',
+    };
+}
+
 function gk_normalize_order_status(string $status): string
 {
     $map = [

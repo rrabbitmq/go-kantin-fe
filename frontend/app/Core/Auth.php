@@ -72,7 +72,7 @@ final class Auth
         session_regenerate_id(true);
 
         $_SESSION[self::SESSION_KEY] = [
-            'id_user' => (int) $user['id_user'],
+            'id_user' => (int) ($user['id_user'] ?? $user['id'] ?? 0),
             'username' => $user['username'],
             'email' => $user['email'] ?? null,
             'status_akun' => $user['status_akun'] ?? 'aktif',
@@ -96,8 +96,8 @@ final class Auth
 
         return match ($primary) {
             'penjual' => '/admin/dashboard.php',
-            'super_admin' => '/auth/pending-area.php',
-            default => '/user/katalog.php',
+            'super_admin' => '/admin/pengguna.php',
+            default => '/user/beranda.php',
         };
     }
 

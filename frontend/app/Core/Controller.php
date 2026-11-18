@@ -43,7 +43,7 @@ abstract class Controller
             'lokasi' => 'Kantin JTI • Lantai 8',
             'jam' => '08.00 - 15.00 WIB',
             'status_buka' => true,
-            'role_label' => Auth::hasRole('super_admin') ? 'Super Admin' : 'Kasir Stand Terpadu',
+            'role_label' => Auth::hasRole('super_admin') ? 'Super Admin' : 'Admin Stand',
         ];
         $data['queueBadge'] = $data['queueBadge'] ?? (int) ($data['queueCount'] ?? 4);
         $data['flashSuccess'] = $data['flashSuccess'] ?? gk_flash('success');

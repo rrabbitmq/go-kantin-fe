@@ -130,7 +130,7 @@ final class AuthController extends Controller {
         if ($loginRes['ok']) {
             $this->startSession($loginRes['data']);
             $this->flash('success', 'Registrasi berhasil. Selamat datang!');
-            $this->redirect('/user/katalog.php');
+            $this->redirect('/user/beranda.php');
         }
  
         $this->flash('success', 'Registrasi berhasil. Silakan login.');

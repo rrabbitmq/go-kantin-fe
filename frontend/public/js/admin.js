@@ -1,4 +1,4 @@
-/* Go Kantin — Admin stand UI behaviors (preview / dummy) */
+/* Go Kantin — Admin stand UI behaviors */
 (function ($, window) {
   'use strict';
 
@@ -17,6 +17,24 @@
   }
 
   window.gkAdminToast = toast;
+
+  function postJson(url, body) {
+    return fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      credentials: 'same-origin',
+      body: JSON.stringify(body || {})
+    }).then(function (res) {
+      return res.json().then(function (data) {
+        return { ok: !!(data && data.ok), status: res.status, data: data };
+      }).catch(function () {
+        return { ok: false, status: res.status, data: { message: 'Respons tidak valid.' } };
+      });
+    });
+  }
 
   function formatRp(n) {
     return 'Rp' + Number(n || 0).toLocaleString('id-ID');
@@ -161,15 +179,34 @@
     $('.gk-admin-pills [data-pos-category].is-active').trigger('click');
   });
 
+  var qrTicketId = null;
+
   $(document).on('click', '#gk-pos-save', function () {
-    if (!Object.keys(cart).length) {
+    var keys = Object.keys(cart);
+    if (!keys.length) {
       toast('Nota masih kosong');
       return;
     }
-    toast('Preview: transaksi POS disimpan & nota dicetak', 'success');
-    cart = {};
-    renderCart();
-    $('#gk-uang-diterima').val('');
+    var metode = $('.gk-admin-pay-toggle [data-pay].is-active').data('pay') || 'tunai';
+    var items = keys.map(function (id) {
+      return { id_varian: parseInt(id, 10), qty: cart[id].qty };
+    });
+    var $btn = $(this).prop('disabled', true);
+    postJson('/admin/pos.php', { aksi: 'jual', metode: metode, items: items })
+      .then(function (res) {
+        if (!res.ok) {
+          toast((res.data && res.data.message) || 'Transaksi POS gagal');
+          return;
+        }
+        var kode = res.data && res.data.data && res.data.data.kode;
+        toast(kode ? ('Transaksi ' + kode + ' disimpan') : 'Transaksi POS disimpan', 'success');
+        cart = {};
+        renderCart();
+        $('#gk-uang-diterima').val('');
+        setTimeout(function () { window.location.reload(); }, 900);
+      })
+      .catch(function () { toast('Gagal menghubungi server'); })
+      .finally(function () { $btn.prop('disabled', false); });
   });
 
   $(document).on('click', '#gk-scan-qr', function () {
@@ -178,18 +215,60 @@
       toast('Masukkan nomor tiket / kode QR');
       return;
     }
+    qrTicketId = null;
+    $('#gk-qr-heading').text('Memuat tiket…');
+    $('#gk-qr-meta').text(code);
+    $('#gk-qr-items').empty();
+    $('#gk-qr-handover').attr('hidden', true);
     $('#gk-qr-modal').modal('show');
+
+    postJson('/admin/pos.php', { aksi: 'tiket', kode: code })
+      .then(function (res) {
+        if (!res.ok || !res.data || !res.data.data) {
+          $('#gk-qr-heading').text('Tiket tidak ditemukan');
+          $('#gk-qr-meta').text((res.data && res.data.message) || 'Periksa kode lalu coba lagi');
+          return;
+        }
+        var t = res.data.data;
+        qrTicketId = t.id;
+        $('#gk-qr-heading').text(t.bisa_selesai ? 'Tiket QR Valid' : 'Tiket: ' + t.status);
+        $('#gk-qr-meta').text(t.kode + ' · ' + t.pembeli + ' · ' + String(t.metode || '').toUpperCase());
+        var html = (t.items || []).map(function (it) {
+          return '<div>' + it.jumlah + 'x ' + it.nama + ' — ' + formatRp(it.sub_total) + '</div>';
+        }).join('');
+        html += '<div style="margin-top:8px;font-weight:700;">Total Transaksi: ' + formatRp(t.total) + '</div>';
+        $('#gk-qr-items').html(html);
+        if (t.bisa_selesai) {
+          $('#gk-qr-handover').removeAttr('hidden');
+        }
+      })
+      .catch(function () {
+        $('#gk-qr-heading').text('Gagal memuat tiket');
+        $('#gk-qr-meta').text('Server tidak merespons');
+      });
   });
 
   $(document).on('click', '#gk-qr-handover', function () {
-    $('#gk-qr-modal').modal('hide');
-    toast('Preview: tiket diserahkan & pesanan selesai', 'success');
-    $('#gk-qr-input').val('');
+    if (!qrTicketId) return;
+    var $btn = $(this).prop('disabled', true);
+    postJson('/admin/pos.php', { aksi: 'selesai', id: qrTicketId })
+      .then(function (res) {
+        if (!res.ok) {
+          toast((res.data && res.data.message) || 'Gagal menyelesaikan pesanan');
+          return;
+        }
+        $('#gk-qr-modal').modal('hide');
+        toast((res.data && res.data.message) || 'Pesanan selesai', 'success');
+        $('#gk-qr-input').val('');
+        qrTicketId = null;
+      })
+      .catch(function () { toast('Gagal menghubungi server'); })
+      .finally(function () { $btn.prop('disabled', false); });
   });
 
   /* ---------- Menu / Kasir / Laporan modals ---------- */
   $(document).on('click', '[data-preview-save]', function () {
-    var msg = $(this).data('preview-save') || 'Perubahan disimpan (preview)';
+    var msg = $(this).data('preview-save') || 'Perubahan disimpan';
     $('.modal').modal('hide');
     toast(msg, 'success');
   });
@@ -285,11 +364,6 @@
     table.draw();
   });
 
-  $(document).on('submit', '#form-pengaturan', function (e) {
-    e.preventDefault();
-    toast('Preview: pengaturan stand disimpan', 'success');
-  });
-
   $(function () {
     renderCart();
     if ($('#dt-produk').length) {
@@ -300,9 +374,6 @@
     }
     if ($('#dt-laporan').length) {
       window.gkDataTable('#dt-laporan');
-    }
-    if ($('#dt-kasir').length) {
-      window.gkDataTable('#dt-kasir', { order: [[1, 'asc']], pageLength: 5 });
     }
     if ($('#dt-pengguna').length) {
       window.gkDataTable('#dt-pengguna', {

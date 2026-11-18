@@ -90,23 +90,47 @@ final class AdminController extends Controller {
     public function pos(): void {
         $this->requirePenjual();
 
-        $products = [
-            ['id' => 1, 'nama' => 'Oreo Soft Cake', 'kategori' => 'Snack', 'harga' => 3000, 'stok' => 25, 'gambar' => '/img/menu/1.jpg'],
-            ['id' => 2, 'nama' => 'Ayam Krispi', 'kategori' => 'Makanan', 'harga' => 12000, 'stok' => 4, 'gambar' => '/img/menu/2.jpg'],
-            ['id' => 3, 'nama' => 'Air Mineral', 'kategori' => 'Minuman', 'harga' => 3000, 'stok' => 48, 'gambar' => '/img/menu/3.jpg'],
-            ['id' => 4, 'nama' => 'Kapal Api', 'kategori' => 'Minuman', 'harga' => 4000, 'stok' => 2, 'gambar' => '/img/menu/4.jpg'],
-            ['id' => 5, 'nama' => 'La Segar Twist', 'kategori' => 'Minuman', 'harga' => 5000, 'stok' => 18, 'gambar' => '/img/menu/5.jpg'],
-            ['id' => 6, 'nama' => 'Teh Pucuk', 'kategori' => 'Minuman', 'harga' => 4000, 'stok' => 30, 'gambar' => '/img/menu/6.jpg'],
-            ['id' => 7, 'nama' => 'Sosis Solo Ayam', 'kategori' => 'Snack', 'harga' => 2500, 'stok' => 18, 'gambar' => '/img/menu/7.jpg'],
-            ['id' => 8, 'nama' => 'Tahu Isi Sayur', 'kategori' => 'Snack', 'harga' => 2500, 'stok' => 22, 'gambar' => '/img/menu/8.jpg'],
-        ];
+        $res = Penjual::pos();
+        $products = [];
+        $receiptNo = 'POS-' . date('ymd') . '-…';
+        if ($res['ok'] && is_array($res['data'])) {
+            $products = $res['data']['products'] ?? [];
+            $prefix = (string) ($res['data']['receipt_prefix'] ?? ('POS-' . date('ymd')));
+            $receiptNo = $prefix . '-…';
+        } else {
+            $this->flash('error', $res['message'] ?? 'Katalog POS tidak dapat dimuat.');
+        }
 
         $this->renderAdmin('admin/pos', [
             'pageTitle' => 'Kasir POS - Go Kantin',
             'activeNav' => 'pos',
             'products' => $products,
-            'receiptNo' => 'POS-2026-089',
+            'receiptNo' => $receiptNo,
         ]);
+    }
+
+    /** POST /admin/pos.php — jual | tiket | selesai */
+    public function aksiPos(): void
+    {
+        $this->requirePenjual();
+        header('Content-Type: application/json; charset=utf-8');
+
+        $raw = file_get_contents('php://input');
+        $body = is_string($raw) && $raw !== '' ? json_decode($raw, true) : $_POST;
+        if (!is_array($body)) {
+            echo json_encode(['ok' => false, 'message' => 'Body tidak valid.']);
+            exit;
+        }
+
+        $res = Penjual::aksiPos($body);
+        http_response_code($res['ok'] ? 200 : (int) ($res['status'] ?: 400));
+        echo json_encode([
+            'ok' => $res['ok'],
+            'message' => $res['message'] ?? ($res['ok'] ? 'OK' : 'Gagal'),
+            'data' => $res['data'],
+            'errors' => $res['errors'] ?? [],
+        ]);
+        exit;
     }
 
     public function menu(): void {
@@ -271,52 +295,89 @@ final class AdminController extends Controller {
     {
         $this->requirePenjual();
 
-        $this->renderAdmin('admin/pengaturan', [
-            'pageTitle' => 'Pengaturan Stand - Go Kantin',
-            'activeNav' => 'pengaturan',
-            'stand' => [
-                'nama_usaha' => 'Stand Kantin JTI',
-                'lokasi' => 'Kantin JTI • Lantai 8',
+        $stand = $this->standData();
+        if ($stand === null) {
+            $this->flash('error', 'Pengaturan stand tidak dapat dimuat.');
+            $stand = [
+                'nama_usaha' => '',
+                'lokasi' => '',
                 'jam_buka' => '08:00',
                 'jam_tutup' => '15:00',
                 'status_buka' => true,
-                'no_hp' => '081234567890',
-            ],
+                'no_hp' => '',
+            ];
+        }
+
+        $this->renderAdmin('admin/pengaturan', [
+            'pageTitle' => 'Pengaturan Stand - Go Kantin',
+            'activeNav' => 'pengaturan',
+            'stand' => $stand,
         ]);
     }
 
-    public function kasir(): void {
+    public function simpanPengaturan(): void
+    {
         $this->requirePenjual();
 
-        $cashiers = [
-            ['id' => 1, 'username' => 'purwo', 'nama' => 'Pak Purwo', 'status' => 'aktif', 'peran' => 'Pemilik'],
-            ['id' => 2, 'username' => 'sari', 'nama' => 'Bu Sari', 'status' => 'aktif', 'peran' => 'Kasir'],
-            ['id' => 3, 'username' => 'dono', 'nama' => 'Mas Dono', 'status' => 'nonaktif', 'peran' => 'Kasir'],
+        $fields = [
+            'nama_usaha' => trim((string) ($_POST['nama_usaha'] ?? '')),
+            'lokasi' => trim((string) ($_POST['lokasi'] ?? '')),
+            'jam_buka' => trim((string) ($_POST['jam_buka'] ?? '')),
+            'jam_tutup' => trim((string) ($_POST['jam_tutup'] ?? '')),
+            'no_hp' => trim((string) ($_POST['no_hp'] ?? '')),
+            'status_buka' => isset($_POST['status_buka']),
         ];
 
-        $this->renderAdmin('admin/kasir', [
-            'pageTitle' => 'Akun Kasir Stand - Go Kantin',
-            'activeNav' => 'kasir',
-            'cashiers' => $cashiers,
-        ]);
+        $res = Penjual::simpanStand($fields);
+        if ($res['ok']) {
+            $this->flash('success', $res['message'] ?? 'Pengaturan stand disimpan.');
+        } else {
+            $messages = array_map('strval', array_values($res['errors'] ?? []));
+            $this->flash('error', $messages ? implode(' ', $messages) : ($res['message'] ?? 'Pengaturan gagal disimpan.'));
+        }
+        $this->redirect('/admin/pengaturan.php');
     }
 
     private function requirePenjual(): void {
         $this->requireRole('penjual');
     }
 
+    private function standData(): ?array
+    {
+        static $cached = false;
+        static $stand = null;
+        if ($cached) {
+            return $stand;
+        }
+        $cached = true;
+        $res = Penjual::stand();
+        if ($res['ok'] && is_array($res['data'])) {
+            $stand = $res['data'];
+        }
+        return $stand;
+    }
+
     protected function renderAdmin(string $view, array $data): void
     {
         $data['currentUser'] = $data['currentUser'] ?? $this->currentUserForLayout();
-        $data['standMeta'] = $data['standMeta'] ?? [
-            'nama' => 'Stand Kantin JTI',
-            'lokasi' => 'Kantin JTI • Lantai 8',
-            'jam' => '08.00 - 15.00 WIB',
-            'status_buka' => true,
-            'role_label' => 'Kasir Stand Terpadu',
-        ];
-        $data['queueBadge'] = $data['queueBadge'] ?? (int) ($data['queueCount'] ?? 4);
+        if (!isset($data['standMeta'])) {
+            $stand = $this->standData();
+            $data['standMeta'] = $stand ? [
+                'nama' => $stand['nama_usaha'] ?? 'Stand',
+                'lokasi' => $stand['lokasi'] ?? '',
+                'jam' => $stand['jam'] ?? '08.00 - 15.00 WIB',
+                'status_buka' => !empty($stand['status_buka']),
+                'role_label' => 'Admin Stand',
+            ] : [
+                'nama' => 'Stand',
+                'lokasi' => '',
+                'jam' => '08.00 - 15.00 WIB',
+                'status_buka' => true,
+                'role_label' => 'Admin Stand',
+            ];
+        }
+        $data['queueBadge'] = $data['queueBadge'] ?? (int) ($data['queueCount'] ?? 0);
 
-        $this->render($view, $data, 'layouts/admin');
+        parent::renderAdmin($view, $data);
     }
 }

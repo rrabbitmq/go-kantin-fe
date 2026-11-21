@@ -3,7 +3,28 @@ $intent = $intent ?? 'pembeli';
 $isPenjual = $intent === 'penjual';
 $old = $old ?? [];
 ?>
-<div class="gk-auth-card">
+<div class="gk-auth-card" style="position: relative;">
+  <!-- Tombol Lonceng Notifikasi di Pojok Kanan Atas -->
+  <button type="button" id="btn-notif-login" title="Notifikasi" style="
+    position: absolute;
+    top: 32px;
+    right: 28px;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: 1px solid #e4dfd3;
+    background: #fff;
+    color: #1f1f2e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(40, 30, 10, 0.05);
+    transition: background-color 0.2s ease;
+  ">
+    <i class="fas fa-bell" style="font-size: 16px;"></i>
+  </button>
+
   <a href="/index.php" class="gk-auth-brand">
     <img src="/img/ui/logo.svg" alt="Go Kantin">
     <strong>Go Kantin</strong>
@@ -57,3 +78,68 @@ $old = $old ?? [];
     </div>
   <?php endif; ?>
 </div>
+
+<!-- Pop-up Notifikasi "Silahkan login dulu!" -->
+<div id="gk-notif-modal" style="
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(31, 31, 46, 0.45);
+  z-index: 9999;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+">
+  <div style="
+    background: #fff;
+    border-radius: 18px;
+    padding: 28px 24px;
+    width: 100%;
+    max-width: 320px;
+    text-align: center;
+    box-shadow: 0 18px 50px rgba(40, 30, 10, 0.16);
+  ">
+    <div style="
+      width: 50px;
+      height: 50px;
+      margin: 0 auto 14px;
+      border-radius: 50%;
+      background: rgba(245, 195, 50, 0.22);
+      color: #1f1f2e;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    ">
+      <i class="fas fa-bell" style="font-size: 20px;"></i>
+    </div>
+    <h3 style="font-size: 1.2rem; margin-bottom: 6px; color: #1f1f2e;">Notifikasi</h3>
+    <p style="color: #6f6f87; font-size: 0.95rem; margin-bottom: 22px;">Silahkan login dulu!</p>
+    <button type="button" id="btn-close-notif" class="sb-btn" style="width: 100%; justify-content: center;">
+      <span>OK</span>
+    </button>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const btnNotif = document.getElementById('btn-notif-login');
+    const modalNotif = document.getElementById('gk-notif-modal');
+    const btnClose = document.getElementById('btn-close-notif');
+
+    if (btnNotif && modalNotif && btnClose) {
+      btnNotif.addEventListener('click', function () {
+        modalNotif.style.display = 'flex';
+      });
+
+      btnClose.addEventListener('click', function () {
+        modalNotif.style.display = 'none';
+      });
+
+      modalNotif.addEventListener('click', function (e) {
+        if (e.target === modalNotif) {
+          modalNotif.style.display = 'none';
+        }
+      });
+    }
+  });
+</script>
